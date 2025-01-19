@@ -1,142 +1,16 @@
 'use client';
 
-import { useMemo } from 'react';
-import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
-
-const AP_FITNESS_LOCATION = {
-  lat: 49.15241,
-  lng: -122.89007
-};
-
 const Map = () => {
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string
-  });
-
-  const mapCenter = useMemo(() => AP_FITNESS_LOCATION, []);
-
-  const mapOptions = useMemo<google.maps.MapOptions>(
-    () => ({
-      disableDefaultUI: true,
-      clickableIcons: true,
-      scrollwheel: false,
-      styles: [
-        {
-          "elementType": "geometry",
-          "stylers": [{ "color": "#242f3e" }]
-        },
-        {
-          "elementType": "labels.text.stroke",
-          "stylers": [{ "color": "#242f3e" }]
-        },
-        {
-          "elementType": "labels.text.fill",
-          "stylers": [{ "color": "#746855" }]
-        },
-        {
-          "featureType": "administrative.locality",
-          "elementType": "labels.text.fill",
-          "stylers": [{ "color": "#d59563" }]
-        },
-        {
-          "featureType": "poi",
-          "elementType": "labels.text.fill",
-          "stylers": [{ "color": "#d59563" }]
-        },
-        {
-          "featureType": "poi.park",
-          "elementType": "geometry",
-          "stylers": [{ "color": "#263c3f" }]
-        },
-        {
-          "featureType": "poi.park",
-          "elementType": "labels.text.fill",
-          "stylers": [{ "color": "#6b9a76" }]
-        },
-        {
-          "featureType": "road",
-          "elementType": "geometry",
-          "stylers": [{ "color": "#38414e" }]
-        },
-        {
-          "featureType": "road",
-          "elementType": "geometry.stroke",
-          "stylers": [{ "color": "#212a37" }]
-        },
-        {
-          "featureType": "road",
-          "elementType": "labels.text.fill",
-          "stylers": [{ "color": "#9ca5b3" }]
-        },
-        {
-          "featureType": "road.highway",
-          "elementType": "geometry",
-          "stylers": [{ "color": "#746855" }]
-        },
-        {
-          "featureType": "road.highway",
-          "elementType": "geometry.stroke",
-          "stylers": [{ "color": "#1f2835" }]
-        },
-        {
-          "featureType": "road.highway",
-          "elementType": "labels.text.fill",
-          "stylers": [{ "color": "#f3d19c" }]
-        },
-        {
-          "featureType": "transit",
-          "elementType": "geometry",
-          "stylers": [{ "color": "#2f3948" }]
-        },
-        {
-          "featureType": "transit.station",
-          "elementType": "labels.text.fill",
-          "stylers": [{ "color": "#d59563" }]
-        },
-        {
-          "featureType": "water",
-          "elementType": "geometry",
-          "stylers": [{ "color": "#17263c" }]
-        },
-        {
-          "featureType": "water",
-          "elementType": "labels.text.fill",
-          "stylers": [{ "color": "#515c6d" }]
-        },
-        {
-          "featureType": "water",
-          "elementType": "labels.text.stroke",
-          "stylers": [{ "color": "#17263c" }]
-        }
-      ]
-    }),
-    []
-  );
-
-  if (!isLoaded) {
-    return (
-      <div className="h-full w-full flex items-center justify-center bg-dark">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-ap-red"></div>
-      </div>
-    );
-  }
-
   return (
-    <GoogleMap
-      options={mapOptions}
-      zoom={15}
-      center={mapCenter}
-      mapTypeId={google.maps.MapTypeId.ROADMAP}
-      mapContainerStyle={{ width: '100%', height: '100%' }}
-    >
-      <MarkerF
-        position={mapCenter}
-        icon={{
-          url: '/images/AP-Logo_processed.jpeg',
-          scaledSize: new google.maps.Size(40, 40),
-        }}
-      />
-    </GoogleMap>
+    <iframe 
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2609.5764344143004!2d-122.89244122356673!3d49.1516659713735!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5485d9f5bca32281%3A0xadca83103b7eb432!2sAP%20Fitness!5e0!3m2!1sen!2sca!4v1737268837709!5m2!1sen!2sca"
+      width="100%"
+      height="100%"
+      style={{ border: 0 }}
+      allowFullScreen
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+    />
   );
 };
 
