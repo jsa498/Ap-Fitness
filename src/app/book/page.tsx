@@ -54,9 +54,9 @@ export default function Book() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-dark/80" />
         </div>
-        <div className="relative h-full flex items-center justify-center text-white">
+        <div className="relative h-full flex items-center justify-center text-text-primary">
           <div className="text-center">
             <h1 className="text-5xl font-bold mb-4">Book a Consultation</h1>
             <p className="text-xl max-w-2xl mx-auto px-4">
@@ -72,14 +72,14 @@ export default function Book() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-white rounded-lg shadow-lg p-8"
+          className="bg-dark-lighter rounded-lg shadow-dark-lg p-8 border border-dark-border"
         >
-          <h2 className="text-3xl font-bold text-center mb-8">Schedule Your Free Consultation</h2>
+          <h2 className="text-3xl font-bold text-center mb-8 text-text-primary">Schedule Your Free Consultation</h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Personal Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="name" className="block text-gray-700 font-medium mb-2">
+                <label htmlFor="name" className="block text-text-primary font-medium mb-2">
                   Full Name *
                 </label>
                 <input
@@ -89,11 +89,11 @@ export default function Book() {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+                  className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
+                <label htmlFor="email" className="block text-text-primary font-medium mb-2">
                   Email Address *
                 </label>
                 <input
@@ -103,15 +103,15 @@ export default function Book() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+                  className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="phone" className="block text-gray-700 font-medium mb-2">
-                  Phone Number *
+                <label htmlFor="phone" className="block text-text-primary font-medium mb-2">
+                  Phone Number
                 </label>
                 <input
                   type="tel"
@@ -119,90 +119,85 @@ export default function Book() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+                  className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
                 />
               </div>
               <div>
-                <label htmlFor="serviceType" className="block text-gray-700 font-medium mb-2">
-                  Service Type *
+                <label htmlFor="preferredTime" className="block text-text-primary font-medium mb-2">
+                  Preferred Time
                 </label>
                 <select
-                  id="serviceType"
-                  name="serviceType"
-                  value={formData.serviceType}
+                  id="preferredTime"
+                  name="preferredTime"
+                  value={formData.preferredTime}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+                  className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
                 >
-                  <option value="personal-training">Personal Training</option>
-                  <option value="group-fitness">Group Fitness</option>
-                  <option value="boxing">Boxing & Kickboxing</option>
-                  <option value="prenatal">Pre & Postnatal Fitness</option>
-                  <option value="nutrition">Nutritional Coaching</option>
-                  <option value="online">Online Coaching</option>
+                  <option value="">Select a time</option>
+                  <option value="morning">Morning (6AM - 12PM)</option>
+                  <option value="afternoon">Afternoon (12PM - 5PM)</option>
+                  <option value="evening">Evening (5PM - 10PM)</option>
                 </select>
               </div>
             </div>
 
             <div>
-              <label htmlFor="experience" className="block text-gray-700 font-medium mb-2">
-                Fitness Experience Level *
+              <label htmlFor="serviceType" className="block text-text-primary font-medium mb-2">
+                Service Type *
+              </label>
+              <select
+                id="serviceType"
+                name="serviceType"
+                value={formData.serviceType}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+              >
+                <option value="">Select a service</option>
+                <option value="personal">Personal Training</option>
+                <option value="group">Group Fitness</option>
+                <option value="boxing">Boxing & Kickboxing</option>
+                <option value="prenatal">Pre & Postnatal</option>
+                <option value="nutrition">Nutritional Coaching</option>
+                <option value="online">Online Coaching</option>
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="experience" className="block text-text-primary font-medium mb-2">
+                Fitness Experience Level
               </label>
               <select
                 id="experience"
                 name="experience"
                 value={formData.experience}
                 onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+                className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
               >
                 <option value="">Select your experience level</option>
-                <option value="beginner">Beginner - New to fitness</option>
-                <option value="intermediate">Intermediate - Some experience</option>
-                <option value="advanced">Advanced - Regular exerciser</option>
-                <option value="athlete">Athlete - Competitive training</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
               </select>
             </div>
 
             <div>
-              <label htmlFor="goals" className="block text-gray-700 font-medium mb-2">
-                Fitness Goals *
+              <label htmlFor="goals" className="block text-text-primary font-medium mb-2">
+                Fitness Goals
               </label>
               <textarea
                 id="goals"
                 name="goals"
                 value={formData.goals}
                 onChange={handleChange}
-                required
                 rows={3}
-                placeholder="What are your main fitness goals?"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent resize-none"
+                className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent resize-none"
+                placeholder="Tell us about your fitness goals..."
               ></textarea>
             </div>
 
             <div>
-              <label htmlFor="preferredTime" className="block text-gray-700 font-medium mb-2">
-                Preferred Training Time
-              </label>
-              <select
-                id="preferredTime"
-                name="preferredTime"
-                value={formData.preferredTime}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
-              >
-                <option value="">Select preferred time</option>
-                <option value="early-morning">Early Morning (6am-9am)</option>
-                <option value="morning">Morning (9am-12pm)</option>
-                <option value="afternoon">Afternoon (12pm-4pm)</option>
-                <option value="evening">Evening (4pm-8pm)</option>
-                <option value="flexible">Flexible</option>
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="message" className="block text-gray-700 font-medium mb-2">
+              <label htmlFor="message" className="block text-text-primary font-medium mb-2">
                 Additional Information
               </label>
               <textarea
@@ -210,9 +205,9 @@ export default function Book() {
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                rows={4}
-                placeholder="Any additional information you'd like us to know (e.g., injuries, medical conditions, specific preferences)"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent resize-none"
+                rows={3}
+                className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent resize-none"
+                placeholder="Any additional information you'd like us to know..."
               ></textarea>
             </div>
 
@@ -221,7 +216,7 @@ export default function Book() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 type="submit"
-                className="bg-ap-red hover:bg-red-700 text-white px-8 py-3 rounded-full text-lg font-medium transition-colors"
+                className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-colors shadow-lg hover:shadow-xl"
               >
                 Book Consultation
               </motion.button>
@@ -231,10 +226,10 @@ export default function Book() {
       </section>
 
       {/* Additional Information */}
-      <section className="bg-gray-50 py-16">
+      <section className="bg-gradient-to-br from-dark to-dark-lighter py-16 border-y border-dark-border">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold mb-4">What to Expect</h2>
-          <p className="text-gray-600 mb-8">
+          <h2 className="text-2xl font-bold mb-4 text-text-primary">What to Expect</h2>
+          <p className="text-text-secondary mb-8">
             After submitting your booking request, our team will contact you within 24 hours
             to confirm your consultation and provide additional information. During your
             consultation, we'll discuss your goals, assess your current fitness level, and
@@ -242,25 +237,25 @@ export default function Book() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <div className="w-12 h-12 bg-ap-red rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white font-bold">1</span>
+              <div className="w-12 h-12 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span className="text-text-primary font-bold">1</span>
               </div>
-              <h3 className="font-semibold mb-2">Initial Consultation</h3>
-              <p className="text-gray-600">Meet with our expert trainers to discuss your goals</p>
+              <h3 className="font-semibold mb-2 text-text-primary">Initial Consultation</h3>
+              <p className="text-text-secondary">Meet with our expert trainers to discuss your goals</p>
             </div>
             <div>
-              <div className="w-12 h-12 bg-ap-red rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white font-bold">2</span>
+              <div className="w-12 h-12 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span className="text-text-primary font-bold">2</span>
               </div>
-              <h3 className="font-semibold mb-2">Fitness Assessment</h3>
-              <p className="text-gray-600">Complete a comprehensive fitness evaluation</p>
+              <h3 className="font-semibold mb-2 text-text-primary">Fitness Assessment</h3>
+              <p className="text-text-secondary">Complete a comprehensive fitness evaluation</p>
             </div>
             <div>
-              <div className="w-12 h-12 bg-ap-red rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white font-bold">3</span>
+              <div className="w-12 h-12 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <span className="text-text-primary font-bold">3</span>
               </div>
-              <h3 className="font-semibold mb-2">Custom Plan</h3>
-              <p className="text-gray-600">Receive your personalized training program</p>
+              <h3 className="font-semibold mb-2 text-text-primary">Custom Plan</h3>
+              <p className="text-text-secondary">Receive your personalized training program</p>
             </div>
           </div>
         </div>

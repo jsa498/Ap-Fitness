@@ -123,9 +123,9 @@ export default function Services() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-dark/80" />
         </div>
-        <div className="relative h-full flex items-center justify-center text-white">
+        <div className="relative h-full flex items-center justify-center text-text-primary">
           <div className="text-center">
             <h1 className="text-5xl font-bold mb-4">Our Services</h1>
             <p className="text-xl max-w-2xl mx-auto px-4">
@@ -145,24 +145,24 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-lg shadow-lg overflow-hidden"
+              className="bg-dark-lighter rounded-lg shadow-dark-lg overflow-hidden border border-dark-border hover:border-ap-red/50 transition-colors"
             >
-              <div className="p-6">
+              <div className="p-6 bg-gradient-to-br from-dark to-dark-lighter">
                 <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-ap-red rounded-full flex items-center justify-center">
-                    <service.Icon className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full flex items-center justify-center shadow-lg">
+                    <service.Icon className="w-6 h-6 text-text-primary" />
                   </div>
-                  <h2 className="text-2xl font-bold ml-4">{service.title}</h2>
+                  <h2 className="text-2xl font-bold ml-4 text-text-primary">{service.title}</h2>
                 </div>
-                <p className="text-gray-600 mb-6">{service.description}</p>
+                <p className="text-text-secondary mb-6">{service.description}</p>
                 
                 {/* Features */}
                 <div className="mb-6">
-                  <h3 className="font-semibold mb-3">Features:</h3>
+                  <h3 className="font-semibold mb-3 text-text-primary">Features:</h3>
                   <ul className="space-y-2">
                     {service.features.map((feature, i) => (
-                      <li key={i} className="flex items-center text-gray-600">
-                        <span className="w-2 h-2 bg-ap-red rounded-full mr-2"></span>
+                      <li key={i} className="flex items-center text-text-secondary">
+                        <span className="w-2 h-2 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full mr-2"></span>
                         {feature}
                       </li>
                     ))}
@@ -170,13 +170,13 @@ export default function Services() {
                 </div>
 
                 {/* Pricing */}
-                <div>
-                  <h3 className="font-semibold mb-3">Pricing:</h3>
+                <div className="bg-dark/50 rounded-lg p-4">
+                  <h3 className="font-semibold mb-3 text-text-primary">Pricing:</h3>
                   <div className="space-y-2">
                     {service.pricing.map((price, i) => (
-                      <div key={i} className="flex justify-between text-gray-600">
+                      <div key={i} className="flex justify-between text-text-secondary border-b border-dark-border last:border-0 pb-2 last:pb-0">
                         <span>{'sessions' in price ? `${price.sessions} Sessions` : price.type}</span>
-                        <span className="font-semibold">${price.price}</span>
+                        <span className="font-semibold text-ap-red">${price.price}</span>
                       </div>
                     ))}
                   </div>
@@ -188,16 +188,16 @@ export default function Services() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gray-50 py-16">
+      <section className="bg-gradient-to-br from-dark to-dark-lighter border-t border-dark-border py-16">
         <div className="max-w-4xl mx-auto text-center px-4">
-          <h2 className="text-3xl font-bold mb-4">Ready to Start Your Fitness Journey?</h2>
-          <p className="text-gray-600 mb-8">
+          <h2 className="text-3xl font-bold mb-4 text-text-primary">Ready to Start Your Fitness Journey?</h2>
+          <p className="text-text-secondary mb-8">
             Book a consultation with our expert trainers and take the first step towards achieving your fitness goals.
           </p>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-ap-red hover:bg-red-700 text-white px-8 py-3 rounded-full text-lg font-medium transition-colors"
+            className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-colors shadow-lg hover:shadow-xl"
           >
             Book a Consultation
           </motion.button>

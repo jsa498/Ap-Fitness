@@ -43,9 +43,9 @@ export default function About() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-dark/80" />
         </div>
-        <div className="relative h-full flex items-center justify-center text-white">
+        <div className="relative h-full flex items-center justify-center text-text-primary">
           <div className="text-center">
             <h1 className="text-5xl font-bold mb-4">About Us</h1>
             <p className="text-xl max-w-2xl mx-auto px-4">
@@ -62,8 +62,8 @@ export default function About() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
-          <p className="text-gray-600 text-lg leading-relaxed">
+          <h2 className="text-3xl font-bold mb-6 text-text-primary">Our Mission</h2>
+          <p className="text-text-secondary text-lg leading-relaxed">
             At AP Fitness, we believe in transforming lives through personalized fitness
             and wellness solutions. Our mission is to provide expert guidance, support,
             and motivation to help our clients achieve their health and fitness goals
@@ -73,7 +73,7 @@ export default function About() {
       </section>
 
       {/* Stats Section */}
-      <section className="bg-gray-50 py-16">
+      <section className="bg-gradient-to-br from-dark to-dark-lighter py-16 border-y border-dark-border">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -86,8 +86,8 @@ export default function About() {
                 className="text-center"
               >
                 <stat.icon className="w-8 h-8 text-ap-red mx-auto mb-4" />
-                <div className="text-3xl font-bold mb-2">{stat.value}</div>
-                <div className="text-gray-600">{stat.label}</div>
+                <div className="text-3xl font-bold mb-2 text-text-primary">{stat.value}</div>
+                <div className="text-text-secondary">{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -101,7 +101,7 @@ export default function About() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl font-bold text-center mb-12"
+            className="text-3xl font-bold text-center mb-12 text-text-primary"
           >
             Meet Our Trainers
           </motion.h2>
@@ -113,9 +113,9 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-lg shadow-lg overflow-hidden"
+                className="bg-dark-lighter rounded-lg shadow-dark-lg overflow-hidden border border-dark-border hover:border-ap-red/50 transition-colors"
               >
-                <div className="relative h-80">
+                <div className="relative h-64">
                   <Image
                     src={trainer.image}
                     alt={trainer.name}
@@ -123,27 +123,19 @@ export default function About() {
                     className="object-cover"
                   />
                 </div>
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold mb-2">{trainer.name}</h3>
-                  <p className="text-ap-red font-semibold mb-4">{trainer.role}</p>
-                  <p className="text-gray-600 mb-4">{trainer.bio}</p>
-                  
-                  <div className="mb-4">
-                    <h4 className="font-semibold mb-2">Specialties:</h4>
-                    <ul className="list-disc list-inside text-gray-600">
-                      {trainer.specialties.map((specialty, i) => (
-                        <li key={i}>{specialty}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold mb-2">Certifications:</h4>
-                    <ul className="list-disc list-inside text-gray-600">
-                      {trainer.certifications.map((cert, i) => (
-                        <li key={i}>{cert}</li>
-                      ))}
-                    </ul>
+                <div className="p-6 bg-gradient-to-br from-dark to-dark-lighter">
+                  <h3 className="text-2xl font-bold mb-2 text-text-primary">{trainer.name}</h3>
+                  <p className="text-ap-red font-medium mb-4">{trainer.role}</p>
+                  <p className="text-text-secondary mb-4">{trainer.bio}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {trainer.certifications.map((cert, i) => (
+                      <span
+                        key={i}
+                        className="bg-dark px-3 py-1 rounded-full text-sm text-text-secondary border border-dark-border"
+                      >
+                        {cert}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </motion.div>
@@ -153,7 +145,7 @@ export default function About() {
       </section>
 
       {/* Facility Section */}
-      <section className="bg-gray-50 py-16">
+      <section className="bg-gradient-to-br from-dark to-dark-lighter py-16 border-y border-dark-border">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -161,8 +153,8 @@ export default function About() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl font-bold mb-4">Our Facility</h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold mb-4 text-text-primary">Our Facility</h2>
+            <p className="text-text-secondary text-lg max-w-2xl mx-auto">
               Train in our state-of-the-art facility equipped with the latest fitness
               equipment and amenities for an optimal workout experience.
             </p>
@@ -180,7 +172,7 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="relative h-64 rounded-lg overflow-hidden shadow-lg"
+                className="relative h-64 rounded-lg overflow-hidden shadow-dark-lg border border-dark-border hover:border-ap-red/50 transition-colors"
               >
                 <Image
                   src={image.src}

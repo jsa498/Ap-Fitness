@@ -53,10 +53,10 @@ export default function Home() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-dark/80" />
         </div>
         
-        <div className="relative z-10 flex flex-col items-center justify-center h-full text-white px-4">
+        <div className="relative z-10 flex flex-col items-center justify-center h-full text-text-primary px-4">
           <Image
             src="/images/AP-Logo_processed.jpeg"
             alt="AP Fitness Logo"
@@ -72,7 +72,7 @@ export default function Home() {
           </p>
           <Link
             href="/book"
-            className="bg-ap-red hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full text-lg transition-colors"
+            className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-bold transition-colors shadow-lg hover:shadow-xl"
           >
             Book a Consultation
           </Link>
@@ -80,19 +80,16 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 px-4 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
+      <section className="py-20 bg-gradient-to-br from-dark to-dark-lighter border-y border-dark-border">
+        <div className="max-w-7xl mx-auto px-4">
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-4xl font-bold text-center mb-12 text-text-primary"
           >
-            <h2 className="text-4xl font-bold mb-4">Our Services</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Comprehensive fitness and wellness services tailored to your individual needs
-            </p>
-          </motion.div>
+            Our Services
+          </motion.h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
               <motion.div
@@ -101,8 +98,13 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
+                className="bg-dark rounded-lg p-6 shadow-dark-lg border border-dark-border hover:border-ap-red/50 transition-colors"
               >
-                <ServiceCard {...service} />
+                <div className="w-12 h-12 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full flex items-center justify-center mb-4 shadow-lg">
+                  <service.Icon className="w-6 h-6 text-text-primary" />
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-text-primary">{service.title}</h3>
+                <p className="text-text-secondary">{service.description}</p>
               </motion.div>
             ))}
           </div>
@@ -110,8 +112,8 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -123,7 +125,7 @@ export default function Home() {
                 alt="AP Fitness Trainer"
                 width={600}
                 height={400}
-                className="rounded-lg shadow-lg"
+                className="rounded-lg shadow-dark-lg border border-dark-border"
               />
             </motion.div>
             <motion.div
@@ -131,15 +133,15 @@ export default function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-4xl font-bold mb-6">About AP Fitness</h2>
-              <p className="text-lg text-gray-600 mb-6">
+              <h2 className="text-4xl font-bold mb-6 text-text-primary">About AP Fitness</h2>
+              <p className="text-lg text-text-secondary mb-6">
                 Founded by certified kinesiologists and personal trainers Prabhjot and Amrit,
                 AP Fitness is dedicated to delivering exceptional fitness and wellness services.
                 Our state-of-the-art facility and expert guidance ensure you achieve your fitness goals.
               </p>
               <Link
                 href="/about"
-                className="inline-flex items-center text-ap-red hover:text-red-700 font-semibold"
+                className="inline-flex items-center text-ap-red hover:text-ap-red-dark font-semibold"
               >
                 Learn More
                 <svg
@@ -170,9 +172,9 @@ export default function Home() {
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-black/70" />
+          <div className="absolute inset-0 bg-dark/80" />
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto text-center text-white">
+        <div className="relative z-10 max-w-7xl mx-auto text-center text-text-primary">
           <h2 className="text-4xl font-bold mb-6">Ready to Start Your Fitness Journey?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Join AP Fitness today and transform your life with our expert guidance and
@@ -180,7 +182,7 @@ export default function Home() {
           </p>
           <Link
             href="/book"
-            className="bg-ap-red hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full text-lg transition-colors inline-block"
+            className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-bold transition-colors shadow-lg hover:shadow-xl inline-block"
           >
             Get Started Today
           </Link>
