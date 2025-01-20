@@ -192,16 +192,52 @@ export default function Classes() {
       </section>
 
       {/* Schedule Section */}
-      <section className="bg-gradient-to-br from-dark to-dark-lighter py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <motion.h2
+      <section className="relative py-32">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-ap-red/5 via-dark to-dark opacity-70" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-ap-red/5 via-dark to-dark opacity-70" />
+        </div>
+        
+        <div className="relative max-w-7xl mx-auto px-4">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl font-bold text-center mb-12 text-text-primary"
+            className="text-center mb-16"
           >
-            Class Schedule
-          </motion.h2>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="inline-block mb-4"
+            >
+              <div className="bg-gradient-to-r from-ap-red to-ap-red-dark p-[2px] rounded-full">
+                <div className="bg-dark rounded-full p-3">
+                  <svg className="w-6 h-6 text-ap-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-4xl md:text-5xl font-bold mb-4 text-text-primary drop-shadow-lg"
+            >
+              Class Schedule
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="text-xl text-text-secondary max-w-2xl mx-auto"
+            >
+              Find the perfect time for your workout with our flexible class schedule
+            </motion.p>
+          </motion.div>
 
           {/* Day Selection */}
           <div className="flex flex-wrap justify-center gap-3 mb-8">
@@ -211,10 +247,10 @@ export default function Classes() {
                 onClick={() => setSelectedDay(day)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 shadow-lg ${
+                className={`px-6 py-2 rounded-full text-lg transition-all duration-300 ${
                   selectedDay === day
-                    ? 'bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary shadow-ap-red/20'
-                    : 'bg-dark-lighter text-text-secondary hover:bg-dark border border-dark-border hover:border-ap-red/50'
+                    ? 'bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary font-semibold'
+                    : 'bg-dark-lighter/30 backdrop-blur-sm text-text-primary border border-text-primary/10 hover:border-ap-red/50'
                 }`}
               >
                 {day}
@@ -264,45 +300,53 @@ export default function Classes() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24">
-        <div className="max-w-4xl mx-auto px-4">
+      <section className="relative py-24">
+        <div className="absolute inset-0 mx-4">
+          <div className="absolute inset-0 rounded-[3rem] overflow-hidden">
+            <Image
+              src="/images/DSC09177.jpeg"
+              alt="Training Session"
+              fill
+              className="object-cover brightness-50"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-dark/95 via-dark/90 to-dark/85" />
+          </div>
+        </div>
+        <div className="relative z-10 max-w-4xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-br from-dark-lighter to-dark p-[2px] rounded-[2rem] shadow-dark-lg relative overflow-hidden"
+            className="bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-12 border border-text-primary/10 text-center"
           >
-            <div className="bg-dark rounded-[1.9rem] p-12 relative z-10">
-              <div className="absolute inset-0 bg-gradient-to-br from-ap-red/10 to-transparent" />
-              <div className="relative z-10 text-center">
-                <motion.h2 
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="text-4xl font-bold mb-4 text-text-primary"
-                >
-                  Ready to Join a Class?
-                </motion.h2>
-                <motion.p 
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 }}
-                  className="text-xl text-text-secondary mb-8"
-                >
-                  Experience the energy and motivation of group training with our expert instructors.
-                </motion.p>
-                <Link href="/book">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-ap-red/20"
-                  >
-                    Get Started Today
-                  </motion.button>
-                </Link>
-              </div>
-            </div>
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-4xl font-bold mb-4 text-text-primary drop-shadow-lg"
+            >
+              Ready to Join a Class?
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-xl text-text-primary mb-8 drop-shadow-lg max-w-2xl mx-auto"
+            >
+              Experience the energy and motivation of group training with our expert instructors.
+            </motion.p>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            >
+              <Link
+                href="/book"
+                className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-10 py-4 rounded-full text-lg font-bold transition-all duration-300 hover:shadow-[0_0_30px_rgba(220,38,38,0.3)] inline-block"
+              >
+                Get Started Today
+              </Link>
+            </motion.div>
           </motion.div>
         </div>
       </section>
