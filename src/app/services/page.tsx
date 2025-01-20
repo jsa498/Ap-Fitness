@@ -110,7 +110,7 @@ export default function Services() {
 
       {/* Services Grid */}
       <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {services.map((service, index) => (
             <motion.div
               key={service.title}
@@ -118,28 +118,37 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="bg-dark-lighter rounded-lg shadow-dark-lg overflow-hidden border border-dark-border hover:border-ap-red/50 transition-colors"
+              className="relative p-[2px] rounded-[2rem] bg-gradient-to-br from-dark-lighter to-dark group hover:from-ap-red/20 hover:to-dark transition-all duration-500"
             >
-              <div className="p-6 bg-gradient-to-br from-dark to-dark-lighter">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full flex items-center justify-center shadow-lg">
-                    <service.Icon className="w-6 h-6 text-text-primary" />
-                  </div>
-                  <h2 className="text-2xl font-bold ml-4 text-text-primary">{service.title}</h2>
-                </div>
-                <p className="text-text-secondary mb-6">{service.description}</p>
+              <div className="relative h-full bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-8 border border-text-primary/10 overflow-hidden">
+                {/* Background Glow Effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-dark/95 via-dark/90 to-dark/95 rounded-[2rem]" />
                 
-                {/* Features */}
-                <div className="mb-6">
-                  <h3 className="font-semibold mb-3 text-text-primary">Features:</h3>
-                  <ul className="space-y-2">
-                    {service.features.map((feature, i) => (
-                      <li key={i} className="flex items-center text-text-secondary">
-                        <span className="w-2 h-2 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full mr-2"></span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
+                {/* Content */}
+                <div className="relative z-10">
+                  <div className="flex items-center mb-6">
+                    <div className="w-14 h-14 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                      <service.Icon className="w-7 h-7 text-text-primary" />
+                    </div>
+                    <h2 className="text-2xl font-bold ml-4 text-text-primary group-hover:text-ap-red transition-colors">{service.title}</h2>
+                  </div>
+                  <p className="text-text-secondary mb-6 leading-relaxed">{service.description}</p>
+                  
+                  {/* Features */}
+                  <div className="space-y-3">
+                    <h3 className="font-semibold text-text-primary mb-4">Features:</h3>
+                    <div className="grid grid-cols-1 gap-3">
+                      {service.features.map((feature, i) => (
+                        <div 
+                          key={i} 
+                          className="flex items-center text-text-secondary bg-dark/40 rounded-xl p-3 border border-text-primary/5 group-hover:border-ap-red/20 transition-all duration-300"
+                        >
+                          <span className="w-2 h-2 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full mr-3"></span>
+                          {feature}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -148,21 +157,34 @@ export default function Services() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gradient-to-br from-dark to-dark-lighter border-t border-dark-border py-16">
-        <div className="max-w-4xl mx-auto text-center px-4">
-          <h2 className="text-3xl font-bold mb-4 text-text-primary">Ready to Start Your Fitness Journey?</h2>
-          <p className="text-text-secondary mb-8">
-            Book a consultation with our expert trainers and take the first step towards achieving your fitness goals.
-          </p>
-          <Link href="/book">
-            <motion.button
+      <section className="relative py-20">
+        <div className="absolute inset-0 overflow-hidden rounded-[3rem] mx-4">
+          <Image
+            src="/images/DSC09177.jpeg"
+            alt="Training Session"
+            fill
+            className="object-cover brightness-50"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-dark/95 via-dark/90 to-dark/85" />
+        </div>
+        <div className="relative z-10 max-w-4xl mx-auto text-center px-4">
+          <div className="bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-8 md:p-12 border border-text-primary/10">
+            <h2 className="text-4xl font-bold mb-6 text-text-primary drop-shadow-lg">Ready to Start Your Fitness Journey?</h2>
+            <p className="text-xl mb-8 text-text-primary drop-shadow-lg">
+              Book a consultation with our expert trainers and take the first step towards achieving your fitness goals.
+            </p>
+            <motion.div
               whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-colors shadow-lg hover:shadow-xl"
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              Book a Consultation
-            </motion.button>
-          </Link>
+              <Link
+                href="/book"
+                className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-10 py-4 rounded-full text-lg font-bold transition-all duration-300 hover:shadow-[0_0_30px_rgba(220,38,38,0.3)] inline-block"
+              >
+                Book a Consultation
+              </Link>
+            </motion.div>
+          </div>
         </div>
       </section>
     </main>

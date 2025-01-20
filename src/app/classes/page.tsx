@@ -98,23 +98,40 @@ export default function Classes() {
     <main className="min-h-screen pt-20">
       {/* Hero Section */}
       <section className="relative h-[40vh] mb-16">
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 rounded-b-[3rem] overflow-hidden">
           <Image
             src="/images/DSC05169-min.jpeg"
             alt="AP Fitness Classes"
             fill
-            className="object-cover"
+            className="object-cover brightness-50"
             priority
           />
-          <div className="absolute inset-0 bg-dark/80" />
+          <div className="absolute inset-0 bg-gradient-to-br from-dark/95 via-dark/90 to-dark/85" />
         </div>
-        <div className="relative h-full flex items-center justify-center text-text-primary">
-          <div className="text-center">
-            <h1 className="text-5xl font-bold mb-4">Our Classes</h1>
-            <p className="text-xl max-w-2xl mx-auto px-4">
+        <div className="relative z-10 h-full flex items-center justify-center text-text-primary">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-12 border border-text-primary/10 mx-4"
+          >
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-5xl md:text-6xl font-bold mb-4 drop-shadow-lg"
+            >
+              Our Classes
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-xl md:text-2xl max-w-2xl mx-auto drop-shadow-lg"
+            >
               Join our energetic group classes led by expert trainers
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
         </div>
       </section>
 
@@ -136,31 +153,37 @@ export default function Classes() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="bg-dark-lighter rounded-lg shadow-dark-lg overflow-hidden border border-dark-border hover:border-ap-red/50 transition-colors"
+              whileHover={{ y: -5, scale: 1.02 }}
+              className="bg-gradient-to-br from-dark-lighter to-dark p-[2px] rounded-[2rem] shadow-dark-lg group"
             >
-              <div className="relative h-48">
-                <Image
-                  src={classItem.image}
-                  alt={classItem.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-6 bg-gradient-to-br from-dark to-dark-lighter">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full flex items-center justify-center shadow-lg">
-                    <classItem.icon className="w-6 h-6 text-text-primary" />
-                  </div>
-                  <h3 className="text-2xl font-bold ml-4 text-text-primary">{classItem.name}</h3>
+              <div className="relative h-full rounded-[1.9rem] overflow-hidden bg-dark">
+                <div className="relative h-48">
+                  <Image
+                    src={classItem.image}
+                    alt={classItem.name}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/20 to-transparent" />
                 </div>
-                <p className="text-text-secondary mb-4">{classItem.description}</p>
-                <div className="flex justify-between text-sm">
-                  <span className="text-text-secondary">
-                    <strong className="text-text-primary">Duration:</strong> {classItem.duration}
-                  </span>
-                  <span className="text-text-secondary">
-                    <strong className="text-text-primary">Intensity:</strong> {classItem.intensity}
-                  </span>
+                <div className="p-6 bg-gradient-to-br from-dark to-dark-lighter relative">
+                  <motion.div 
+                    initial={{ scale: 1 }}
+                    whileHover={{ scale: 1.1 }}
+                    className="w-12 h-12 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full flex items-center justify-center shadow-lg absolute -top-6 left-6"
+                  >
+                    <classItem.icon className="w-6 h-6 text-text-primary" />
+                  </motion.div>
+                  <h3 className="text-2xl font-bold ml-16 text-text-primary group-hover:text-ap-red transition-colors duration-300">{classItem.name}</h3>
+                  <p className="text-text-secondary mt-4 mb-4">{classItem.description}</p>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-text-secondary">
+                      <strong className="text-text-primary">Duration:</strong> {classItem.duration}
+                    </span>
+                    <span className="text-text-secondary">
+                      <strong className="text-text-primary">Intensity:</strong> {classItem.intensity}
+                    </span>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -181,19 +204,21 @@ export default function Classes() {
           </motion.h2>
 
           {/* Day Selection */}
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
             {Object.keys(schedule).map((day) => (
-              <button
+              <motion.button
                 key={day}
                 onClick={() => setSelectedDay(day)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 shadow-lg ${
                   selectedDay === day
-                    ? 'bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary shadow-lg'
-                    : 'bg-dark text-text-secondary hover:bg-dark-lighter'
+                    ? 'bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary shadow-ap-red/20'
+                    : 'bg-dark-lighter text-text-secondary hover:bg-dark border border-dark-border hover:border-ap-red/50'
                 }`}
               >
                 {day}
-              </button>
+              </motion.button>
             ))}
           </div>
 
@@ -202,32 +227,37 @@ export default function Classes() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-dark rounded-lg shadow-dark-lg overflow-hidden border border-dark-border"
+            className="bg-gradient-to-br from-dark-lighter to-dark p-[2px] rounded-[2rem] shadow-dark-lg"
           >
-            <div className="divide-y divide-dark-border">
-              {schedule[selectedDay as keyof typeof schedule].map((slot, index) => (
-                <div
-                  key={slot.time}
-                  className="flex items-center p-4 hover:bg-dark-lighter transition-colors"
-                >
-                  <div className="w-24 font-medium text-text-primary">{slot.time}</div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-text-primary">{slot.class}</div>
-                    <div className="text-sm text-text-secondary">
-                      {classes.find((c) => c.name === slot.class)?.duration}
+            <div className="bg-dark rounded-[1.9rem] overflow-hidden">
+              <div className="divide-y divide-dark-border">
+                {schedule[selectedDay as keyof typeof schedule].map((slot, index) => (
+                  <motion.div
+                    key={slot.time}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="flex items-center p-6 hover:bg-dark-lighter transition-all duration-300 group"
+                  >
+                    <div className="w-24 font-medium text-text-primary group-hover:text-ap-red transition-colors">{slot.time}</div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-text-primary group-hover:text-ap-red transition-colors">{slot.class}</div>
+                      <div className="text-sm text-text-secondary">
+                        {classes.find((c) => c.name === slot.class)?.duration}
+                      </div>
                     </div>
-                  </div>
-                  <Link href="/book">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-4 py-2 rounded-full text-sm font-medium transition-colors shadow-lg hover:shadow-xl"
-                    >
-                      Book Class
-                    </motion.button>
-                  </Link>
-                </div>
-              ))}
+                    <Link href="/book">
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 shadow-lg hover:shadow-ap-red/20"
+                      >
+                        Book Class
+                      </motion.button>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </motion.div>
         </div>

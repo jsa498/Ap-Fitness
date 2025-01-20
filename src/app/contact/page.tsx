@@ -54,23 +54,40 @@ export default function Contact() {
     <main className="min-h-screen pt-20">
       {/* Hero Section */}
       <section className="relative h-[40vh] mb-16">
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 rounded-b-[3rem] overflow-hidden">
           <Image
             src="/images/DSC05643.jpeg"
             alt="AP Fitness Contact"
             fill
-            className="object-cover"
+            className="object-cover brightness-50"
             priority
           />
-          <div className="absolute inset-0 bg-dark/80" />
+          <div className="absolute inset-0 bg-gradient-to-br from-dark/95 via-dark/90 to-dark/85" />
         </div>
-        <div className="relative h-full flex items-center justify-center text-text-primary">
-          <div className="text-center">
-            <h1 className="text-5xl font-bold mb-4">Contact Us</h1>
-            <p className="text-xl max-w-2xl mx-auto px-4">
+        <div className="relative z-10 h-full flex items-center justify-center text-text-primary">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-12 border border-text-primary/10 mx-4"
+          >
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-5xl md:text-6xl font-bold mb-4 drop-shadow-lg"
+            >
+              Contact Us
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-xl md:text-2xl max-w-2xl mx-auto drop-shadow-lg"
+            >
               Get in touch with us for any inquiries or to start your fitness journey
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
         </div>
       </section>
 
@@ -78,204 +95,276 @@ export default function Contact() {
       <section className="max-w-7xl mx-auto px-4 mb-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Get In Touch */}
-          <div className="bg-dark-lighter rounded-2xl p-8 shadow-dark-lg">
-            <h2 className="text-3xl font-bold mb-8 text-text-primary">Get In Touch</h2>
-            
-            <div className="space-y-6">
-              {/* Phone */}
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-ap-red/10 rounded-full flex items-center justify-center flex-shrink-0">
-                  <FaPhone className="w-5 h-5 text-ap-red" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-text-primary mb-1">Phone</h3>
-                  <a href="tel:+16044017917" className="text-text-secondary hover:text-ap-red transition-colors">
-                    (604) 401-7917
-                  </a>
-                </div>
-              </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-gradient-to-br from-dark-lighter to-dark p-[2px] rounded-[2rem] shadow-dark-lg"
+          >
+            <div className="bg-dark rounded-[1.9rem] p-8 h-full">
+              <h2 className="text-3xl font-bold mb-8 text-text-primary">Get In Touch</h2>
+              
+              <div className="space-y-8">
+                {/* Phone */}
+                <motion.div 
+                  initial={{ x: -20, opacity: 0 }}
+                  whileInView={{ x: 0, opacity: 1 }}
+                  viewport={{ once: true }}
+                  whileHover={{ x: 10 }}
+                  className="flex items-start space-x-4 group"
+                >
+                  <div className="w-12 h-12 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-ap-red/20 transition-all duration-300">
+                    <FaPhone className="w-5 h-5 text-text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-text-primary mb-1 group-hover:text-ap-red transition-colors">Phone</h3>
+                    <a href="tel:+16044017917" className="text-text-secondary hover:text-ap-red transition-colors">
+                      (604) 401-7917
+                    </a>
+                  </div>
+                </motion.div>
 
-              {/* Email */}
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-ap-red/10 rounded-full flex items-center justify-center flex-shrink-0">
-                  <FaEnvelope className="w-5 h-5 text-ap-red" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-text-primary mb-1">Email</h3>
-                  <a href="mailto:apfitnessbc@gmail.com" className="text-text-secondary hover:text-ap-red transition-colors">
-                    apfitnessbc@gmail.com
-                  </a>
-                </div>
-              </div>
+                {/* Email */}
+                <motion.div 
+                  initial={{ x: -20, opacity: 0 }}
+                  whileInView={{ x: 0, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 }}
+                  whileHover={{ x: 10 }}
+                  className="flex items-start space-x-4 group"
+                >
+                  <div className="w-12 h-12 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-ap-red/20 transition-all duration-300">
+                    <FaEnvelope className="w-5 h-5 text-text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-text-primary mb-1 group-hover:text-ap-red transition-colors">Email</h3>
+                    <a href="mailto:apfitnessbc@gmail.com" className="text-text-secondary hover:text-ap-red transition-colors">
+                      apfitnessbc@gmail.com
+                    </a>
+                  </div>
+                </motion.div>
 
-              {/* Location */}
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-ap-red/10 rounded-full flex items-center justify-center flex-shrink-0">
-                  <FaMapMarkerAlt className="w-5 h-5 text-ap-red" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-text-primary mb-1">Location</h3>
-                  <a 
-                    href="https://maps.google.com/?q=8160+120+St,+Surrey,+BC+V3W+3N3"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-text-secondary hover:text-ap-red transition-colors"
-                  >
-                    8160 120 St<br />
-                    Surrey, BC V3W 3N3
-                  </a>
-                </div>
-              </div>
+                {/* Location */}
+                <motion.div 
+                  initial={{ x: -20, opacity: 0 }}
+                  whileInView={{ x: 0, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 }}
+                  whileHover={{ x: 10 }}
+                  className="flex items-start space-x-4 group"
+                >
+                  <div className="w-12 h-12 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-ap-red/20 transition-all duration-300">
+                    <FaMapMarkerAlt className="w-5 h-5 text-text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-text-primary mb-1 group-hover:text-ap-red transition-colors">Location</h3>
+                    <a 
+                      href="https://maps.google.com/?q=8160+120+St,+Surrey,+BC+V3W+3N3"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-text-secondary hover:text-ap-red transition-colors"
+                    >
+                      8160 120 St<br />
+                      Surrey, BC V3W 3N3
+                    </a>
+                  </div>
+                </motion.div>
 
-              {/* Hours */}
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-ap-red/10 rounded-full flex items-center justify-center flex-shrink-0">
-                  <FaClock className="w-5 h-5 text-ap-red" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-text-primary mb-1">Hours</h3>
-                  <p className="text-text-secondary">
-                    Mon-Fri: 6am-10pm<br />
-                    Sat-Sun: 8am-8pm
-                  </p>
-                </div>
+                {/* Hours */}
+                <motion.div 
+                  initial={{ x: -20, opacity: 0 }}
+                  whileInView={{ x: 0, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 }}
+                  whileHover={{ x: 10 }}
+                  className="flex items-start space-x-4 group"
+                >
+                  <div className="w-12 h-12 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-ap-red/20 transition-all duration-300">
+                    <FaClock className="w-5 h-5 text-text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-text-primary mb-1 group-hover:text-ap-red transition-colors">Hours</h3>
+                    <p className="text-text-secondary">
+                      Mon-Fri: 6am-10pm<br />
+                      Sat-Sun: 8am-8pm
+                    </p>
+                  </div>
+                </motion.div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Contact Form */}
-          <div className="bg-dark-lighter rounded-2xl p-8 shadow-dark-lg">
-            <h2 className="text-3xl font-bold mb-8 text-text-primary">Send Message</h2>
-            
-            {status === 'success' ? (
-              <div className="text-center py-8">
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="w-16 h-16 bg-green-500 rounded-full mx-auto mb-4 flex items-center justify-center"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="bg-gradient-to-br from-dark-lighter to-dark p-[2px] rounded-[2rem] shadow-dark-lg"
+          >
+            <div className="bg-dark rounded-[1.9rem] p-8 h-full">
+              <h2 className="text-3xl font-bold mb-8 text-text-primary">Send Message</h2>
+              
+              {status === 'success' ? (
+                <motion.div 
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="text-center py-8"
                 >
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                    className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg"
+                  >
+                    <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </motion.div>
+                  <h3 className="text-2xl font-bold text-text-primary mb-2">Message Sent Successfully!</h3>
+                  <p className="text-text-secondary mb-6">We'll get back to you as soon as possible.</p>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setStatus('idle')}
+                    className="text-ap-red hover:text-ap-red-dark transition-colors"
+                  >
+                    Send another message
+                  </motion.button>
                 </motion.div>
-                <h3 className="text-2xl font-bold text-text-primary mb-2">Message Sent Successfully!</h3>
-                <p className="text-text-secondary mb-6">We'll get back to you as soon as possible.</p>
-                <button
-                  onClick={() => setStatus('idle')}
-                  className="text-ap-red hover:text-ap-red-dark transition-colors"
-                >
-                  Send another message
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="name" className="block text-text-primary font-medium mb-2">
-                      Full Name *
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                    >
+                      <label htmlFor="name" className="block text-text-primary font-medium mb-2">
+                        Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        disabled={status === 'loading'}
+                        className="w-full px-4 py-3 bg-dark border border-dark-border rounded-full focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50 transition-all duration-300 hover:border-ap-red/50"
+                        placeholder="John Doe"
+                      />
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      <label htmlFor="email" className="block text-text-primary font-medium mb-2">
+                        Email Address *
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        disabled={status === 'loading'}
+                        className="w-full px-4 py-3 bg-dark border border-dark-border rounded-full focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50 transition-all duration-300 hover:border-ap-red/50"
+                        placeholder="john@example.com"
+                      />
+                    </motion.div>
+                  </div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <label htmlFor="phone" className="block text-text-primary font-medium mb-2">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      disabled={status === 'loading'}
+                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-full focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50 transition-all duration-300 hover:border-ap-red/50"
+                      placeholder="(123) 456-7890"
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    <label htmlFor="subject" className="block text-text-primary font-medium mb-2">
+                      Subject
                     </label>
                     <input
                       type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
                       onChange={handleChange}
-                      required
                       disabled={status === 'loading'}
-                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
-                      placeholder="John Doe"
+                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-full focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50 transition-all duration-300 hover:border-ap-red/50"
+                      placeholder="How can we help you?"
                     />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-text-primary font-medium mb-2">
-                      Email Address *
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    <label htmlFor="message" className="block text-text-primary font-medium mb-2">
+                      Message *
                     </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
+                    <textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
                       onChange={handleChange}
                       required
                       disabled={status === 'loading'}
-                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
-                      placeholder="john@example.com"
+                      rows={4}
+                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-2xl focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50 transition-all duration-300 hover:border-ap-red/50 resize-none"
+                      placeholder="Your message here..."
                     />
-                  </div>
-                </div>
+                  </motion.div>
 
-                <div>
-                  <label htmlFor="phone" className="block text-text-primary font-medium mb-2">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    disabled={status === 'loading'}
-                    className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
-                    placeholder="(123) 456-7890"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="subject" className="block text-text-primary font-medium mb-2">
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    disabled={status === 'loading'}
-                    className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
-                    placeholder="How can we help you?"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-text-primary font-medium mb-2">
-                    Message *
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    disabled={status === 'loading'}
-                    rows={4}
-                    className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50 resize-none"
-                    placeholder="Write your message here..."
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={status === 'loading'}
-                  className="w-full bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg disabled:opacity-50 flex items-center justify-center space-x-2"
-                >
-                  {status === 'loading' ? (
-                    <>
-                      <LoadingSpinner />
-                      <span>Sending...</span>
-                    </>
-                  ) : (
-                    'Send Message'
-                  )}
-                </button>
-
-                {status === 'error' && (
-                  <p className="text-red-500 text-center">
-                    There was an error sending your message. Please try again.
-                  </p>
-                )}
-              </form>
-            )}
-          </div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
+                    className="flex justify-end"
+                  >
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      type="submit"
+                      disabled={status === 'loading'}
+                      className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-ap-red/20 disabled:opacity-50 flex items-center space-x-2"
+                    >
+                      {status === 'loading' ? (
+                        <>
+                          <LoadingSpinner />
+                          <span>Sending...</span>
+                        </>
+                      ) : (
+                        <span>Send Message</span>
+                      )}
+                    </motion.button>
+                  </motion.div>
+                </form>
+              )}
+            </div>
+          </motion.div>
         </div>
       </section>
 
