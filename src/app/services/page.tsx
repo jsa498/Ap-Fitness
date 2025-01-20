@@ -16,11 +16,6 @@ const services = [
       'Nutrition guidance',
       'Progress tracking',
       'Flexible scheduling'
-    ],
-    pricing: [
-      { sessions: 1, price: 80 },
-      { sessions: 5, price: 375 },
-      { sessions: 10, price: 700 }
     ]
   },
   {
@@ -33,11 +28,6 @@ const services = [
       'Supportive environment',
       'Flexible schedule',
       'Community events'
-    ],
-    pricing: [
-      { type: 'Drop-in', price: 25 },
-      { type: 'Monthly Unlimited', price: 149 },
-      { type: '10 Class Pack', price: 200 }
     ]
   },
   {
@@ -50,11 +40,6 @@ const services = [
       'Strength training',
       'Sparring sessions',
       'All skill levels'
-    ],
-    pricing: [
-      { type: 'Drop-in', price: 30 },
-      { type: '8 Sessions', price: 200 },
-      { type: 'Monthly Unlimited', price: 180 }
     ]
   },
   {
@@ -67,11 +52,6 @@ const services = [
       'Pregnancy-specific nutrition',
       'Recovery guidance',
       'Community support'
-    ],
-    pricing: [
-      { sessions: 1, price: 85 },
-      { sessions: 5, price: 400 },
-      { sessions: 10, price: 750 }
     ]
   },
   {
@@ -84,11 +64,6 @@ const services = [
       'Shopping guides',
       'Recipe suggestions',
       'Regular check-ins'
-    ],
-    pricing: [
-      { type: 'Initial Consultation', price: 100 },
-      { type: 'Monthly Plan', price: 200 },
-      { type: '3-Month Package', price: 500 }
     ]
   },
   {
@@ -101,11 +76,6 @@ const services = [
       'Remote progress tracking',
       'Nutrition guidance',
       '24/7 support'
-    ],
-    pricing: [
-      { type: 'Monthly Basic', price: 99 },
-      { type: 'Monthly Plus', price: 149 },
-      { type: 'Monthly Premium', price: 199 }
     ]
   }
 ];
@@ -167,19 +137,6 @@ export default function Services() {
                       </li>
                     ))}
                   </ul>
-                </div>
-
-                {/* Pricing */}
-                <div className="bg-dark/50 rounded-lg p-4">
-                  <h3 className="font-semibold mb-3 text-text-primary">Pricing:</h3>
-                  <div className="space-y-2">
-                    {service.pricing.map((price, i) => (
-                      <div key={i} className="flex justify-between text-text-secondary border-b border-dark-border last:border-0 pb-2 last:pb-0">
-                        <span>{'sessions' in price ? `${price.sessions} Sessions` : price.type}</span>
-                        <span className="font-semibold text-ap-red">${price.price}</span>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               </div>
             </motion.div>

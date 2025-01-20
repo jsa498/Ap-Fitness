@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
 import Map from '@/components/Map';
+import { sendEmail } from '@/lib/emailService';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -15,10 +17,40 @@ export default function Contact() {
     message: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement form submission
-    console.log('Form submitted:', formData);
+    setStatus('loading');
+    setErrorMessage('');
+
+    try {
+      const result = await sendEmail({
+        from_name: formData.name,
+        from_email: formData.email,
+        message: formData.message,
+        subject: formData.subject || 'New Contact Form Submission',
+        reply_to: formData.email,
+        phone: formData.phone
+      });
+
+      if (result.success) {
+        setStatus('success');
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: ''
+        });
+      } else {
+        throw new Error('Failed to send email');
+      }
+    } catch (error) {
+      setStatus('error');
+      setErrorMessage('Failed to send message. Please try again or contact us directly.');
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -121,79 +153,134 @@ export default function Contact() {
           className="bg-dark-lighter rounded-lg shadow-dark-lg p-8 border border-dark-border"
         >
           <h2 className="text-3xl font-bold text-center mb-8 text-text-primary">Send Us a Message</h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Personal Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          {status === 'success' ? (
+            <div className="text-center py-8">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="w-16 h-16 bg-green-500 rounded-full mx-auto mb-4 flex items-center justify-center"
+              >
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </motion.div>
+              <h3 className="text-2xl font-bold text-text-primary mb-2">Message Sent Successfully!</h3>
+              <p className="text-text-secondary mb-6">We'll get back to you as soon as possible.</p>
+              <button
+                onClick={() => setStatus('idle')}
+                className="text-ap-red hover:text-ap-red-dark transition-colors"
+              >
+                Send another message
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="name" className="block text-text-primary font-medium mb-2">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    disabled={status === 'loading'}
+                    className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="block text-text-primary font-medium mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    disabled={status === 'loading'}
+                    className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
+                  />
+                </div>
+              </div>
+
               <div>
-                <label htmlFor="name" className="block text-text-primary font-medium mb-2">
-                  Full Name *
+                <label htmlFor="phone" className="block text-text-primary font-medium mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  disabled={status === 'loading'}
+                  className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="subject" className="block text-text-primary font-medium mb-2">
+                  Subject
                 </label>
                 <input
                   type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
+                  id="subject"
+                  name="subject"
+                  value={formData.subject}
                   onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+                  disabled={status === 'loading'}
+                  className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
                 />
               </div>
+
               <div>
-                <label htmlFor="email" className="block text-text-primary font-medium mb-2">
-                  Email Address *
+                <label htmlFor="message" className="block text-text-primary font-medium mb-2">
+                  Message *
                 </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
-                />
+                  disabled={status === 'loading'}
+                  rows={6}
+                  className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent resize-none disabled:opacity-50"
+                ></textarea>
               </div>
-            </div>
 
-            <div>
-              <label htmlFor="subject" className="block text-text-primary font-medium mb-2">
-                Subject
-              </label>
-              <input
-                type="text"
-                id="subject"
-                name="subject"
-                value={formData.subject}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
-              />
-            </div>
+              {status === 'error' && (
+                <div className="text-red-500 text-sm">
+                  {errorMessage}
+                </div>
+              )}
 
-            <div>
-              <label htmlFor="message" className="block text-text-primary font-medium mb-2">
-                Message *
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                rows={6}
-                className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent resize-none"
-              ></textarea>
-            </div>
-
-            <div className="text-center">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                type="submit"
-                className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-colors shadow-lg hover:shadow-xl"
-              >
-                Send Message
-              </motion.button>
-            </div>
-          </form>
+              <div className="text-center">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-colors shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center justify-center space-x-2 mx-auto"
+                >
+                  {status === 'loading' ? (
+                    <>
+                      <LoadingSpinner size="sm" />
+                      <span>Sending...</span>
+                    </>
+                  ) : (
+                    'Send Message'
+                  )}
+                </motion.button>
+              </div>
+            </form>
+          )}
         </motion.div>
       </section>
 
