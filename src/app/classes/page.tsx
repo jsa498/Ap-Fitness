@@ -98,15 +98,17 @@ export default function Classes() {
     <main className="min-h-screen">
       {/* Hero Section */}
       <section className="relative h-[40vh] mt-28">
-        <div className="absolute inset-0 rounded-b-[3rem] overflow-hidden">
-          <Image
-            src="/images/DSC05169-min.jpeg"
-            alt="AP Fitness Classes"
-            fill
-            className="object-cover brightness-50"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-dark/95 via-dark/90 to-dark/85" />
+        <div className="absolute inset-0 mx-4 overflow-hidden">
+          <div className="absolute inset-0 rounded-[3rem] overflow-hidden">
+            <Image
+              src="/images/DSC05169-min.jpeg"
+              alt="AP Fitness Classes"
+              fill
+              className="object-cover brightness-50"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-dark/95 via-dark/90 to-dark/85" />
+          </div>
         </div>
         <div className="relative z-10 h-full flex items-center justify-center text-text-primary">
           <motion.div 

@@ -160,52 +160,48 @@ export default function About() {
       {/* Facility Section */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="bg-dark rounded-[3rem] p-8 md:p-12 border border-dark-border">
-            <div className="bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-8 md:p-12 border border-text-primary/10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-4xl font-bold mb-4 text-text-primary drop-shadow-lg">Our Facility</h2>
+            <p className="text-text-secondary text-lg max-w-2xl mx-auto">
+              Train in our state-of-the-art facility equipped with the latest fitness
+              equipment and amenities for an optimal workout experience.
+            </p>
+          </motion.div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { src: '/images/DSC05169-min.jpeg', alt: 'Weight Training Area', title: 'Boxing Area' },
+              { src: '/images/DSC05170-min.jpeg', alt: 'Cardio Section', title: 'Weight Training' },
+              { src: '/images/DSC05185-min.jpeg', alt: 'Boxing Area', title: 'Cardio Zone' }
+            ].map((image, index) => (
               <motion.div
+                key={image.alt}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="text-center mb-12"
+                transition={{ delay: index * 0.2 }}
+                whileHover={{ y: -5 }}
+                className="relative h-64 rounded-[2rem] overflow-hidden group bg-gradient-to-br from-dark-lighter to-dark p-[2px]"
               >
-                <h2 className="text-4xl font-bold mb-4 text-text-primary drop-shadow-lg">Our Facility</h2>
-                <p className="text-text-secondary text-lg max-w-2xl mx-auto">
-                  Train in our state-of-the-art facility equipped with the latest fitness
-                  equipment and amenities for an optimal workout experience.
-                </p>
+                <div className="absolute inset-[2px] rounded-[1.9rem] overflow-hidden">
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-dark/90 via-dark/20 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <h3 className="text-xl font-bold text-text-primary">{image.title}</h3>
+                  </div>
+                </div>
               </motion.div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  { src: '/images/DSC05169-min.jpeg', alt: 'Weight Training Area', title: 'Boxing Area' },
-                  { src: '/images/DSC05170-min.jpeg', alt: 'Cardio Section', title: 'Weight Training' },
-                  { src: '/images/DSC05185-min.jpeg', alt: 'Boxing Area', title: 'Cardio Zone' }
-                ].map((image, index) => (
-                  <motion.div
-                    key={image.alt}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.2 }}
-                    whileHover={{ y: -5 }}
-                    className="relative h-64 rounded-[2rem] overflow-hidden group bg-gradient-to-br from-dark-lighter to-dark p-[2px]"
-                  >
-                    <div className="absolute inset-[2px] rounded-[1.9rem] overflow-hidden">
-                      <Image
-                        src={image.src}
-                        alt={image.alt}
-                        fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-dark/90 via-dark/20 to-transparent" />
-                      <div className="absolute bottom-0 left-0 right-0 p-6">
-                        <h3 className="text-xl font-bold text-text-primary">{image.title}</h3>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>

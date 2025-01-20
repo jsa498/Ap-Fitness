@@ -46,46 +46,57 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-screen">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/DSC05227-2-min.jpeg"
-            alt="AP Fitness Gym"
-            fill
-            className="object-cover brightness-50"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-dark/95 via-dark/90 to-dark/95" />
+      <section className="relative h-[85vh] mt-28">
+        <div className="absolute inset-0 mx-4 overflow-hidden">
+          <div className="absolute inset-0 rounded-[3rem] overflow-hidden">
+            <Image
+              src="/images/DSC05227-2-min.jpeg"
+              alt="AP Fitness Gym"
+              fill
+              className="object-cover brightness-50"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-dark/95 via-dark/90 to-dark/85" />
+          </div>
         </div>
         
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-text-primary px-4">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-5xl md:text-6xl font-bold text-center mb-4"
-          >
-            Transform Your Life
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl text-center mb-8 max-w-2xl"
-          >
-            Professional personal training and wellness services by certified kinesiologists
-          </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+            transition={{ duration: 0.8 }}
+            className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-12 border border-text-primary/10"
           >
-            <Link
-              href="/book"
-              className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-bold transition-all duration-300 hover:shadow-xl hover:scale-105"
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-5xl md:text-6xl font-bold text-center mb-4 drop-shadow-lg"
             >
-              Book a Consultation
-            </Link>
+              Transform Your Life
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-xl md:text-2xl text-center mb-8 max-w-2xl drop-shadow-lg"
+            >
+              Professional personal training and wellness services by certified kinesiologists
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              whileHover={{ scale: 1.05 }}
+              className="transition-all duration-300"
+            >
+              <Link
+                href="/book"
+                className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-10 py-4 rounded-full text-lg font-bold transition-all duration-300 hover:shadow-[0_0_30px_rgba(220,38,38,0.3)] inline-block"
+              >
+                Book a Consultation
+              </Link>
+            </motion.div>
           </motion.div>
         </div>
 
@@ -107,7 +118,7 @@ export default function Home() {
       </section>
 
       {/* Services Preview */}
-      <section className="py-20 bg-gradient-to-br from-dark to-dark-lighter border-y border-dark-border">
+      <section className="py-20">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -115,7 +126,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-12 px-4"
           >
-            <h2 className="text-4xl font-bold mb-4 text-text-primary">Our Services</h2>
+            <h2 className="text-4xl font-bold mb-4 text-text-primary drop-shadow-lg">Our Services</h2>
             <p className="text-text-secondary text-lg max-w-2xl mx-auto">
               Discover our comprehensive range of fitness and wellness services
               designed to help you achieve your goals
