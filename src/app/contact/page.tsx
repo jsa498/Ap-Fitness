@@ -51,9 +51,9 @@ export default function Contact() {
   };
 
   return (
-    <main className="min-h-screen pt-20">
+    <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-[40vh] mb-16">
+      <section className="relative h-[40vh] mt-28">
         <div className="absolute inset-0 rounded-b-[3rem] overflow-hidden">
           <Image
             src="/images/DSC05643.jpeg"
@@ -92,7 +92,7 @@ export default function Contact() {
       </section>
 
       {/* Contact Section */}
-      <section className="max-w-7xl mx-auto px-4 mb-16">
+      <section className="max-w-7xl mx-auto px-4 mb-16 mt-32">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Get In Touch */}
           <motion.div

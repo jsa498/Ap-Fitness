@@ -95,9 +95,9 @@ export default function Classes() {
   const [selectedDay, setSelectedDay] = useState('Monday');
 
   return (
-    <main className="min-h-screen pt-20">
+    <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-[40vh] mb-16">
+      <section className="relative h-[40vh] mt-28">
         <div className="absolute inset-0 rounded-b-[3rem] overflow-hidden">
           <Image
             src="/images/DSC05169-min.jpeg"
@@ -136,7 +136,7 @@ export default function Classes() {
       </section>
 
       {/* Class Types */}
-      <section className="max-w-7xl mx-auto px-4 mb-16">
+      <section className="max-w-7xl mx-auto px-4 mb-16 mt-32">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -192,7 +192,7 @@ export default function Classes() {
       </section>
 
       {/* Schedule Section */}
-      <section className="bg-gradient-to-br from-dark to-dark-lighter py-16 border-y border-dark-border">
+      <section className="bg-gradient-to-br from-dark to-dark-lighter py-16">
         <div className="max-w-7xl mx-auto px-4">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -264,21 +264,46 @@ export default function Classes() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16">
-        <div className="max-w-4xl mx-auto text-center px-4">
-          <h2 className="text-3xl font-bold mb-4 text-text-primary">Ready to Join a Class?</h2>
-          <p className="text-text-secondary mb-8">
-            Experience the energy and motivation of group training with our expert instructors.
-          </p>
-          <Link href="/book">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-colors shadow-lg hover:shadow-xl"
-            >
-              Get Started Today
-            </motion.button>
-          </Link>
+      <section className="py-24">
+        <div className="max-w-4xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-gradient-to-br from-dark-lighter to-dark p-[2px] rounded-[2rem] shadow-dark-lg relative overflow-hidden"
+          >
+            <div className="bg-dark rounded-[1.9rem] p-12 relative z-10">
+              <div className="absolute inset-0 bg-gradient-to-br from-ap-red/10 to-transparent" />
+              <div className="relative z-10 text-center">
+                <motion.h2 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="text-4xl font-bold mb-4 text-text-primary"
+                >
+                  Ready to Join a Class?
+                </motion.h2>
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 }}
+                  className="text-xl text-text-secondary mb-8"
+                >
+                  Experience the energy and motivation of group training with our expert instructors.
+                </motion.p>
+                <Link href="/book">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-ap-red/20"
+                  >
+                    Get Started Today
+                  </motion.button>
+                </Link>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
     </main>
