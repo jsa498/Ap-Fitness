@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FaDumbbell, FaUsers, FaHeart, FaAppleAlt, FaLaptop } from 'react-icons/fa';
 import { GiBoxingGlove } from 'react-icons/gi';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const services = [
   {
@@ -84,21 +85,23 @@ export default function Services() {
   return (
     <main className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="relative h-[40vh] mb-16">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/DSC05203-min.jpeg"
-            alt="AP Fitness Services"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-dark/80" />
+      <section className="relative h-[50vh] mt-8 mb-16">
+        <div className="absolute inset-0 mx-4 mt-4">
+          <div className="absolute inset-0 rounded-[3rem] overflow-hidden">
+            <Image
+              src="/images/DSC05643.jpeg"
+              alt="AP Fitness Services"
+              fill
+              className="object-cover brightness-50"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-dark/95 via-dark/90 to-dark/85" />
+          </div>
         </div>
         <div className="relative h-full flex items-center justify-center text-text-primary">
-          <div className="text-center">
-            <h1 className="text-5xl font-bold mb-4">Our Services</h1>
-            <p className="text-xl max-w-2xl mx-auto px-4">
+          <div className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-8 md:p-12 mx-4 border border-text-primary/10">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">Our Services</h1>
+            <p className="text-lg md:text-xl max-w-2xl mx-auto px-4 drop-shadow-lg">
               Professional fitness services tailored to help you achieve your goals
             </p>
           </div>
@@ -151,13 +154,15 @@ export default function Services() {
           <p className="text-text-secondary mb-8">
             Book a consultation with our expert trainers and take the first step towards achieving your fitness goals.
           </p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-colors shadow-lg hover:shadow-xl"
-          >
-            Book a Consultation
-          </motion.button>
+          <Link href="/book">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-colors shadow-lg hover:shadow-xl"
+            >
+              Book a Consultation
+            </motion.button>
+          </Link>
         </div>
       </section>
     </main>

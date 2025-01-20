@@ -13,9 +13,27 @@ const Footer = () => {
           {/* Contact Info */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-text-primary">Contact Us</h3>
-            <p className="mb-2 text-text-secondary">Email: info@apfitness.com</p>
-            <p className="mb-2 text-text-secondary">Phone: (123) 456-7890</p>
-            <p className="text-text-secondary">123 Fitness Street<br />Vancouver, BC V6B 1A1</p>
+            <p className="mb-2 text-text-secondary">
+              <a href="mailto:apfitnessbc@gmail.com" className="hover:text-ap-red transition-colors">
+                Email: apfitnessbc@gmail.com
+              </a>
+            </p>
+            <p className="mb-2 text-text-secondary">
+              <a href="tel:+16044017917" className="hover:text-ap-red transition-colors">
+                Phone: (604) 401-7917
+              </a>
+            </p>
+            <p className="text-text-secondary">
+              <a 
+                href="https://maps.google.com/?q=8160+120+St,+Surrey,+BC+V3W+3N3"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-ap-red transition-colors"
+              >
+                8160 120 St<br />
+                Surrey, BC V3W 3N3
+              </a>
+            </p>
           </div>
 
           {/* Quick Links */}

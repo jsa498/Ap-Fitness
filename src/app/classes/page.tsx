@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
 import { FaDumbbell, FaUsers, FaHeart } from 'react-icons/fa';
 import { GiBoxingGlove } from 'react-icons/gi';
 
@@ -216,13 +217,15 @@ export default function Classes() {
                       {classes.find((c) => c.name === slot.class)?.duration}
                     </div>
                   </div>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-4 py-2 rounded-full text-sm font-medium transition-colors shadow-lg hover:shadow-xl"
-                  >
-                    Book Class
-                  </motion.button>
+                  <Link href="/book">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-4 py-2 rounded-full text-sm font-medium transition-colors shadow-lg hover:shadow-xl"
+                    >
+                      Book Class
+                    </motion.button>
+                  </Link>
                 </div>
               ))}
             </div>
@@ -237,13 +240,15 @@ export default function Classes() {
           <p className="text-text-secondary mb-8">
             Experience the energy and motivation of group training with our expert instructors.
           </p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-colors shadow-lg hover:shadow-xl"
-          >
-            Get Started Today
-          </motion.button>
+          <Link href="/book">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-colors shadow-lg hover:shadow-xl"
+            >
+              Get Started Today
+            </motion.button>
+          </Link>
         </div>
       </section>
     </main>

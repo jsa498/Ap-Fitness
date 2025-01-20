@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { FaDumbbell, FaClock, FaUser } from 'react-icons/fa';
 import { sendConsultationEmail } from '@/lib/emailService';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import { validateEmail, validatePhone, validateName, validateAge, validateWeight, validateRequired, ValidationError } from '@/lib/validation';
 
 const experienceLevels = ['Beginner', 'Intermediate', 'Advanced'];
 const trainingTypes = [
@@ -39,15 +40,73 @@ export default function Book() {
     additional_info: ''
   });
 
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const validateField = (name: string, value: string): string | null => {
+    switch (name) {
+      case 'name':
+        return validateName(value);
+      case 'email':
+        return validateEmail(value);
+      case 'phone':
+        return validatePhone(value);
+      case 'age':
+        return validateAge(value);
+      case 'weight':
+        return validateWeight(value);
+      case 'gender':
+      case 'fitness_goal':
+      case 'experience_level':
+      case 'training_type':
+      case 'preferred_time':
+        return validateRequired(value, name.replace('_', ' '));
+      default:
+        return null;
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+
+    // Validate on change for better user experience
+    const error = validateField(name, value);
+    if (error) {
+      setErrors(prev => ({ ...prev, [name]: error }));
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: { [key: string]: string } = {};
+    let isValid = true;
+
+    // Validate all required fields
+    Object.entries(formData).forEach(([name, value]) => {
+      if (name === 'additional_info' || name === 'preferred_trainer') return; // Skip optional fields
+      const error = validateField(name, value);
+      if (error) {
+        newErrors[name] = error;
+        isValid = false;
+      }
+    });
+
+    setErrors(newErrors);
+    return isValid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
     setStatus('loading');
 
     try {
@@ -67,6 +126,7 @@ export default function Book() {
         preferred_trainer: '',
         additional_info: ''
       });
+      setErrors({});
     } catch (error) {
       console.error('Error sending consultation request:', error);
       setStatus('error');
@@ -124,6 +184,14 @@ export default function Book() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-8">
+              {status === 'error' && (
+                <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-4 mb-6">
+                  <p className="text-red-500">
+                    There was an error sending your consultation request. Please try again or contact us directly.
+                  </p>
+                </div>
+              )}
+              
               {/* Personal Information */}
               <div>
                 <h3 className="text-xl font-semibold mb-4 text-text-primary flex items-center">
@@ -142,9 +210,18 @@ export default function Book() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+                      className={`w-full px-4 py-3 bg-dark border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent transition-colors ${
+                        errors.name ? 'border-red-500' : 'border-dark-border'
+                      }`}
                       placeholder="John Doe"
+                      aria-invalid={errors.name ? 'true' : 'false'}
+                      aria-describedby={errors.name ? 'name-error' : undefined}
                     />
+                    {errors.name && (
+                      <p id="name-error" className="mt-1 text-sm text-red-500">
+                        {errors.name}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-text-primary font-medium mb-2">
@@ -157,9 +234,18 @@ export default function Book() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+                      className={`w-full px-4 py-3 bg-dark border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent transition-colors ${
+                        errors.email ? 'border-red-500' : 'border-dark-border'
+                      }`}
                       placeholder="john@example.com"
+                      aria-invalid={errors.email ? 'true' : 'false'}
+                      aria-describedby={errors.email ? 'email-error' : undefined}
                     />
+                    {errors.email && (
+                      <p id="email-error" className="mt-1 text-sm text-red-500">
+                        {errors.email}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label htmlFor="phone" className="block text-text-primary font-medium mb-2">
@@ -172,9 +258,18 @@ export default function Book() {
                       value={formData.phone}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+                      className={`w-full px-4 py-3 bg-dark border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent transition-colors ${
+                        errors.phone ? 'border-red-500' : 'border-dark-border'
+                      }`}
                       placeholder="(604) 123-4567"
+                      aria-invalid={errors.phone ? 'true' : 'false'}
+                      aria-describedby={errors.phone ? 'phone-error' : undefined}
                     />
+                    {errors.phone && (
+                      <p id="phone-error" className="mt-1 text-sm text-red-500">
+                        {errors.phone}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label htmlFor="gender" className="block text-text-primary font-medium mb-2">
@@ -186,7 +281,9 @@ export default function Book() {
                       value={formData.gender}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+                      className={`w-full px-4 py-3 bg-dark border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent transition-colors ${
+                        errors.gender ? 'border-red-500' : 'border-dark-border'
+                      }`}
                     >
                       <option value="">Select gender</option>
                       <option value="male">Male</option>
@@ -194,6 +291,11 @@ export default function Book() {
                       <option value="other">Other</option>
                       <option value="prefer_not_to_say">Prefer not to say</option>
                     </select>
+                    {errors.gender && (
+                      <p id="gender-error" className="mt-1 text-sm text-red-500">
+                        {errors.gender}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label htmlFor="age" className="block text-text-primary font-medium mb-2">
@@ -208,9 +310,15 @@ export default function Book() {
                       required
                       min="16"
                       max="99"
-                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
-                      placeholder="25"
+                      className={`w-full px-4 py-3 bg-dark border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent transition-colors ${
+                        errors.age ? 'border-red-500' : 'border-dark-border'
+                      }`}
                     />
+                    {errors.age && (
+                      <p id="age-error" className="mt-1 text-sm text-red-500">
+                        {errors.age}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label htmlFor="weight" className="block text-text-primary font-medium mb-2">
@@ -223,9 +331,15 @@ export default function Book() {
                       value={formData.weight}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
-                      placeholder="150"
+                      className={`w-full px-4 py-3 bg-dark border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent transition-colors ${
+                        errors.weight ? 'border-red-500' : 'border-dark-border'
+                      }`}
                     />
+                    {errors.weight && (
+                      <p id="weight-error" className="mt-1 text-sm text-red-500">
+                        {errors.weight}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -248,9 +362,15 @@ export default function Book() {
                       onChange={handleChange}
                       required
                       rows={4}
-                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent resize-none"
-                      placeholder="Tell us about your fitness goals..."
+                      className={`w-full px-4 py-3 bg-dark border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent transition-colors ${
+                        errors.fitness_goal ? 'border-red-500' : 'border-dark-border'
+                      }`}
                     />
+                    {errors.fitness_goal && (
+                      <p id="fitness_goal-error" className="mt-1 text-sm text-red-500">
+                        {errors.fitness_goal}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label htmlFor="experience_level" className="block text-text-primary font-medium mb-2">
@@ -262,13 +382,20 @@ export default function Book() {
                       value={formData.experience_level}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+                      className={`w-full px-4 py-3 bg-dark border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent transition-colors ${
+                        errors.experience_level ? 'border-red-500' : 'border-dark-border'
+                      }`}
                     >
                       <option value="">Select your experience level</option>
                       {experienceLevels.map(level => (
                         <option key={level} value={level.toLowerCase()}>{level}</option>
                       ))}
                     </select>
+                    {errors.experience_level && (
+                      <p id="experience_level-error" className="mt-1 text-sm text-red-500">
+                        {errors.experience_level}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label htmlFor="training_type" className="block text-text-primary font-medium mb-2">
@@ -280,13 +407,20 @@ export default function Book() {
                       value={formData.training_type}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+                      className={`w-full px-4 py-3 bg-dark border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent transition-colors ${
+                        errors.training_type ? 'border-red-500' : 'border-dark-border'
+                      }`}
                     >
                       <option value="">Select training type</option>
                       {trainingTypes.map(type => (
                         <option key={type} value={type.toLowerCase()}>{type}</option>
                       ))}
                     </select>
+                    {errors.training_type && (
+                      <p id="training_type-error" className="mt-1 text-sm text-red-500">
+                        {errors.training_type}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -308,13 +442,20 @@ export default function Book() {
                       value={formData.preferred_time}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+                      className={`w-full px-4 py-3 bg-dark border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent transition-colors ${
+                        errors.preferred_time ? 'border-red-500' : 'border-dark-border'
+                      }`}
                     >
                       <option value="">Select preferred time</option>
                       {timeSlots.map(slot => (
                         <option key={slot} value={slot.toLowerCase()}>{slot}</option>
                       ))}
                     </select>
+                    {errors.preferred_time && (
+                      <p id="preferred_time-error" className="mt-1 text-sm text-red-500">
+                        {errors.preferred_time}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label htmlFor="preferred_trainer" className="block text-text-primary font-medium mb-2">
@@ -326,9 +467,16 @@ export default function Book() {
                       name="preferred_trainer"
                       value={formData.preferred_trainer}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent"
+                      className={`w-full px-4 py-3 bg-dark border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent transition-colors ${
+                        errors.preferred_trainer ? 'border-red-500' : 'border-dark-border'
+                      }`}
                       placeholder="Optional"
                     />
+                    {errors.preferred_trainer && (
+                      <p id="preferred_trainer-error" className="mt-1 text-sm text-red-500">
+                        {errors.preferred_trainer}
+                      </p>
+                    )}
                   </div>
                   <div className="md:col-span-2">
                     <label htmlFor="additional_info" className="block text-text-primary font-medium mb-2">
@@ -340,33 +488,43 @@ export default function Book() {
                       value={formData.additional_info}
                       onChange={handleChange}
                       rows={4}
-                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent resize-none"
-                      placeholder="Any additional information you'd like us to know..."
+                      className={`w-full px-4 py-3 bg-dark border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent transition-colors ${
+                        errors.additional_info ? 'border-red-500' : 'border-dark-border'
+                      }`}
                     />
+                    {errors.additional_info && (
+                      <p id="additional_info-error" className="mt-1 text-sm text-red-500">
+                        {errors.additional_info}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
 
-              <button
-                type="submit"
-                disabled={status === 'loading'}
-                className="w-full bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-4 rounded-lg font-medium transition-all duration-300 hover:shadow-lg disabled:opacity-50 flex items-center justify-center space-x-2"
-              >
-                {status === 'loading' ? (
-                  <>
-                    <LoadingSpinner />
-                    <span>Sending...</span>
-                  </>
-                ) : (
-                  'Book Consultation'
-                )}
-              </button>
-
-              {status === 'error' && (
-                <p className="text-red-500 text-center mt-4">
-                  There was an error sending your consultation request. Please try again.
-                </p>
-              )}
+              <div className="flex justify-center">
+                <motion.button
+                  type="submit"
+                  disabled={status === 'loading'}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`
+                    bg-gradient-to-r from-ap-red to-ap-red-dark 
+                    text-text-primary px-8 py-3 rounded-full 
+                    text-lg font-medium transition-all 
+                    hover:shadow-xl disabled:opacity-50
+                    flex items-center space-x-2
+                  `}
+                >
+                  {status === 'loading' ? (
+                    <>
+                      <LoadingSpinner size="sm" />
+                      <span>Sending...</span>
+                    </>
+                  ) : (
+                    <span>Book Consultation</span>
+                  )}
+                </motion.button>
+              </div>
             </form>
           )}
         </div>

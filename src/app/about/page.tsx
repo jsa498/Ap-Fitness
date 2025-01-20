@@ -26,30 +26,32 @@ const trainers = [
 
 const stats = [
   { icon: FaUsers, value: '500+', label: 'Happy Clients' },
-  { icon: FaGraduationCap, value: '15+', label: 'Certifications' },
-  { icon: FaMedal, value: '8+', label: 'Years Experience' },
-  { icon: FaHeart, value: '1000+', label: 'Transformations' }
+  { icon: FaGraduationCap, value: '✅', label: 'Certifications' },
+  { icon: FaMedal, value: '5+', label: 'Years Experience' },
+  { icon: FaHeart, value: '500+', label: 'Transformations' }
 ];
 
 export default function About() {
   return (
     <main className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="relative h-[40vh] mb-16">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/DSC05185-min.jpeg"
-            alt="AP Fitness Gym"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-dark/80" />
+      <section className="relative h-[50vh] mt-8 mb-16">
+        <div className="absolute inset-0 mx-4 mt-4">
+          <div className="absolute inset-0 rounded-[3rem] overflow-hidden">
+            <Image
+              src="/images/DSC05206-min.jpeg"
+              alt="AP Fitness About"
+              fill
+              className="object-cover brightness-50"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-dark/95 via-dark/90 to-dark/85" />
+          </div>
         </div>
         <div className="relative h-full flex items-center justify-center text-text-primary">
-          <div className="text-center">
-            <h1 className="text-5xl font-bold mb-4">About Us</h1>
-            <p className="text-xl max-w-2xl mx-auto px-4">
+          <div className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-8 md:p-12 mx-4 border border-text-primary/10">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">About Us</h1>
+            <p className="text-lg md:text-xl max-w-2xl mx-auto px-4 drop-shadow-lg">
               Professional trainers dedicated to transforming lives through fitness
             </p>
           </div>
@@ -74,23 +76,25 @@ export default function About() {
       </section>
 
       {/* Stats Section */}
-      <section className="bg-gradient-to-br from-dark to-dark-lighter py-16 border-y border-dark-border">
+      <section className="py-16">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center"
-              >
-                <stat.icon className="w-8 h-8 text-ap-red mx-auto mb-4" />
-                <div className="text-3xl font-bold mb-2 text-text-primary">{stat.value}</div>
-                <div className="text-text-secondary">{stat.label}</div>
-              </motion.div>
-            ))}
+          <div className="bg-dark-lighter/20 backdrop-blur-sm rounded-[3rem] p-8 md:p-12 border border-text-primary/10">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+              {stats.map((stat, index) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="text-center p-6 rounded-2xl bg-dark/40 backdrop-blur-sm border border-text-primary/5 hover:border-ap-red/30 transition-all duration-300"
+                >
+                  <stat.icon className="w-10 h-10 text-ap-red mx-auto mb-4" />
+                  <div className="text-4xl font-bold mb-2 text-text-primary bg-gradient-to-r from-text-primary to-ap-red bg-clip-text text-transparent">{stat.value}</div>
+                  <div className="text-text-secondary font-medium">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
