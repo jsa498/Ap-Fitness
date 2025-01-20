@@ -14,78 +14,41 @@ export default function Contact() {
     email: '',
     phone: '',
     subject: '',
-    message: ''
+    message: '',
   });
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
-    setErrorMessage('');
 
     try {
-      const result = await sendEmail({
+      await sendEmail({
         from_name: formData.name,
         from_email: formData.email,
+        subject: formData.subject,
         message: formData.message,
-        subject: formData.subject || 'New Contact Form Submission',
-        reply_to: formData.email,
-        phone: formData.phone
+        phone: formData.phone,
       });
-
-      if (result.success) {
-        setStatus('success');
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          subject: '',
-          message: ''
-        });
-      } else {
-        throw new Error('Failed to send email');
-      }
+      setStatus('success');
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: '',
+      });
     } catch (error) {
+      console.error('Error sending email:', error);
       setStatus('error');
-      setErrorMessage('Failed to send message. Please try again or contact us directly.');
     }
   };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const contactInfo = [
-    {
-      icon: FaPhone,
-      title: 'Phone',
-      content: '(123) 456-7890',
-      link: 'tel:+11234567890'
-    },
-    {
-      icon: FaEnvelope,
-      title: 'Email',
-      content: 'info@apfitness.com',
-      link: 'mailto:info@apfitness.com'
-    },
-    {
-      icon: FaMapMarkerAlt,
-      title: 'Location',
-      content: '123 Fitness Street, Vancouver, BC V6B 1A1',
-      link: 'https://maps.google.com'
-    },
-    {
-      icon: FaClock,
-      title: 'Hours',
-      content: 'Mon-Fri: 6am-10pm\nSat-Sun: 8am-8pm',
-      link: null
-    }
-  ];
 
   return (
     <main className="min-h-screen pt-20">
@@ -111,182 +74,235 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Contact Info Grid */}
+      {/* Contact Section */}
       <section className="max-w-7xl mx-auto px-4 mb-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {contactInfo.map((info, index) => (
-            <motion.div
-              key={info.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-dark-lighter rounded-lg shadow-dark-lg overflow-hidden border border-dark-border hover:border-ap-red/50 transition-colors p-6"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <info.icon className="w-6 h-6 text-text-primary" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2 text-text-primary text-center">{info.title}</h3>
-              {info.link ? (
-                <a
-                  href={info.link}
-                  target={info.link.startsWith('http') ? '_blank' : undefined}
-                  rel={info.link.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="text-text-secondary hover:text-ap-red transition-colors whitespace-pre-line text-center block"
-                >
-                  {info.content}
-                </a>
-              ) : (
-                <p className="text-text-secondary whitespace-pre-line text-center">{info.content}</p>
-              )}
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Contact Form */}
-      <section className="max-w-4xl mx-auto px-4 mb-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-dark-lighter rounded-lg shadow-dark-lg p-8 border border-dark-border"
-        >
-          <h2 className="text-3xl font-bold text-center mb-8 text-text-primary">Send Us a Message</h2>
-          
-          {status === 'success' ? (
-            <div className="text-center py-8">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="w-16 h-16 bg-green-500 rounded-full mx-auto mb-4 flex items-center justify-center"
-              >
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </motion.div>
-              <h3 className="text-2xl font-bold text-text-primary mb-2">Message Sent Successfully!</h3>
-              <p className="text-text-secondary mb-6">We'll get back to you as soon as possible.</p>
-              <button
-                onClick={() => setStatus('idle')}
-                className="text-ap-red hover:text-ap-red-dark transition-colors"
-              >
-                Send another message
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Get In Touch */}
+          <div className="bg-dark-lighter rounded-2xl p-8 shadow-dark-lg">
+            <h2 className="text-3xl font-bold mb-8 text-text-primary">Get In Touch</h2>
+            
+            <div className="space-y-6">
+              {/* Phone */}
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-ap-red/10 rounded-full flex items-center justify-center flex-shrink-0">
+                  <FaPhone className="w-5 h-5 text-ap-red" />
+                </div>
                 <div>
-                  <label htmlFor="name" className="block text-text-primary font-medium mb-2">
-                    Full Name *
+                  <h3 className="text-lg font-semibold text-text-primary mb-1">Phone</h3>
+                  <a href="tel:+16044017917" className="text-text-secondary hover:text-ap-red transition-colors">
+                    (604) 401-7917
+                  </a>
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-ap-red/10 rounded-full flex items-center justify-center flex-shrink-0">
+                  <FaEnvelope className="w-5 h-5 text-ap-red" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-text-primary mb-1">Email</h3>
+                  <a href="mailto:apfitnessbc@gmail.com" className="text-text-secondary hover:text-ap-red transition-colors">
+                    apfitnessbc@gmail.com
+                  </a>
+                </div>
+              </div>
+
+              {/* Location */}
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-ap-red/10 rounded-full flex items-center justify-center flex-shrink-0">
+                  <FaMapMarkerAlt className="w-5 h-5 text-ap-red" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-text-primary mb-1">Location</h3>
+                  <a 
+                    href="https://maps.google.com/?q=8160+120+St,+Surrey,+BC+V3W+3N3"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-text-secondary hover:text-ap-red transition-colors"
+                  >
+                    8160 120 St<br />
+                    Surrey, BC V3W 3N3
+                  </a>
+                </div>
+              </div>
+
+              {/* Hours */}
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-ap-red/10 rounded-full flex items-center justify-center flex-shrink-0">
+                  <FaClock className="w-5 h-5 text-ap-red" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-text-primary mb-1">Hours</h3>
+                  <p className="text-text-secondary">
+                    Mon-Fri: 6am-10pm<br />
+                    Sat-Sun: 8am-8pm
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Form */}
+          <div className="bg-dark-lighter rounded-2xl p-8 shadow-dark-lg">
+            <h2 className="text-3xl font-bold mb-8 text-text-primary">Send Message</h2>
+            
+            {status === 'success' ? (
+              <div className="text-center py-8">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="w-16 h-16 bg-green-500 rounded-full mx-auto mb-4 flex items-center justify-center"
+                >
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </motion.div>
+                <h3 className="text-2xl font-bold text-text-primary mb-2">Message Sent Successfully!</h3>
+                <p className="text-text-secondary mb-6">We'll get back to you as soon as possible.</p>
+                <button
+                  onClick={() => setStatus('idle')}
+                  className="text-ap-red hover:text-ap-red-dark transition-colors"
+                >
+                  Send another message
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="name" className="block text-text-primary font-medium mb-2">
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      disabled={status === 'loading'}
+                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
+                      placeholder="John Doe"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block text-text-primary font-medium mb-2">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      disabled={status === 'loading'}
+                      className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
+                      placeholder="john@example.com"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="phone" className="block text-text-primary font-medium mb-2">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    disabled={status === 'loading'}
+                    className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
+                    placeholder="(123) 456-7890"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="subject" className="block text-text-primary font-medium mb-2">
+                    Subject
                   </label>
                   <input
                     type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
+                    id="subject"
+                    name="subject"
+                    value={formData.subject}
                     onChange={handleChange}
-                    required
                     disabled={status === 'loading'}
-                    className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
+                    className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
+                    placeholder="How can we help you?"
                   />
                 </div>
+
                 <div>
-                  <label htmlFor="email" className="block text-text-primary font-medium mb-2">
-                    Email Address *
+                  <label htmlFor="message" className="block text-text-primary font-medium mb-2">
+                    Message *
                   </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
+                  <textarea
+                    id="message"
+                    name="message"
+                    value={formData.message}
                     onChange={handleChange}
                     required
                     disabled={status === 'loading'}
-                    className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
+                    rows={4}
+                    className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50 resize-none"
+                    placeholder="Write your message here..."
                   />
                 </div>
-              </div>
 
-              <div>
-                <label htmlFor="phone" className="block text-text-primary font-medium mb-2">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  disabled={status === 'loading'}
-                  className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="subject" className="block text-text-primary font-medium mb-2">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  disabled={status === 'loading'}
-                  className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-text-primary font-medium mb-2">
-                  Message *
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  disabled={status === 'loading'}
-                  rows={6}
-                  className="w-full px-4 py-2 bg-dark border border-dark-border rounded-lg focus:ring-2 focus:ring-ap-red focus:border-transparent resize-none disabled:opacity-50"
-                ></textarea>
-              </div>
-
-              {status === 'error' && (
-                <div className="text-red-500 text-sm">
-                  {errorMessage}
-                </div>
-              )}
-
-              <div className="text-center">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <button
                   type="submit"
                   disabled={status === 'loading'}
-                  className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-colors shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center justify-center space-x-2 mx-auto"
+                  className="w-full bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg disabled:opacity-50 flex items-center justify-center space-x-2"
                 >
                   {status === 'loading' ? (
                     <>
-                      <LoadingSpinner size="sm" />
+                      <LoadingSpinner />
                       <span>Sending...</span>
                     </>
                   ) : (
                     'Send Message'
                   )}
-                </motion.button>
-              </div>
-            </form>
-          )}
-        </motion.div>
+                </button>
+
+                {status === 'error' && (
+                  <p className="text-red-500 text-center">
+                    There was an error sending your message. Please try again.
+                  </p>
+                )}
+              </form>
+            )}
+          </div>
+        </div>
       </section>
 
       {/* Map Section */}
-      <section className="h-96 relative">
-        <Map />
+      <section className="max-w-7xl mx-auto px-4 mb-16">
+        <div className="bg-dark-lighter rounded-2xl shadow-dark-lg overflow-hidden relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-dark-lighter/50 to-transparent z-10 pointer-events-none h-16" />
+          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-dark-lighter/50 to-transparent z-10 pointer-events-none h-16" />
+          <div className="h-[400px] relative">
+            <Map />
+          </div>
+          <div className="absolute bottom-6 left-6 bg-dark-lighter px-6 py-4 rounded-xl shadow-xl border border-dark-border z-20">
+            <h3 className="text-lg font-semibold text-text-primary mb-2 flex items-center">
+              <FaMapMarkerAlt className="w-5 h-5 text-ap-red mr-2" />
+              Visit Us
+            </h3>
+            <a 
+              href="https://maps.google.com/?q=8160+120+St,+Surrey,+BC+V3W+3N3"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-text-secondary hover:text-ap-red transition-colors"
+            >
+              8160 120 St<br />
+              Surrey, BC V3W 3N3
+            </a>
+          </div>
+        </div>
       </section>
     </main>
   );

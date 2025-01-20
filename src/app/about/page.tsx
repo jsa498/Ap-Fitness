@@ -3,12 +3,13 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { FaGraduationCap, FaMedal, FaUsers, FaHeart } from 'react-icons/fa';
+import Link from 'next/link';
 
 const trainers = [
   {
     name: 'Prabhjot Singh',
     role: 'Co-Founder & Head Trainer',
-    image: '/images/DSC05643.jpeg',
+    image: '/images/DSC05701.jpeg',
     specialties: ['Personal Training', 'Strength & Conditioning', 'Boxing'],
     certifications: ['B.Sc. Kinesiology', 'CSEP-CPT', 'Boxing Coach Level 2'],
     bio: 'With over 8 years of experience in fitness and athletics, Prabhjot brings expertise in strength training and boxing to help clients achieve their goals.'
@@ -16,7 +17,7 @@ const trainers = [
   {
     name: 'Amrit Singh',
     role: 'Co-Founder & Wellness Director',
-    image: '/images/DSC09177.jpeg',
+    image: '/images/DSC09205.jpeg',
     specialties: ['Nutrition Coaching', 'Pre/Postnatal Fitness', 'Group Training'],
     certifications: ['B.Sc. Kinesiology', 'Precision Nutrition Level 2', 'Pre/Postnatal Specialist'],
     bio: 'Amrit specializes in holistic wellness, combining nutrition coaching with personalized training to create sustainable lifestyle changes.'
@@ -115,12 +116,14 @@ export default function About() {
                 transition={{ delay: index * 0.1 }}
                 className="bg-dark-lighter rounded-lg shadow-dark-lg overflow-hidden border border-dark-border hover:border-ap-red/50 transition-colors"
               >
-                <div className="relative h-64">
+                <div className="relative h-[400px]">
                   <Image
                     src={trainer.image}
                     alt={trainer.name}
                     fill
-                    className="object-cover"
+                    className={`object-cover ${trainer.name === 'Prabhjot Singh' ? 'object-[center_60%]' : 'object-center'}`}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority={index === 0}
                   />
                 </div>
                 <div className="p-6 bg-gradient-to-br from-dark to-dark-lighter">
@@ -189,17 +192,16 @@ export default function About() {
       {/* CTA Section */}
       <section className="py-16">
         <div className="max-w-4xl mx-auto text-center px-4">
-          <h2 className="text-3xl font-bold mb-4">Start Your Journey With Us</h2>
-          <p className="text-gray-600 mb-8">
+          <h2 className="text-3xl font-bold mb-4 text-text-primary">Start Your Journey With Us</h2>
+          <p className="text-text-secondary mb-8">
             Join our community and experience the difference of training with certified professionals.
           </p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-ap-red hover:bg-red-700 text-white px-8 py-3 rounded-full text-lg font-medium transition-colors"
+          <Link
+            href="/book"
+            className="inline-block bg-ap-red hover:bg-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95"
           >
             Book a Free Consultation
-          </motion.button>
+          </Link>
         </div>
       </section>
     </main>

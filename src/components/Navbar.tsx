@@ -3,209 +3,197 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { HiMenu, HiX } from 'react-icons/hi';
 import { usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
 
-const Navbar = () => {
+export default function Navbar() {
+  // State Management
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const pathname = usePathname();
+  const [hoveredPath, setHoveredPath] = useState(pathname);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Close mobile menu when route changes
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
-
-  // Prevent scroll when mobile menu is open
+  // Body Scroll Lock for Mobile Menu
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
   }, [isOpen]);
 
+  // Navbar Hide/Show on Scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setScrollPosition(currentScrollY);
+      
+      if (currentScrollY > lastScrollY) {
+        if (currentScrollY > 50) {
+          setIsVisible(false);
+        }
+      } else {
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
+  // Update Hovered Path when Route Changes
+  useEffect(() => {
+    setHoveredPath(pathname);
+  }, [pathname]);
+
+  // Navigation Items
   const navItems = [
-    { name: 'Home', href: '/' },
-    { name: 'Services', href: '/services' },
-    { name: 'About', href: '/about' },
-    { name: 'Classes', href: '/classes' },
-    { name: 'Contact', href: '/contact' },
+    { path: '/', name: 'Home' },
+    { path: '/services', name: 'Services' },
+    { path: '/about', name: 'About' },
+    { path: '/classes', name: 'Classes' },
+    { path: '/contact', name: 'Contact' }
   ];
 
+  // Dynamic Navbar Classes
+  const navClasses = `
+    fixed z-[100] transition-all duration-300 
+    w-[calc(100%-1rem)] sm:w-[calc(100%-2rem)] 
+    left-1/2 -translate-x-1/2 top-2 lg:top-4
+    bg-dark/80 backdrop-blur-lg shadow-lg rounded-full
+    ${isVisible ? 'translate-y-0' : '-translate-y-[150%]'}
+  `;
+
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled ? 'py-2 bg-dark/95 backdrop-blur-md shadow-lg' : 'py-4 bg-dark/50 backdrop-blur-sm'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
+    <nav className={navClasses}>
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Link href="/" className="flex-shrink-0">
-              <Image
+          <div className="flex-shrink-0">
+            <Link href="/" className="flex items-center">
+              <Image 
                 src="/images/AP-Logo_processed.jpeg"
                 alt="AP Fitness"
-                width={50}
-                height={40}
-                className="w-auto h-8"
+                width={48}
+                height={48}
+                className="h-12 w-auto rounded-full"
               />
             </Link>
-          </motion.div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="flex items-center space-x-1">
-              {navItems.map((item) => (
-                <motion.div
-                  key={item.name}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link
-                    href={item.href}
-                    className={`relative px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                      pathname === item.href
-                        ? 'text-ap-red'
-                        : 'text-text-primary hover:text-ap-red'
-                    }`}
-                  >
-                    {item.name}
-                    {pathname === item.href && (
-                      <motion.span
-                        layoutId="navbar-active"
-                        className="absolute inset-0 rounded-full bg-dark-lighter -z-10"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                      />
-                    )}
-                  </Link>
-                </motion.div>
-              ))}
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link
-                  href="/book"
-                  className="bg-ap-red hover:bg-ap-red-dark text-text-primary px-6 py-2 rounded-full text-sm font-medium transition-colors shadow-lg hover:shadow-xl"
-                >
-                  Book Now
-                </Link>
-              </motion.div>
-            </div>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setIsOpen(!isOpen)}
-              className="relative z-50 text-text-primary hover:text-ap-red p-2 rounded-full bg-dark/80 backdrop-blur-md"
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center justify-center space-x-1">
+            <AnimatePresence mode="wait">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  className={`
+                    relative px-4 py-2 transition-colors rounded-md
+                    ${item.path === pathname ? 'text-ap-red' : 'text-text-primary hover:text-ap-red'}
+                  `}
+                  onMouseOver={() => setHoveredPath(item.path)}
+                  onMouseLeave={() => setHoveredPath(pathname)}
+                >
+                  <span className="relative z-10">{item.name}</span>
+                  {item.path === hoveredPath && (
+                    <motion.div
+                      layoutId="navbar-indicator"
+                      className="absolute inset-0 bg-dark-lighter rounded-md -z-0"
+                      transition={{
+                        type: "spring",
+                        bounce: 0.15,
+                        duration: 0.5,
+                      }}
+                    />
+                  )}
+                </Link>
+              ))}
+            </AnimatePresence>
+          </div>
+
+          {/* Book Now Button */}
+          <div className="hidden md:flex items-center space-x-4">
+            <Link
+              href="/book"
+              className="px-6 py-2 bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary rounded-full font-medium transition-all hover:shadow-lg"
             >
-              <AnimatePresence mode="wait">
-                {isOpen ? (
-                  <motion.div
-                    key="close"
-                    initial={{ rotate: -180, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 180, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <HiX className="h-6 w-6" />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="menu"
-                    initial={{ rotate: 180, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: -180, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <HiMenu className="h-6 w-6" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.button>
+              Book Now
+            </Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-text-primary hover:text-ap-red transition-colors p-2 relative z-50"
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Navigation Dropdown */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 md:hidden bg-dark/98 backdrop-blur-lg"
+            className="absolute top-20 left-4 right-4 md:hidden"
           >
-            <div className="flex flex-col items-center justify-center min-h-screen space-y-8 p-4">
-              {navItems.map((item) => (
-                <motion.div
-                  key={item.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Link
-                    href={item.href}
-                    className={`text-2xl font-medium transition-colors ${
-                      pathname === item.href
-                        ? 'text-ap-red'
-                        : 'text-text-primary hover:text-ap-red'
-                    }`}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                </motion.div>
-              ))}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3, delay: 0.2 }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
+            <motion.div
+              className="bg-dark backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-dark-border"
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+            >
+              <div className="flex flex-col p-6 space-y-4">
+                {navItems.map((item) => {
+                  const isActive = pathname === item.path;
+                  return (
+                    <Link
+                      key={item.path}
+                      href={item.path}
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center justify-center"
+                    >
+                      <span
+                        className={`
+                          px-6 py-2 text-lg transition-all duration-300 rounded-full
+                          ${isActive 
+                            ? 'text-text-primary font-semibold bg-ap-red' 
+                            : 'text-text-primary hover:text-ap-red font-normal'
+                          }
+                        `}
+                      >
+                        {item.name}
+                      </span>
+                    </Link>
+                  );
+                })}
                 <Link
                   href="/book"
-                  className="bg-ap-red hover:bg-ap-red-dark text-text-primary px-8 py-3 rounded-full text-xl font-medium transition-colors"
                   onClick={() => setIsOpen(false)}
+                  className="flex items-center justify-center"
                 >
-                  Book Now
+                  <span className="px-6 py-2 text-lg bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary rounded-full font-medium">
+                    Book Now
+                  </span>
                 </Link>
-              </motion.div>
-            </div>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </nav>
   );
-};
-
-export default Navbar; 
+} 
