@@ -1,5 +1,3 @@
-'use client';
-
 import { motion } from 'framer-motion';
 import { FaDumbbell, FaUsers, FaHeart, FaAppleAlt, FaLaptop } from 'react-icons/fa';
 import { GiBoxingGlove } from 'react-icons/gi';
