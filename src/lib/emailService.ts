@@ -1,9 +1,14 @@
 import emailjs from '@emailjs/browser';
 
-const EMAILJS_SERVICE_ID = 'service_hqiwj3m';
-const EMAILJS_TEMPLATE_ID = 'template_b4m7v0q';
-const EMAILJS_CONSULTATION_TEMPLATE_ID = 'template_sxvid22';
+const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+const EMAILJS_CONSULTATION_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_CONSULTATION_TEMPLATE_ID;
 const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
+// Initialize EmailJS with public key
+if (EMAILJS_PUBLIC_KEY) {
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+}
 
 interface EmailParams extends Record<string, unknown> {
   from_name: string;
@@ -30,21 +35,42 @@ interface ConsultationParams extends Record<string, unknown> {
 }
 
 export const sendEmail = async (params: EmailParams) => {
+  if (!EMAILJS_PUBLIC_KEY || !EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID) {
+    console.error('EmailJS configuration is incomplete');
+    return { success: false, error: 'Email service is not configured properly' };
+  }
+
   try {
     const response = await emailjs.send(
       EMAILJS_SERVICE_ID,
       EMAILJS_TEMPLATE_ID,
-      params,
+      {
+        ...params,
+        reply_to: params.from_email
+      },
       EMAILJS_PUBLIC_KEY
     );
-    return { success: true, response };
+
+    if (response.status === 200) {
+      return { success: true, response };
+    } else {
+      throw new Error(`Failed to send email: ${response.text}`);
+    }
   } catch (error) {
     console.error('Email send failed:', error);
-    return { success: false, error };
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Failed to send email'
+    };
   }
 };
 
 export const sendConsultationEmail = async (params: ConsultationParams) => {
+  if (!EMAILJS_PUBLIC_KEY || !EMAILJS_SERVICE_ID || !EMAILJS_CONSULTATION_TEMPLATE_ID) {
+    console.error('EmailJS configuration is incomplete');
+    return { success: false, error: 'Email service is not configured properly' };
+  }
+
   try {
     const response = await emailjs.send(
       EMAILJS_SERVICE_ID,
@@ -55,9 +81,17 @@ export const sendConsultationEmail = async (params: ConsultationParams) => {
       },
       EMAILJS_PUBLIC_KEY
     );
-    return { success: true, response };
+
+    if (response.status === 200) {
+      return { success: true, response };
+    } else {
+      throw new Error(`Failed to send consultation email: ${response.text}`);
+    }
   } catch (error) {
     console.error('Consultation booking email failed:', error);
-    return { success: false, error };
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Failed to send consultation request'
+    };
   }
 }; 
