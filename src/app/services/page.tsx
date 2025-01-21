@@ -5,6 +5,7 @@ import { FaDumbbell, FaUsers, FaHeart, FaAppleAlt, FaLaptop } from 'react-icons/
 import { GiBoxingGlove } from 'react-icons/gi';
 import Image from 'next/image';
 import Link from 'next/link';
+import type { Metadata } from 'next'
 
 const services = [
   {
@@ -80,6 +81,28 @@ const services = [
     ]
   }
 ];
+
+export const metadata: Metadata = {
+  title: 'Fitness Services & Training Programs',
+  description: 'Discover our comprehensive fitness services including personal training, group classes, boxing, kickboxing, and specialized programs. Expert guidance from certified kinesiologists.',
+  openGraph: {
+    title: 'Fitness Services & Training Programs | AP Fitness',
+    description: 'Transform your fitness journey with our professional training services. From personal training to group classes, we offer expert guidance for all fitness levels.',
+    images: [
+      {
+        url: '/images/services-og.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'AP Fitness Services',
+      }
+    ],
+  },
+  twitter: {
+    title: 'Fitness Services & Training Programs | AP Fitness',
+    description: 'Transform your fitness journey with our professional training services. From personal training to group classes, we offer expert guidance for all fitness levels.',
+    images: ['/images/services-twitter.jpg'],
+  },
+}
 
 export default function Services() {
   return (

@@ -1,0 +1,9 @@
+# https://ap-fitness.ca robots.txt
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://ap-fitness.ca/sitemap.xml
+
+# Optimize crawling
+Crawl-delay: 1 

@@ -7,6 +7,29 @@ import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
 import Map from '@/components/Map';
 import { sendEmail } from '@/lib/emailService';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Contact AP Fitness - Get in Touch',
+  description: 'Contact AP Fitness in Surrey, BC. Reach out for inquiries about personal training, fitness classes, or to start your fitness journey. Visit our state-of-the-art facility.',
+  openGraph: {
+    title: 'Contact AP Fitness - Get in Touch',
+    description: 'Ready to transform your life? Contact AP Fitness today and let our certified kinesiologists help you achieve your fitness goals.',
+    images: [
+      {
+        url: '/images/contact-og.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Contact AP Fitness',
+      }
+    ],
+  },
+  twitter: {
+    title: 'Contact AP Fitness - Get in Touch',
+    description: 'Ready to transform your life? Contact AP Fitness today and let our certified kinesiologists help you achieve your fitness goals.',
+    images: ['/images/contact-twitter.jpg'],
+  },
+}
 
 export default function Contact() {
   const [formData, setFormData] = useState({
