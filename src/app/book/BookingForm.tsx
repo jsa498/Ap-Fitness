@@ -132,7 +132,8 @@ export default function BookingForm() {
     training_type: 'One to One Personal Training',
     preferred_time: '',
     additional_info: '',
-    selected_package: ''
+    selected_package: '',
+    preferred_trainer: '',
   });
 
   const [currentSection, setCurrentSection] = useState<FormSection>('personal');
@@ -143,6 +144,10 @@ export default function BookingForm() {
   const [selectedDuration, setSelectedDuration] = useState('');
   const [selectedSessions, setSelectedSessions] = useState('');
   const [showTrainingTypeSelector, setShowTrainingTypeSelector] = useState(false);
+  const [showGenderSelector, setShowGenderSelector] = useState(false);
+  const [showExperienceSelector, setShowExperienceSelector] = useState(false);
+  const [showTimeSelector, setShowTimeSelector] = useState(false);
+  const [showTrainerSelector, setShowTrainerSelector] = useState(false);
 
   useEffect(() => {
     const packageParam = searchParams.get('package');
@@ -200,12 +205,11 @@ export default function BookingForm() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof ValidationError]) {
-      setErrors((prev) => ({ ...prev, [name]: undefined }));
-    }
   };
 
   const handleNextSection = () => {
+    setErrors({});
+    
     if (validateForm(currentSection)) {
       const sections: FormSection[] = ['personal', 'physical', 'fitness', 'training'];
       const currentIndex = sections.indexOf(currentSection);
@@ -225,6 +229,8 @@ export default function BookingForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+    
     if (!validateForm(currentSection)) return;
 
     setStatus('loading');
@@ -247,9 +253,11 @@ export default function BookingForm() {
           training_type: 'One to One Personal Training',
           preferred_time: '',
           additional_info: '',
-          selected_package: ''
+          selected_package: '',
+          preferred_trainer: '',
         });
         setCurrentSection('personal');
+        setErrors({});
       } else {
         throw new Error('Failed to send consultation request');
       }
@@ -427,24 +435,25 @@ export default function BookingForm() {
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <FaUser className="text-ap-red" />
-                  <label htmlFor="gender" className="text-text-primary font-medium">
+                  <label className="text-text-primary font-medium">
                     Gender *
                   </label>
                 </div>
-                <select
-                  id="gender"
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  required
-                  disabled={status === 'loading'}
-                  className={`w-full px-4 py-3 bg-dark border ${errors.gender ? 'border-red-500' : 'border-dark-border'} rounded-full focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50 transition-all duration-300 hover:border-ap-red/50`}
+                <button
+                  type="button"
+                  onClick={() => setShowGenderSelector(true)}
+                  className={`w-full px-4 py-3 bg-dark border ${
+                    errors.gender ? 'border-red-500' : 'border-dark-border'
+                  } rounded-full text-left transition-all hover:border-ap-red/50 focus:ring-2 focus:ring-ap-red focus:border-transparent flex items-center justify-between`}
                 >
-                  <option value="">Select your gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </select>
+                  <span className={formData.gender ? 'text-text-primary' : 'text-text-secondary'}>
+                    {formData.gender ? formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1) : 'Select your gender'}
+                  </span>
+                  <div className="flex items-center gap-2 text-text-secondary">
+                    <span className="text-xs">Click to change</span>
+                    <FaChevronRight className="w-3 h-3" />
+                  </div>
+                </button>
                 {errors.gender && <p className="text-red-500 text-sm mt-1">{errors.gender}</p>}
               </div>
             </div>
@@ -486,24 +495,25 @@ export default function BookingForm() {
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <FaDumbbell className="text-ap-red" />
-                  <label htmlFor="experience_level" className="text-text-primary font-medium">
-                    Fitness Experience Level *
+                  <label className="text-text-primary font-medium">
+                    Experience Level *
                   </label>
                 </div>
-                <select
-                  id="experience_level"
-                  name="experience_level"
-                  value={formData.experience_level}
-                  onChange={handleChange}
-                  required
-                  disabled={status === 'loading'}
-                  className={`w-full px-4 py-3 bg-dark border ${errors.experience_level ? 'border-red-500' : 'border-dark-border'} rounded-full focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50 transition-all duration-300 hover:border-ap-red/50`}
+                <button
+                  type="button"
+                  onClick={() => setShowExperienceSelector(true)}
+                  className={`w-full px-4 py-3 bg-dark border ${
+                    errors.experience_level ? 'border-red-500' : 'border-dark-border'
+                  } rounded-full text-left transition-all hover:border-ap-red/50 focus:ring-2 focus:ring-ap-red focus:border-transparent flex items-center justify-between`}
                 >
-                  <option value="">Select your experience level</option>
-                  {experienceLevels.map((level) => (
-                    <option key={level} value={level.toLowerCase()}>{level}</option>
-                  ))}
-                </select>
+                  <span className={formData.experience_level ? 'text-text-primary' : 'text-text-secondary'}>
+                    {formData.experience_level ? formData.experience_level.charAt(0).toUpperCase() + formData.experience_level.slice(1) : 'Select your experience level'}
+                  </span>
+                  <div className="flex items-center gap-2 text-text-secondary">
+                    <span className="text-xs">Click to change</span>
+                    <FaChevronRight className="w-3 h-3" />
+                  </div>
+                </button>
                 {errors.experience_level && <p className="text-red-500 text-sm mt-1">{errors.experience_level}</p>}
               </div>
             </div>
@@ -581,25 +591,48 @@ export default function BookingForm() {
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <FaClock className="text-ap-red" />
-                  <label htmlFor="preferred_time" className="text-text-primary font-medium">
+                  <label className="text-text-primary font-medium">
                     Preferred Time *
                   </label>
                 </div>
-                <select
-                  id="preferred_time"
-                  name="preferred_time"
-                  value={formData.preferred_time}
-                  onChange={handleChange}
-                  required
-                  disabled={status === 'loading'}
-                  className={`w-full px-4 py-3 bg-dark border ${errors.preferred_time ? 'border-red-500' : 'border-dark-border'} rounded-full focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50 transition-all duration-300 hover:border-ap-red/50`}
+                <button
+                  onClick={() => setShowTimeSelector(true)}
+                  className={`w-full px-4 py-3 bg-dark border ${
+                    errors.preferred_time ? 'border-red-500' : 'border-dark-border'
+                  } rounded-full text-left transition-all hover:border-ap-red/50 focus:ring-2 focus:ring-ap-red focus:border-transparent flex items-center justify-between`}
                 >
-            <option value="">Select preferred time</option>
-                  {timeSlots.map((slot) => (
-                    <option key={slot} value={slot}>{slot}</option>
-                  ))}
-                </select>
+                  <span className={formData.preferred_time ? 'text-text-primary' : 'text-text-secondary'}>
+                    {formData.preferred_time || 'Select preferred time'}
+                  </span>
+                  <div className="flex items-center gap-2 text-text-secondary">
+                    <span className="text-xs">Click to change</span>
+                    <FaChevronRight className="w-3 h-3" />
+                  </div>
+                </button>
                 {errors.preferred_time && <p className="text-red-500 text-sm mt-1">{errors.preferred_time}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <FaUserFriends className="text-ap-red" />
+                  <label className="text-text-primary font-medium">
+                    Preferred Trainer *
+                  </label>
+                </div>
+                <button
+                  onClick={() => setShowTrainerSelector(true)}
+                  className="w-full px-4 py-3 bg-dark border border-dark-border rounded-full text-left transition-all hover:border-ap-red/50 focus:ring-2 focus:ring-ap-red focus:border-transparent flex items-center justify-between"
+                >
+                  <span className={formData.preferred_trainer ? 'text-text-primary' : 'text-text-secondary'}>
+                    {formData.preferred_trainer ? 
+                      `${formData.preferred_trainer.charAt(0).toUpperCase() + formData.preferred_trainer.slice(1)} Trainer` : 
+                      'Select trainer preference'}
+                  </span>
+                  <div className="flex items-center gap-2 text-text-secondary">
+                    <span className="text-xs">Click to change</span>
+                    <FaChevronRight className="w-3 h-3" />
+                  </div>
+                </button>
               </div>
 
               <div className="space-y-2">
@@ -868,6 +901,279 @@ export default function BookingForm() {
     );
   };
 
+  const GenderSelectorModal = () => {
+    if (!showGenderSelector) return null;
+
+    const genderOptions = [
+      { value: 'male', label: 'Male', icon: FaUser },
+      { value: 'female', label: 'Female', icon: FaUser },
+      { value: 'other', label: 'Other', icon: FaUser }
+    ];
+
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-dark/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      >
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          className="bg-dark-lighter w-full max-w-md rounded-[2rem] p-6 relative mx-4"
+        >
+          <button
+            onClick={() => setShowGenderSelector(false)}
+            className="absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors"
+          >
+            <FaTimes className="w-5 h-5" />
+          </button>
+
+          <div className="text-center mb-6">
+            <h3 className="text-2xl font-bold text-text-primary mb-1">Select Gender</h3>
+            <p className="text-sm text-text-secondary">Choose your gender</p>
+          </div>
+
+          <div className="space-y-3">
+            {genderOptions.map((option) => (
+              <motion.button
+                key={option.value}
+                type="button"
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, gender: option.value }));
+                  setShowGenderSelector(false);
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-colors ${
+                  formData.gender === option.value
+                    ? 'border-ap-red bg-ap-red/5'
+                    : 'border-dark-border hover:border-ap-red/50'
+                }`}
+              >
+                <div className={`p-3 rounded-xl ${
+                  formData.gender === option.value
+                    ? 'bg-ap-red text-text-primary'
+                    : 'bg-dark text-text-secondary'
+                }`}>
+                  <option.icon className="w-5 h-5" />
+                </div>
+                <span className="text-text-primary font-medium">{option.label}</span>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  };
+
+  const ExperienceSelectorModal = () => {
+    if (!showExperienceSelector) return null;
+
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-dark/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      >
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          className="bg-dark-lighter w-full max-w-md rounded-[2rem] p-6 relative mx-4"
+        >
+          <button
+            onClick={() => setShowExperienceSelector(false)}
+            className="absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors"
+          >
+            <FaTimes className="w-5 h-5" />
+          </button>
+
+          <div className="text-center mb-6">
+            <h3 className="text-2xl font-bold text-text-primary mb-1">Select Experience Level</h3>
+            <p className="text-sm text-text-secondary">Choose your fitness experience level</p>
+          </div>
+
+          <div className="space-y-3">
+            {experienceLevels.map((level) => (
+              <motion.button
+                key={level}
+                type="button"
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, experience_level: level.toLowerCase() }));
+                  setShowExperienceSelector(false);
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-colors ${
+                  formData.experience_level === level.toLowerCase()
+                    ? 'border-ap-red bg-ap-red/5'
+                    : 'border-dark-border hover:border-ap-red/50'
+                }`}
+              >
+                <div className={`p-3 rounded-xl ${
+                  formData.experience_level === level.toLowerCase()
+                    ? 'bg-ap-red text-text-primary'
+                    : 'bg-dark text-text-secondary'
+                }`}>
+                  <FaDumbbell className="w-5 h-5" />
+                </div>
+                <div className="text-left">
+                  <span className="text-text-primary font-medium">{level}</span>
+                </div>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  };
+
+  const TimeSelectorModal = () => {
+    if (!showTimeSelector) return null;
+
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-dark/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      >
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          className="bg-dark-lighter w-full max-w-md rounded-[2rem] p-6 relative mx-4"
+        >
+          <button
+            onClick={() => setShowTimeSelector(false)}
+            className="absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors"
+          >
+            <FaTimes className="w-5 h-5" />
+          </button>
+
+          <div className="text-center mb-6">
+            <h3 className="text-2xl font-bold text-text-primary mb-1">Select Preferred Time</h3>
+            <p className="text-sm text-text-secondary">Choose your preferred training time</p>
+          </div>
+
+          <div className="space-y-3">
+            {timeSlots.map((slot) => (
+              <motion.button
+                key={slot}
+                type="button"
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, preferred_time: slot }));
+                  setShowTimeSelector(false);
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-colors ${
+                  formData.preferred_time === slot
+                    ? 'border-ap-red bg-ap-red/5'
+                    : 'border-dark-border hover:border-ap-red/50'
+                }`}
+              >
+                <div className={`p-3 rounded-xl ${
+                  formData.preferred_time === slot
+                    ? 'bg-ap-red text-text-primary'
+                    : 'bg-dark text-text-secondary'
+                }`}>
+                  <FaClock className="w-5 h-5" />
+                </div>
+                <span className="text-text-primary font-medium">{slot}</span>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  };
+
+  const TrainerPreferenceModal = () => {
+    if (!showTrainerSelector) return null;
+
+    const trainerOptions = [
+      { 
+        name: 'Any Trainer',
+        gender: 'any',
+        description: 'No preference for trainer gender'
+      },
+      { 
+        name: 'Male Trainer',
+        gender: 'male',
+        description: 'Prefer a male trainer'
+      },
+      { 
+        name: 'Female Trainer',
+        gender: 'female',
+        description: 'Prefer a female trainer'
+      }
+    ];
+
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-dark/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      >
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          className="bg-dark-lighter w-full max-w-md rounded-[2rem] p-6 relative mx-4"
+        >
+          <button
+            onClick={() => setShowTrainerSelector(false)}
+            className="absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors"
+          >
+            <FaTimes className="w-5 h-5" />
+          </button>
+
+          <div className="text-center mb-6">
+            <h3 className="text-2xl font-bold text-text-primary mb-1">Trainer Preference</h3>
+            <p className="text-sm text-text-secondary">Select your preferred trainer gender</p>
+          </div>
+
+          <div className="space-y-3">
+            {trainerOptions.map((option) => (
+              <motion.button
+                key={option.gender}
+                type="button"
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, preferred_trainer: option.gender }));
+                  setShowTrainerSelector(false);
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-colors ${
+                  formData.preferred_trainer === option.gender
+                    ? 'border-ap-red bg-ap-red/5'
+                    : 'border-dark-border hover:border-ap-red/50'
+                }`}
+              >
+                <div className={`p-3 rounded-xl ${
+                  formData.preferred_trainer === option.gender
+                    ? 'bg-ap-red text-text-primary'
+                    : 'bg-dark text-text-secondary'
+                }`}>
+                  <FaUserFriends className="w-5 h-5" />
+                </div>
+                <div className="text-left">
+                  <span className="text-text-primary font-medium">{option.name}</span>
+                  <p className="text-sm text-text-secondary">{option.description}</p>
+                </div>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  };
+
   return (
     <main className="min-h-screen pt-20">
       {/* Form Navigation */}
@@ -993,6 +1299,10 @@ export default function BookingForm() {
       <AnimatePresence>
         {showPackageSelector && <PackageSelectorModal />}
         {showTrainingTypeSelector && <TrainingTypeSelectorModal />}
+        {showGenderSelector && <GenderSelectorModal />}
+        {showExperienceSelector && <ExperienceSelectorModal />}
+        {showTimeSelector && <TimeSelectorModal />}
+        {showTrainerSelector && <TrainerPreferenceModal />}
       </AnimatePresence>
     </main>
   );

@@ -56,6 +56,7 @@ export default function ServiceCarousel() {
   const [currentIndex, setCurrentIndex] = useState(services.length);
   const [isDragging, setIsDragging] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
   const [isMobile, setIsMobile] = useState(false);
@@ -63,9 +64,9 @@ export default function ServiceCarousel() {
   const resetPositionRef = useRef<NodeJS.Timeout>();
   const autoPlayTimeoutRef = useRef<NodeJS.Timeout>();
 
-  // Auto-play duration and timing
-  const autoPlayDuration = 5.0;
-  const slideDelay = 1000;
+  // Update autoplay duration and timing
+  const autoPlayDuration = 3.0; // Reduced from 5.0 to 3.0 seconds
+  const slideDelay = 0; // Removed initial delay
 
   // Helper function to calculate the centered position for a given index
   const calculateCenteredOffset = (index: number, containerWidth: number, cardWidth: number) => {
@@ -103,11 +104,42 @@ export default function ServiceCarousel() {
     return () => window.removeEventListener('resize', debouncedUpdate);
   }, [isMobile, controls, currentIndex, isDragging, isAnimating]);
 
-  // Auto-play effect
+  // Add intersection observer to start autoplay when visible
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Prevent scroll interference on mobile
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const preventScroll = (e: TouchEvent) => {
+      if (isDragging) {
+        e.preventDefault();
+      }
+    };
+
+    container.addEventListener('touchmove', preventScroll, { passive: false });
+    return () => container.removeEventListener('touchmove', preventScroll);
+  }, [isDragging]);
+
+  // Modified auto-play effect
+  useEffect(() => {
+    if (!isVisible || isDragging || isAnimating) return;
+
     const startAutoPlay = async () => {
-      if (isDragging || isAnimating) return;
-      
       const container = containerRef.current;
       if (!container) return;
 
@@ -117,7 +149,6 @@ export default function ServiceCarousel() {
       setIsAnimating(true);
 
       try {
-        // Move to next position
         const nextOffset = calculateCenteredOffset(nextIndex, container.offsetWidth, cardWidth);
         await controls.start({
           x: nextOffset,
@@ -127,7 +158,6 @@ export default function ServiceCarousel() {
           }
         });
 
-        // Update index and handle reset if needed
         if (nextIndex >= services.length * 2) {
           setCurrentIndex(services.length);
           const resetOffset = calculateCenteredOffset(services.length, container.offsetWidth, cardWidth);
@@ -140,11 +170,14 @@ export default function ServiceCarousel() {
       }
     };
 
-    const timer = setInterval(startAutoPlay, autoPlayDuration * 1000 + slideDelay);
-    return () => clearInterval(timer);
-  }, [controls, currentIndex, isMobile, isDragging, isAnimating]);
+    // Start autoplay immediately when visible
+    const timer = setInterval(startAutoPlay, autoPlayDuration * 1000);
+    startAutoPlay(); // Initial start without delay
 
-  // Drag handlers
+    return () => clearInterval(timer);
+  }, [controls, currentIndex, isMobile, isDragging, isAnimating, isVisible]);
+
+  // Modified drag handlers for better mobile experience
   const handleDragStart = (event: MouseEvent | TouchEvent | PointerEvent) => {
     if (isAnimating) return;
     
@@ -156,6 +189,11 @@ export default function ServiceCarousel() {
       : (event as MouseEvent).clientX;
     
     dragStartX.current = clientX;
+
+    // Prevent default touch behavior on mobile
+    if ('touches' in event) {
+      event.preventDefault();
+    }
   };
 
   const handleDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
@@ -166,10 +204,11 @@ export default function ServiceCarousel() {
     const baseOffset = calculateCenteredOffset(currentIndex, container.offsetWidth, cardWidth);
     const dragOffset = info.offset.x;
     
-    // Apply drag with limits
-    const maxDrag = cardWidth + 24;
-    const clampedDrag = Math.max(Math.min(dragOffset, maxDrag), -maxDrag);
-    controls.set({ x: baseOffset + clampedDrag });
+    // Reduce the maximum drag distance and add resistance
+    const maxDrag = cardWidth * 0.8;
+    const resistance = 0.5;
+    const dragWithResistance = Math.sign(dragOffset) * Math.min(Math.abs(dragOffset) * resistance, maxDrag);
+    controls.set({ x: baseOffset + dragWithResistance });
   };
 
   const handleDragEnd = async (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
@@ -184,25 +223,28 @@ export default function ServiceCarousel() {
       const dragDistance = info.offset.x;
       const velocity = info.velocity.x;
       
-      // Determine target index
+      // Make it easier to trigger slide change but with more controlled velocity
       let targetIndex = currentIndex;
-      if (Math.abs(dragDistance) > cardWidth * 0.15 || Math.abs(velocity) > 500) {
+      const dragThreshold = cardWidth * 0.2; // Reduced threshold
+      const velocityThreshold = 300; // Reduced velocity threshold
+      
+      if (Math.abs(dragDistance) > dragThreshold || Math.abs(velocity) > velocityThreshold) {
         targetIndex += dragDistance > 0 ? -1 : 1;
       }
       
       // Ensure target index stays within bounds
-      targetIndex = Math.max(0, Math.min(targetIndex, extendedServices.length - 1));
+      targetIndex = Math.max(services.length / 2, Math.min(targetIndex, services.length * 2.5 - 1));
       
-      // Animate to final position
+      // Smoother animation to final position
       const finalOffset = calculateCenteredOffset(targetIndex, container.offsetWidth, cardWidth);
       await controls.start({
         x: finalOffset,
         transition: {
           type: "spring",
-          stiffness: 200,
-          damping: 25,
-          velocity: velocity * 0.1,
-          restDelta: 0.001
+          stiffness: 150, // Reduced stiffness
+          damping: 20, // Adjusted damping
+          velocity: velocity * 0.05, // Reduced velocity influence
+          restDelta: 0.01
         },
       });
 
@@ -241,10 +283,14 @@ export default function ServiceCarousel() {
   };
 
   return (
-    <div className="relative w-full overflow-hidden px-4">
+    <div 
+      className="relative w-full overflow-hidden px-4"
+      style={{ touchAction: 'none' }} // Prevent default touch behavior
+    >
       <div 
-        className="relative overflow-hidden touch-pan-y"
+        className="relative overflow-hidden"
         ref={containerRef}
+        style={{ touchAction: 'none' }} // Prevent default touch behavior
       >
         <motion.div 
           className="flex gap-6 py-4"

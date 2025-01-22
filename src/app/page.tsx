@@ -97,13 +97,13 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-6 md:p-10 border border-text-primary/10 max-w-[90%] md:max-w-2xl mx-auto"
+            className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-6 md:p-10 border border-text-primary/10 max-w-[90%] md:max-w-xl mx-auto"
           >
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="text-3xl md:text-5xl lg:text-6xl font-bold text-center mb-3 md:mb-4 drop-shadow-lg"
+              className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-3 md:mb-4 drop-shadow-lg"
             >
               Transform Your Life
             </motion.h1>
@@ -111,7 +111,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-lg md:text-xl lg:text-2xl text-center mb-6 md:mb-8 max-w-2xl drop-shadow-lg"
+              className="text-lg md:text-xl text-center mb-6 md:mb-8 max-w-lg mx-auto drop-shadow-lg"
             >
               Professional personal training and wellness services by certified kinesiologists
             </motion.p>
@@ -123,7 +123,7 @@ export default function Home() {
             >
               <Link
                 href="/book"
-                className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-6 md:px-10 py-3 md:py-4 rounded-full text-base md:text-lg font-bold transition-all duration-300 hover:shadow-[0_0_30px_rgba(220,38,38,0.3)] inline-block"
+                className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-6 md:px-8 py-3 md:py-3.5 rounded-full text-base md:text-lg font-bold transition-all duration-300 hover:shadow-[0_0_30px_rgba(220,38,38,0.3)] inline-block"
               >
                 Book a Consultation
               </Link>
