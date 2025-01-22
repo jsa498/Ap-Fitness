@@ -1127,6 +1127,7 @@ export default function BookingForm() {
           className="bg-dark-lighter w-full max-w-md rounded-[2rem] p-6 relative mx-4"
         >
           <button
+            type="button"
             onClick={() => setShowTrainerSelector(false)}
             className="absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors"
           >

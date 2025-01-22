@@ -31,6 +31,7 @@ interface ConsultationParams extends Record<string, unknown> {
   training_type: string;
   preferred_time: string;
   preferred_trainer?: string;
+  selected_package?: string;
   additional_info?: string;
 }
 
