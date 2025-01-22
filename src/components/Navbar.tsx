@@ -78,7 +78,7 @@ export default function Navbar() {
           </div>
 
           {/* Navigation Items - Always Visible */}
-          <div className="flex items-center justify-center gap-[2px] sm:gap-1 md:gap-2 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center justify-center gap-[1px] xs:gap-[2px] sm:gap-1 md:gap-2 overflow-x-visible flex-1 px-1">
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -86,7 +86,7 @@ export default function Navbar() {
                 role="menuitem"
                 aria-current={item.path === pathname ? 'page' : undefined}
                 className={`
-                  relative px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 transition-colors rounded-full text-[0.7rem] sm:text-sm md:text-base whitespace-nowrap
+                  relative px-1.5 py-1 xs:px-2 sm:px-3 sm:py-1.5 md:px-4 md:py-2 transition-colors rounded-full text-[0.65rem] xs:text-[0.7rem] sm:text-sm md:text-base whitespace-nowrap
                   ${item.path === pathname 
                     ? 'text-text-primary font-semibold bg-ap-red' 
                     : 'text-text-primary hover:text-ap-red hover:bg-dark-lighter font-normal'
@@ -99,7 +99,7 @@ export default function Navbar() {
           </div>
 
           {/* Book Now Button */}
-          <div className="flex-shrink-0 -translate-x-1.5">
+          <div className="flex-shrink-0">
             <Link
               href="/book"
               className="inline-flex items-center px-2.5 py-1 sm:px-4 sm:py-1.5 md:px-6 md:py-2 bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary rounded-full font-medium transition-all hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] text-[0.7rem] sm:text-sm md:text-base whitespace-nowrap"
