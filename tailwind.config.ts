@@ -9,9 +9,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'ap-red': '#FF0000',
-        'ap-black': '#000000',
-        'ap-white': '#FFFFFF',
+        'ap-red': '#dc2626',
+        'ap-red-dark': '#991b1b',
+        'dark': '#000000',
+        'dark-lighter': '#18181b',
+        'dark-border': '#27272a',
+        'text-primary': '#ffffff',
+        'text-secondary': '#a1a1aa',
+      },
+      animation: {
+        'pulse-subtle': 'pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      keyframes: {
+        'pulse-subtle': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.8' },
+        },
       },
     },
   },
