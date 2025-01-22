@@ -45,7 +45,7 @@ export default function Navbar() {
   // Dynamic Navbar Classes
   const navClasses = `
     fixed z-[100] transition-all duration-300 
-    w-[calc(100%-0.75rem)] sm:w-[calc(100%-2rem)] 
+    w-[calc(100%-0.5rem)] sm:w-[calc(100%-2rem)] 
     left-1/2 -translate-x-1/2 top-1 sm:top-2 lg:top-4
     bg-dark/95 backdrop-blur-xl shadow-2xl rounded-full
     border border-dark-border/30
@@ -58,7 +58,7 @@ export default function Navbar() {
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className="max-w-7xl mx-auto px-1.5 sm:px-4">
+      <div className="max-w-7xl mx-auto px-0.5 xs:px-1 sm:px-4">
         <div className="flex items-center justify-between h-[3.25rem] sm:h-14 lg:h-20 gap-0.5 sm:gap-4">
           {/* Logo */}
           <div className="flex-shrink-0">
@@ -78,7 +78,7 @@ export default function Navbar() {
           </div>
 
           {/* Navigation Items - Always Visible */}
-          <div className="flex items-center justify-center gap-[1px] xs:gap-[2px] sm:gap-1 md:gap-2 overflow-x-visible flex-1 px-1">
+          <div className="flex items-center justify-center gap-[1px] xs:gap-[2px] sm:gap-1 md:gap-2 overflow-x-visible flex-1 px-0.5 xs:px-1">
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -86,7 +86,7 @@ export default function Navbar() {
                 role="menuitem"
                 aria-current={item.path === pathname ? 'page' : undefined}
                 className={`
-                  relative px-1.5 py-1 xs:px-2 sm:px-3 sm:py-1.5 md:px-4 md:py-2 transition-colors rounded-full text-[0.65rem] xs:text-[0.7rem] sm:text-sm md:text-base whitespace-nowrap
+                  relative px-1 xs:px-1.5 sm:px-3 sm:py-1.5 md:px-4 md:py-2 transition-colors rounded-full text-[0.65rem] xs:text-[0.7rem] sm:text-sm md:text-base whitespace-nowrap
                   ${item.path === pathname 
                     ? 'text-text-primary font-semibold bg-ap-red' 
                     : 'text-text-primary hover:text-ap-red hover:bg-dark-lighter font-normal'
@@ -102,7 +102,7 @@ export default function Navbar() {
           <div className="flex-shrink-0">
             <Link
               href="/book"
-              className="inline-flex items-center px-2.5 py-1 sm:px-4 sm:py-1.5 md:px-6 md:py-2 bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary rounded-full font-medium transition-all hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] text-[0.7rem] sm:text-sm md:text-base whitespace-nowrap"
+              className="inline-flex items-center px-2 xs:px-2.5 sm:px-4 sm:py-1.5 md:px-6 md:py-2 bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary rounded-full font-medium transition-all hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] text-[0.7rem] sm:text-sm md:text-base whitespace-nowrap"
               role="button"
               aria-label="Book a consultation"
             >
