@@ -57,7 +57,7 @@ export default function ContactForm() {
         <div className="absolute inset-0 mx-4 overflow-hidden">
           <div className="absolute inset-0 rounded-[3rem] overflow-hidden">
             <Image
-              src="/images/DSC05617.jpg"
+              src="/images/DSC05617.jpeg"
               alt="AP Fitness Contact"
               fill
               className="object-cover brightness-50"

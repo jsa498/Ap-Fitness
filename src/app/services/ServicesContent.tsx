@@ -152,7 +152,7 @@ export default function ServicesContent() {
         <div className="absolute inset-0 mx-4 mt-4">
           <div className="absolute inset-0 rounded-[3rem] overflow-hidden">
             <Image
-              src="/images/DSC09190.jpg"
+              src="/images/DSC09190.jpeg"
               alt="AP Fitness Services"
               fill
               className="object-cover brightness-50"

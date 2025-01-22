@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import ServicesContent from './ServicesContent';
-import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'Fitness Services & Training Programs',
@@ -25,16 +24,5 @@ export const metadata: Metadata = {
 }
 
 export default function ServicesPage() {
-  return (
-    <>
-      <Image
-        src="/images/DSC09190.jpg"
-        alt="AP Fitness Services"
-        fill
-        className="object-cover brightness-50"
-        priority
-      />
-      <ServicesContent />
-    </>
-  );
+  return <ServicesContent />;
 } 
