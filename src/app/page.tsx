@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import ServiceCarousel from '@/components/ServiceCarousel'
 import TrainersPreview from '@/components/TrainersPreview'
+import ReviewCarousel from '@/components/ReviewCarousel'
 import { FaDumbbell, FaUsers, FaClinicMedical, FaUserMd, FaAppleAlt, FaLaptop, FaHandHoldingHeart } from 'react-icons/fa'
 import { GiWeightLiftingUp } from 'react-icons/gi'
 
@@ -239,6 +240,24 @@ export default function Home() {
               </svg>
             </Link>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Reviews Section */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12 px-4"
+          >
+            <h2 className="text-4xl font-bold mb-4 text-text-primary">What Our Clients Say</h2>
+            <p className="text-text-secondary text-lg max-w-2xl mx-auto">
+              Read what our amazing clients have to say about their experience with AP Fitness
+            </p>
+          </motion.div>
+          <ReviewCarousel />
         </div>
       </section>
 
