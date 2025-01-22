@@ -61,10 +61,8 @@ export default function ServiceCarousel() {
   const controls = useAnimation();
   const [isMobile, setIsMobile] = useState(false);
   const dragStartX = useRef(0);
-  const lastDragPosition = useRef(0);
+  const dragStartScrollX = useRef(0);
   const autoPlayTimeoutRef = useRef<NodeJS.Timeout>();
-  const dragVelocity = useRef(0);
-  const lastDragTime = useRef(0);
 
   // Reduced autoplay duration
   const autoPlayDuration = 3.0;
@@ -97,6 +95,83 @@ export default function ServiceCarousel() {
 
     return () => observer.disconnect();
   }, []);
+
+  // Manual touch handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (isAnimating) return;
+    setIsDragging(true);
+    controls.stop();
+    dragStartX.current = e.touches[0].clientX;
+    dragStartScrollX.current = 0;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging || !containerRef.current || isAnimating) return;
+
+    const container = containerRef.current;
+    const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
+    const baseOffset = calculateCenteredOffset(currentIndex, container.offsetWidth, cardWidth);
+    
+    const currentX = e.touches[0].clientX;
+    const diff = currentX - dragStartX.current;
+    dragStartScrollX.current = diff;
+
+    // Add resistance to prevent over-dragging
+    const resistance = 0.8;
+    const adjustedDiff = diff * resistance;
+    
+    controls.set({ x: baseOffset + adjustedDiff });
+  };
+
+  const handleTouchEnd = async () => {
+    if (!containerRef.current || isAnimating || !isDragging) return;
+    
+    setIsDragging(false);
+    setIsAnimating(true);
+    
+    try {
+      const container = containerRef.current;
+      const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
+      const dragDistance = dragStartScrollX.current;
+
+      let targetIndex = currentIndex;
+      const dragThreshold = cardWidth * 0.3;
+
+      if (Math.abs(dragDistance) > dragThreshold) {
+        targetIndex += dragDistance > 0 ? -1 : 1;
+      }
+
+      targetIndex = Math.max(
+        services.length / 2, 
+        Math.min(targetIndex, services.length * 2.5 - 1)
+      );
+
+      const finalOffset = calculateCenteredOffset(targetIndex, container.offsetWidth, cardWidth);
+      
+      await controls.start({
+        x: finalOffset,
+        transition: {
+          type: "spring",
+          stiffness: 200,
+          damping: 25,
+          restDelta: 0.5
+        }
+      });
+
+      if (targetIndex <= services.length / 2 || targetIndex >= services.length * 2.5) {
+        const resetIndex = services.length + (targetIndex % services.length);
+        setCurrentIndex(resetIndex);
+        controls.set({ 
+          x: calculateCenteredOffset(resetIndex, container.offsetWidth, cardWidth) 
+        });
+      } else {
+        setCurrentIndex(targetIndex);
+      }
+    } finally {
+      setIsAnimating(false);
+      dragStartScrollX.current = 0;
+    }
+  };
 
   // Autoplay effect
   useEffect(() => {
@@ -140,130 +215,17 @@ export default function ServiceCarousel() {
     return () => clearInterval(timer);
   }, [controls, currentIndex, isMobile, isDragging, isAnimating, isVisible]);
 
-  // Drag handlers with improved physics
-  const handleDragStart = (event: MouseEvent | TouchEvent | PointerEvent) => {
-    if (isAnimating) return;
-    
-    setIsDragging(true);
-    controls.stop();
-    
-    const clientX = 'touches' in event 
-      ? event.touches[0].clientX 
-      : (event as MouseEvent).clientX;
-    
-    dragStartX.current = clientX;
-    lastDragPosition.current = clientX;
-    lastDragTime.current = Date.now();
-    dragVelocity.current = 0;
-  };
-
-  const handleDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    if (!isDragging || !containerRef.current || isAnimating) return;
-
-    const container = containerRef.current;
-    const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
-    const baseOffset = calculateCenteredOffset(currentIndex, container.offsetWidth, cardWidth);
-    
-    // Calculate real-time velocity
-    const currentTime = Date.now();
-    const timeDelta = currentTime - lastDragTime.current;
-    if (timeDelta > 0) {
-      const currentPosition = 'touches' in event ? event.touches[0].clientX : (event as MouseEvent).clientX;
-      const positionDelta = currentPosition - lastDragPosition.current;
-      dragVelocity.current = positionDelta / timeDelta;
-      lastDragPosition.current = currentPosition;
-      lastDragTime.current = currentTime;
-    }
-
-    // Apply progressive resistance based on drag distance
-    const dragOffset = info.offset.x;
-    const dragProgress = Math.abs(dragOffset) / cardWidth;
-    const resistance = 1 - Math.min(dragProgress * 0.5, 0.5);
-    const adjustedOffset = dragOffset * resistance;
-
-    controls.set({ x: baseOffset + adjustedOffset });
-  };
-
-  const handleDragEnd = async (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    if (!containerRef.current || isAnimating) {
-      setIsDragging(false);
-      return;
-    }
-    
-    setIsDragging(false);
-    setIsAnimating(true);
-    
-    try {
-      const container = containerRef.current;
-      const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
-      const dragDistance = info.offset.x;
-      
-      // Use calculated velocity for more natural feeling
-      const velocity = Math.abs(dragVelocity.current) > Math.abs(info.velocity.x) 
-        ? dragVelocity.current 
-        : info.velocity.x;
-
-      let targetIndex = currentIndex;
-      const dragThreshold = cardWidth * 0.15;
-      const velocityThreshold = 0.5;
-
-      if (Math.abs(dragDistance) > dragThreshold || Math.abs(velocity) > velocityThreshold) {
-        targetIndex += dragDistance > 0 ? -1 : 1;
-      }
-
-      targetIndex = Math.max(
-        services.length / 2, 
-        Math.min(targetIndex, services.length * 2.5 - 1)
-      );
-
-      const finalOffset = calculateCenteredOffset(targetIndex, container.offsetWidth, cardWidth);
-      
-      // Smoother spring animation
-      await controls.start({
-        x: finalOffset,
-        transition: {
-          type: "spring",
-          stiffness: 80,
-          damping: 15,
-          restDelta: 0.001,
-          restSpeed: 0.001,
-        }
-      });
-
-      // Reset position if needed
-      if (targetIndex <= services.length / 2 || targetIndex >= services.length * 2.5) {
-        const resetIndex = services.length + (targetIndex % services.length);
-        setCurrentIndex(resetIndex);
-        controls.set({ 
-          x: calculateCenteredOffset(resetIndex, container.offsetWidth, cardWidth) 
-        });
-      } else {
-        setCurrentIndex(targetIndex);
-      }
-    } finally {
-      setIsAnimating(false);
-      dragVelocity.current = 0;
-    }
-  };
-
   return (
     <div className="relative w-full overflow-hidden px-4">
       <div 
         className="relative overflow-hidden"
         ref={containerRef}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <motion.div 
           className="flex gap-6 py-4"
-          drag="x"
-          dragDirectionLock
-          dragPropagation={false}
-          dragConstraints={containerRef}
-          dragElastic={0.03}
-          dragTransition={{ power: 0.1, timeConstant: 200 }}
-          dragMomentum={false}
-          onDragStart={handleDragStart}
-          onDrag={handleDrag}
-          onDragEnd={handleDragEnd}
           animate={controls}
         >
           {extendedServices.map((service, index) => (
