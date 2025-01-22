@@ -61,55 +61,33 @@ export default function ServiceCarousel() {
   const controls = useAnimation();
   const [isMobile, setIsMobile] = useState(false);
   const dragStartX = useRef(0);
-  const resetPositionRef = useRef<NodeJS.Timeout>();
+  const lastDragPosition = useRef(0);
   const autoPlayTimeoutRef = useRef<NodeJS.Timeout>();
+  const dragVelocity = useRef(0);
+  const lastDragTime = useRef(0);
 
-  // Update autoplay duration and timing
-  const autoPlayDuration = 3.0; // Reduced from 5.0 to 3.0 seconds
-  const slideDelay = 0; // Removed initial delay
+  // Reduced autoplay duration
+  const autoPlayDuration = 3.0;
 
-  // Helper function to calculate the centered position for a given index
+  // Helper function to calculate the centered position
   const calculateCenteredOffset = (index: number, containerWidth: number, cardWidth: number) => {
     const centeringOffset = (containerWidth - cardWidth) / 2;
     const cardPosition = -index * (cardWidth + 24);
     return cardPosition + centeringOffset;
   };
 
-  // Check if mobile and update on resize
+  // Check if mobile
   useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    const checkIfMobile = () => setIsMobile(window.innerWidth < 768);
     checkIfMobile();
-
-    const debouncedResize = debounce(checkIfMobile, 250);
-    window.addEventListener('resize', debouncedResize);
-    return () => window.removeEventListener('resize', debouncedResize);
+    window.addEventListener('resize', checkIfMobile);
+    return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
-  // Update position on resize
-  useEffect(() => {
-    const updatePosition = () => {
-      if (containerRef.current && !isDragging && !isAnimating) {
-        const container = containerRef.current;
-        const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
-        const offset = calculateCenteredOffset(currentIndex, container.offsetWidth, cardWidth);
-        controls.set({ x: offset });
-      }
-    };
-
-    const debouncedUpdate = debounce(updatePosition, 250);
-    updatePosition();
-    window.addEventListener('resize', debouncedUpdate);
-    return () => window.removeEventListener('resize', debouncedUpdate);
-  }, [isMobile, controls, currentIndex, isDragging, isAnimating]);
-
-  // Add intersection observer to start autoplay when visible
+  // Visibility observer
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
+      ([entry]) => setIsVisible(entry.isIntersecting),
       { threshold: 0.1 }
     );
 
@@ -120,22 +98,7 @@ export default function ServiceCarousel() {
     return () => observer.disconnect();
   }, []);
 
-  // Prevent scroll interference on mobile
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const preventScroll = (e: TouchEvent) => {
-      if (isDragging) {
-        e.preventDefault();
-      }
-    };
-
-    container.addEventListener('touchmove', preventScroll, { passive: false });
-    return () => container.removeEventListener('touchmove', preventScroll);
-  }, [isDragging]);
-
-  // Modified auto-play effect
+  // Autoplay effect
   useEffect(() => {
     if (!isVisible || isDragging || isAnimating) return;
 
@@ -160,8 +123,9 @@ export default function ServiceCarousel() {
 
         if (nextIndex >= services.length * 2) {
           setCurrentIndex(services.length);
-          const resetOffset = calculateCenteredOffset(services.length, container.offsetWidth, cardWidth);
-          controls.set({ x: resetOffset });
+          controls.set({ 
+            x: calculateCenteredOffset(services.length, container.offsetWidth, cardWidth) 
+          });
         } else {
           setCurrentIndex(nextIndex);
         }
@@ -170,14 +134,13 @@ export default function ServiceCarousel() {
       }
     };
 
-    // Start autoplay immediately when visible
     const timer = setInterval(startAutoPlay, autoPlayDuration * 1000);
-    startAutoPlay(); // Initial start without delay
+    startAutoPlay();
 
     return () => clearInterval(timer);
   }, [controls, currentIndex, isMobile, isDragging, isAnimating, isVisible]);
 
-  // Modified drag handlers for better mobile experience
+  // Drag handlers with improved physics
   const handleDragStart = (event: MouseEvent | TouchEvent | PointerEvent) => {
     if (isAnimating) return;
     
@@ -189,30 +152,43 @@ export default function ServiceCarousel() {
       : (event as MouseEvent).clientX;
     
     dragStartX.current = clientX;
-
-    // Prevent default touch behavior on mobile
-    if ('touches' in event) {
-      event.preventDefault();
-    }
+    lastDragPosition.current = clientX;
+    lastDragTime.current = Date.now();
+    dragVelocity.current = 0;
   };
 
   const handleDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     if (!isDragging || !containerRef.current || isAnimating) return;
-    
+
     const container = containerRef.current;
     const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
     const baseOffset = calculateCenteredOffset(currentIndex, container.offsetWidth, cardWidth);
-    const dragOffset = info.offset.x;
     
-    // Reduce the maximum drag distance and add resistance
-    const maxDrag = cardWidth * 0.8;
-    const resistance = 0.5;
-    const dragWithResistance = Math.sign(dragOffset) * Math.min(Math.abs(dragOffset) * resistance, maxDrag);
-    controls.set({ x: baseOffset + dragWithResistance });
+    // Calculate real-time velocity
+    const currentTime = Date.now();
+    const timeDelta = currentTime - lastDragTime.current;
+    if (timeDelta > 0) {
+      const currentPosition = 'touches' in event ? event.touches[0].clientX : (event as MouseEvent).clientX;
+      const positionDelta = currentPosition - lastDragPosition.current;
+      dragVelocity.current = positionDelta / timeDelta;
+      lastDragPosition.current = currentPosition;
+      lastDragTime.current = currentTime;
+    }
+
+    // Apply progressive resistance based on drag distance
+    const dragOffset = info.offset.x;
+    const dragProgress = Math.abs(dragOffset) / cardWidth;
+    const resistance = 1 - Math.min(dragProgress * 0.5, 0.5);
+    const adjustedOffset = dragOffset * resistance;
+
+    controls.set({ x: baseOffset + adjustedOffset });
   };
 
   const handleDragEnd = async (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    if (!containerRef.current || isAnimating) return;
+    if (!containerRef.current || isAnimating) {
+      setIsDragging(false);
+      return;
+    }
     
     setIsDragging(false);
     setIsAnimating(true);
@@ -221,83 +197,70 @@ export default function ServiceCarousel() {
       const container = containerRef.current;
       const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
       const dragDistance = info.offset.x;
-      const velocity = info.velocity.x;
       
-      // Make it easier to trigger slide change but with more controlled velocity
+      // Use calculated velocity for more natural feeling
+      const velocity = Math.abs(dragVelocity.current) > Math.abs(info.velocity.x) 
+        ? dragVelocity.current 
+        : info.velocity.x;
+
       let targetIndex = currentIndex;
-      const dragThreshold = cardWidth * 0.2; // Reduced threshold
-      const velocityThreshold = 300; // Reduced velocity threshold
-      
+      const dragThreshold = cardWidth * 0.15;
+      const velocityThreshold = 0.5;
+
       if (Math.abs(dragDistance) > dragThreshold || Math.abs(velocity) > velocityThreshold) {
         targetIndex += dragDistance > 0 ? -1 : 1;
       }
-      
-      // Ensure target index stays within bounds
-      targetIndex = Math.max(services.length / 2, Math.min(targetIndex, services.length * 2.5 - 1));
-      
-      // Smoother animation to final position
+
+      targetIndex = Math.max(
+        services.length / 2, 
+        Math.min(targetIndex, services.length * 2.5 - 1)
+      );
+
       const finalOffset = calculateCenteredOffset(targetIndex, container.offsetWidth, cardWidth);
+      
+      // Smoother spring animation
       await controls.start({
         x: finalOffset,
         transition: {
           type: "spring",
-          stiffness: 150, // Reduced stiffness
-          damping: 20, // Adjusted damping
-          velocity: velocity * 0.05, // Reduced velocity influence
-          restDelta: 0.01
-        },
+          stiffness: 80,
+          damping: 15,
+          restDelta: 0.001,
+          restSpeed: 0.001,
+        }
       });
 
-      // Handle reset if needed
+      // Reset position if needed
       if (targetIndex <= services.length / 2 || targetIndex >= services.length * 2.5) {
-        const resetIndex = targetIndex <= services.length / 2 
-          ? services.length + (targetIndex % services.length)
-          : services.length + (targetIndex % services.length);
-        
+        const resetIndex = services.length + (targetIndex % services.length);
         setCurrentIndex(resetIndex);
-        const resetOffset = calculateCenteredOffset(resetIndex, container.offsetWidth, cardWidth);
-        controls.set({ x: resetOffset });
+        controls.set({ 
+          x: calculateCenteredOffset(resetIndex, container.offsetWidth, cardWidth) 
+        });
       } else {
         setCurrentIndex(targetIndex);
       }
     } finally {
       setIsAnimating(false);
+      dragVelocity.current = 0;
     }
   };
 
-  // Cleanup
-  useEffect(() => {
-    return () => {
-      if (resetPositionRef.current) clearTimeout(resetPositionRef.current);
-      if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
-    };
-  }, []);
-
-  // Debounce utility
-  const debounce = (fn: (...args: any[]) => void, ms: number) => {
-    let timer: NodeJS.Timeout;
-    return (...args: any[]) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => fn(...args), ms);
-    };
-  };
-
   return (
-    <div 
-      className="relative w-full overflow-hidden px-4"
-      style={{ touchAction: 'none' }} // Prevent default touch behavior
-    >
+    <div className="relative w-full overflow-hidden px-4">
       <div 
         className="relative overflow-hidden"
         ref={containerRef}
-        style={{ touchAction: 'none' }} // Prevent default touch behavior
       >
         <motion.div 
           className="flex gap-6 py-4"
           drag="x"
+          dragDirectionLock
+          dragPropagation={false}
           dragConstraints={containerRef}
-          dragElastic={0.1}
-          dragMomentum={true}
+          dragElastic={0.03}
+          dragTransition={{ power: 0.1, timeConstant: 200 }}
+          dragMomentum={false}
           onDragStart={handleDragStart}
           onDrag={handleDrag}
           onDragEnd={handleDragEnd}
@@ -313,7 +276,7 @@ export default function ServiceCarousel() {
                 group hover:from-ap-red/20 hover:to-dark
                 transition-all duration-500
                 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}
-                select-none
+                select-none touch-none
               `}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

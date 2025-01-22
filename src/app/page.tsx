@@ -75,10 +75,10 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="mb-6 md:mb-12 text-center"
+            className="mb-4 md:mb-8 text-center"
           >
             <div className="inline-flex flex-col items-center">
-              <div className="relative w-[250px] md:w-[320px] h-[150px] md:h-[192px]">
+              <div className="relative w-[200px] md:w-[280px] h-[120px] md:h-[168px]">
                 <Image
                   src="/images/AP-Logo_processed.jpeg"
                   alt="AP Fitness"
@@ -87,7 +87,7 @@ export default function Home() {
                   priority
                 />
               </div>
-              <p className="text-2xl md:text-3xl font-semibold tracking-[0.2em] text-white uppercase bg-gradient-to-r from-white to-white/80 bg-clip-text -mt-8 md:-mt-10">
+              <p className="text-xl md:text-2xl font-semibold tracking-[0.2em] text-white uppercase bg-gradient-to-r from-white to-white/80 bg-clip-text -mt-6 md:-mt-8">
                 FITNESS & REHAB
               </p>
             </div>
@@ -97,13 +97,13 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-6 md:p-10 border border-text-primary/10 max-w-[90%] md:max-w-xl mx-auto"
+            className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-5 md:p-8 border border-text-primary/10 max-w-[90%] md:max-w-lg mx-auto"
           >
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-3 md:mb-4 drop-shadow-lg"
+              className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-2 md:mb-3 drop-shadow-lg"
             >
               Transform Your Life
             </motion.h1>
@@ -111,7 +111,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-lg md:text-xl text-center mb-6 md:mb-8 max-w-lg mx-auto drop-shadow-lg"
+              className="text-base md:text-lg text-center mb-4 md:mb-6 max-w-md mx-auto drop-shadow-lg"
             >
               Professional personal training and wellness services by certified kinesiologists
             </motion.p>
@@ -123,7 +123,7 @@ export default function Home() {
             >
               <Link
                 href="/book"
-                className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-6 md:px-8 py-3 md:py-3.5 rounded-full text-base md:text-lg font-bold transition-all duration-300 hover:shadow-[0_0_30px_rgba(220,38,38,0.3)] inline-block"
+                className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-5 md:px-7 py-2.5 md:py-3 rounded-full text-sm md:text-base font-bold transition-all duration-300 hover:shadow-[0_0_30px_rgba(220,38,38,0.3)] inline-block"
               >
                 Book a Consultation
               </Link>
