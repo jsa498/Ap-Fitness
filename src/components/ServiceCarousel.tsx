@@ -56,7 +56,6 @@ export default function ServiceCarousel() {
   const [currentIndex, setCurrentIndex] = useState(services.length);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
@@ -66,8 +65,8 @@ export default function ServiceCarousel() {
   const autoPlayTimeoutRef = useRef<NodeJS.Timeout>();
   const resetPositionRef = useRef<NodeJS.Timeout>();
 
-  // Slower, more readable auto-play speed
-  const autoPlayDuration = 30; // seconds
+  // Faster auto-play speed
+  const autoPlayDuration = isMobile ? 20 : 30; // seconds
 
   // Check if mobile and update on resize
   useEffect(() => {
@@ -88,8 +87,6 @@ export default function ServiceCarousel() {
         const container = containerRef.current;
         const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
         slideWidth.current = cardWidth;
-        
-        // Update position when width changes
         controls.set({ x: -currentIndex * cardWidth });
       }
     };
@@ -100,14 +97,13 @@ export default function ServiceCarousel() {
     return () => window.removeEventListener('resize', debouncedUpdate);
   }, [isMobile, controls, currentIndex]);
 
-  // Handle auto-play and hover pause
+  // Auto-play effect
   useEffect(() => {
-    if (!isAutoPlaying || isHovered || isDragging) return;
+    if (!isAutoPlaying) return;
 
     const startAutoPlay = async () => {
       const nextIndex = currentIndex + 1;
       
-      // Reset position smoothly when reaching end
       if (nextIndex >= services.length * 2) {
         await controls.start({
           x: -nextIndex * slideWidth.current,
@@ -135,9 +131,9 @@ export default function ServiceCarousel() {
       if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
       controls.stop();
     };
-  }, [isAutoPlaying, controls, currentIndex, isHovered, isDragging, hasUserInteracted]);
+  }, [isAutoPlaying, controls, currentIndex, autoPlayDuration, hasUserInteracted]);
 
-  // Improved drag handling with better touch support
+  // Improved drag handling with reduced sensitivity
   const handleDragStart = (event: MouseEvent | TouchEvent | PointerEvent) => {
     setIsDragging(true);
     setHasUserInteracted(true);
@@ -160,17 +156,17 @@ export default function ServiceCarousel() {
     const dragDistance = clientX - dragStartX.current;
     const direction = dragDistance > 0 ? -1 : 1;
     
-    // More forgiving drag threshold with velocity consideration
-    if (Math.abs(dragDistance) > slideWidth.current * 0.15 || Math.abs(info.velocity.x) > 50) {
+    // Less sensitive drag threshold
+    if (Math.abs(dragDistance) > slideWidth.current * 0.3 || Math.abs(info.velocity.x) > 800) {
       const targetIndex = currentIndex + direction;
       
       await controls.start({
         x: -targetIndex * slideWidth.current,
         transition: {
           type: "spring",
-          stiffness: 150,
-          damping: 20,
-          velocity: info.velocity.x * 0.5
+          stiffness: 200,
+          damping: 25,
+          velocity: info.velocity.x * 0.2 // Reduced velocity influence
         },
       });
       
@@ -188,13 +184,13 @@ export default function ServiceCarousel() {
         }, 100);
       }
     } else {
-      // Smooth snap back to current position
+      // Snap back to current position
       await controls.start({
         x: -currentIndex * slideWidth.current,
         transition: {
           type: "spring",
-          stiffness: 200,
-          damping: 25,
+          stiffness: 300,
+          damping: 30,
         },
       });
     }
@@ -213,23 +209,19 @@ export default function ServiceCarousel() {
     };
   }, []);
 
-  // Debounce utility function
-  function debounce(fn: Function, ms: number) {
+  // TypeScript-safe debounce utility
+  const debounce = (fn: (...args: any[]) => void, ms: number) => {
     let timer: NodeJS.Timeout;
     return (...args: any[]) => {
       clearTimeout(timer);
-      timer = setTimeout(() => fn.apply(this, args), ms);
+      timer = setTimeout(() => fn(...args), ms);
     };
-  }
+  };
 
   return (
-    <div 
-      className="relative w-full overflow-hidden px-4"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="relative w-full overflow-hidden px-4">
       {/* Auto-play Progress Indicator */}
-      {isAutoPlaying && !isHovered && !isDragging && (
+      {isAutoPlaying && !isDragging && (
         <motion.div 
           className="absolute top-0 left-4 right-4 h-0.5 bg-ap-red/20 rounded-full overflow-hidden"
           initial={{ opacity: 0 }}
@@ -332,7 +324,7 @@ export default function ServiceCarousel() {
 
       {/* Navigation Arrows - Only on Desktop */}
       <AnimatePresence>
-        {!isMobile && (isHovered || isDragging) && (
+        {!isMobile && (
           <>
             <motion.button
               initial={{ opacity: 0, x: -20 }}
