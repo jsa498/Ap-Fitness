@@ -58,10 +58,10 @@ export default function Navbar() {
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className="max-w-7xl mx-auto px-0.5 xs:px-1 sm:px-4">
+      <div className="max-w-7xl mx-auto px-1.5 xs:px-2 sm:px-4">
         <div className="flex items-center justify-between h-[3.25rem] sm:h-14 lg:h-20 gap-0.5 sm:gap-4">
           {/* Logo */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 pl-1 xs:pl-1.5 sm:pl-2">
             <Link 
               href="/" 
               className="flex items-center"
@@ -99,10 +99,10 @@ export default function Navbar() {
           </div>
 
           {/* Book Now Button */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 pr-1 xs:pr-1.5 sm:pr-2">
             <Link
               href="/book"
-              className="inline-flex items-center px-2 xs:px-2.5 sm:px-4 sm:py-1.5 md:px-6 md:py-2 bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary rounded-full font-medium transition-all hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] text-[0.7rem] sm:text-sm md:text-base whitespace-nowrap"
+              className="inline-flex items-center px-3 py-1.5 xs:px-4 xs:py-1.5 sm:px-4 sm:py-1.5 md:px-6 md:py-2 bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary rounded-full font-medium transition-all hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] text-[0.7rem] sm:text-sm md:text-base whitespace-nowrap"
               role="button"
               aria-label="Book a consultation"
             >
