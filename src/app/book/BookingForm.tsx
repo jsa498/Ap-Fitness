@@ -869,143 +869,131 @@ export default function BookingForm() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12">
+    <main className="min-h-screen pt-20">
       {/* Form Navigation */}
-      <div className="flex justify-center mb-8 px-4 overflow-x-auto no-scrollbar">
-        <div className="inline-flex gap-2 p-1 bg-dark-lighter/50 rounded-full">
-          {['Personal', 'Physical', 'Fitness', 'Training'].map((section, index) => (
-            <button
+      <div className="flex justify-center mb-8 px-4">
+        <div className="inline-flex gap-2">
+          {(['personal', 'physical', 'fitness', 'training'] as FormSection[]).map((section) => (
+            <motion.button
               key={section}
-              onClick={() => setCurrentSection(section.toLowerCase() as FormSection)}
-              className={`
-                px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap min-w-[80px]
-                ${currentSection === section.toLowerCase()
-                  ? 'bg-ap-red text-text-primary'
-                  : 'text-text-primary hover:bg-dark-lighter'
-                }
-              `}
+              onClick={() => setCurrentSection(section)}
+              className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                currentSection === section
+                  ? 'bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary'
+                  : 'bg-dark-lighter text-text-secondary hover:bg-dark'
+              }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              {section}
-            </button>
+              {section.charAt(0).toUpperCase() + section.slice(1)}
+            </motion.button>
           ))}
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4">
-        <div className="bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-6 sm:p-8 border border-text-primary/10">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-text-primary">
-            Schedule Your Free Consultation
-          </h1>
-          
-          {/* Form Content */}
-          <div className="space-y-6 mt-8">
-            {currentSection === 'training' ? (
-              <>
-                <div className="space-y-6">
-                  {/* Training Type */}
-                  <div>
-                    <label className="flex items-center gap-2 text-lg font-medium text-text-primary mb-2">
-                      <FaUserFriends className="text-ap-red" />
-                      Training Type *
-                    </label>
-                    <button
-                      onClick={() => setShowTrainingTypeSelector(true)}
-                      className="w-full p-4 bg-dark/40 rounded-xl border border-text-primary/10 text-left flex items-center justify-between text-text-primary hover:bg-dark/60 transition-colors"
-                    >
-                      <span>{formData.training_type || 'Select training type'}</span>
-                      <FaChevronRight className="text-text-secondary" />
-                    </button>
-                  </div>
+      <section className="max-w-4xl mx-auto px-4 pb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-br from-dark-lighter to-dark p-[2px] rounded-[2rem] shadow-dark-lg"
+        >
+          <div className="bg-dark rounded-[1.9rem] p-8 h-full">
+            <h1 className="text-4xl font-bold text-center mb-8 text-text-primary">Schedule Your Free Consultation</h1>
 
-                  {/* Selected Package */}
-                  <div>
-                    <label className="flex items-center gap-2 text-lg font-medium text-text-primary mb-2">
-                      <FaBox className="text-ap-red" />
-                      Selected Package *
-                    </label>
-                    <button
-                      onClick={() => setShowPackageSelector(true)}
-                      className="w-full p-4 bg-dark/40 rounded-xl border border-text-primary/10 text-left flex items-center justify-between text-text-primary hover:bg-dark/60 transition-colors"
-                    >
-                      <span className="line-clamp-1">{formData.selected_package || 'Select a package'}</span>
-                      <FaChevronRight className="text-text-secondary" />
-                    </button>
-                  </div>
+            {status === 'success' ? (
+              <motion.div 
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="text-center py-8"
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                  className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg"
+                >
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </motion.div>
+                <h3 className="text-2xl font-bold text-text-primary mb-2">Consultation Request Sent!</h3>
+                <p className="text-text-secondary mb-6">We'll get back to you shortly to confirm your consultation.</p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setStatus('idle')}
+                  className="text-ap-red hover:text-ap-red-dark transition-colors"
+                >
+                  Book another consultation
+                </motion.button>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {renderFormSection()}
 
-                  {/* Preferred Time */}
-                  <div>
-                    <label className="flex items-center gap-2 text-lg font-medium text-text-primary mb-2">
-                      <FaClock className="text-ap-red" />
-                      Preferred Time *
-                    </label>
-                    <select
-                      name="preferred_time"
-                      value={formData.preferred_time}
-                      onChange={handleChange}
-                      className="w-full p-4 bg-dark/40 rounded-xl border border-text-primary/10 text-text-primary appearance-none"
+                <div className="flex justify-between mt-8">
+                  {currentSection !== 'personal' && (
+                    <motion.button
+                      type="button"
+                      onClick={handlePrevSection}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="bg-dark-lighter text-text-primary px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 hover:bg-dark flex items-center space-x-2"
                     >
-                      <option value="">Select preferred time</option>
-                      {timeSlots.map((slot) => (
-                        <option key={slot} value={slot}>
-                          {slot}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                      <FaChevronRight className="rotate-180" />
+                      <span>Previous</span>
+                    </motion.button>
+                  )}
 
-                  {/* Additional Information */}
-                  <div>
-                    <label className="flex items-center gap-2 text-lg font-medium text-text-primary mb-2">
-                      <FaInfoCircle className="text-ap-red" />
-                      Additional Information
-                    </label>
-                    <textarea
-                      name="additional_info"
-                      value={formData.additional_info}
-                      onChange={handleChange}
-                      placeholder="Any additional information you'd like to share..."
-                      className="w-full p-4 bg-dark/40 rounded-xl border border-text-primary/10 text-text-primary min-h-[100px] resize-none"
-                    />
-                  </div>
+                  {currentSection !== 'training' ? (
+                    <motion.button
+                      type="button"
+                      onClick={handleNextSection}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 shadow-lg hover:shadow-ap-red/20 ml-auto flex items-center space-x-2"
+                    >
+                      <span>Next</span>
+                      <FaChevronRight />
+                    </motion.button>
+                  ) : (
+                    <motion.button
+                      type="submit"
+                      disabled={status === 'loading'}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-ap-red/20 disabled:opacity-50 flex items-center space-x-2 ml-auto"
+                    >
+                      {status === 'loading' ? (
+                        <>
+                          <LoadingSpinner size="sm" />
+                          <span>Sending...</span>
+                        </>
+                      ) : (
+                        <>
+                          <FaPaperPlane className="mr-2" />
+                          <span>Book Consultation</span>
+                        </>
+                      )}
+                    </motion.button>
+                  )}
                 </div>
 
-                {/* Navigation Buttons */}
-                <div className="flex items-center justify-between gap-4 mt-8">
-                  <button
-                    onClick={handlePrevSection}
-                    className="flex items-center gap-2 px-6 py-3 rounded-full bg-dark-lighter text-text-primary hover:bg-dark transition-colors"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    onClick={handleSubmit}
-                    disabled={status === 'loading'}
-                    className="flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary font-medium hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] transition-all disabled:opacity-50"
-                  >
-                    {status === 'loading' ? (
-                      <LoadingSpinner />
-                    ) : (
-                      <>
-                        <FaPaperPlane />
-                        Book Consultation
-                      </>
-                    )}
-                  </button>
-                </div>
-              </>
-            ) : null}
-            {/* Add other sections here */}
+                {status === 'error' && (
+                  <div className="text-red-500 text-sm text-center">
+                    {errorMessage}
+                  </div>
+                )}
+              </form>
+            )}
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </section>
 
       <AnimatePresence>
         {showPackageSelector && <PackageSelectorModal />}
-      </AnimatePresence>
-
-      <AnimatePresence>
         {showTrainingTypeSelector && <TrainingTypeSelectorModal />}
       </AnimatePresence>
-    </div>
+    </main>
   );
 } 
