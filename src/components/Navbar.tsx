@@ -44,8 +44,8 @@ export default function Navbar() {
   // Dynamic Navbar Classes
   const navClasses = `
     fixed z-[100] transition-all duration-300 
-    w-[calc(100%-0.5rem)] sm:w-[calc(100%-2rem)] 
-    left-1/2 -translate-x-1/2 top-2 lg:top-4
+    w-[calc(100%-0.75rem)] sm:w-[calc(100%-2rem)] 
+    left-1/2 -translate-x-1/2 top-1 sm:top-2 lg:top-4
     bg-dark/95 backdrop-blur-xl shadow-2xl rounded-full
     border border-dark-border/30
     ${isVisible ? 'translate-y-0' : '-translate-y-[150%]'}
@@ -57,8 +57,8 @@ export default function Navbar() {
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className="max-w-7xl mx-auto px-2 sm:px-4">
-        <div className="flex items-center justify-between h-14 lg:h-20 gap-1 sm:gap-4">
+      <div className="max-w-7xl mx-auto px-1.5 sm:px-4">
+        <div className="flex items-center justify-between h-12 sm:h-14 lg:h-20 gap-0.5 sm:gap-4">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link 
@@ -71,13 +71,13 @@ export default function Navbar() {
                 alt="AP Fitness"
                 width={64}
                 height={64}
-                className="h-9 sm:h-10 md:h-12 w-auto rounded-full shadow-lg bg-white p-[1px] md:p-[2px] hover:shadow-ap-red/20 transition-all duration-300 hover:scale-105"
+                className="h-7 sm:h-10 md:h-12 w-auto rounded-full shadow-lg bg-white p-[1px] md:p-[2px] hover:shadow-ap-red/20 transition-all duration-300 hover:scale-105"
               />
             </Link>
           </div>
 
           {/* Navigation Items - Always Visible */}
-          <div className="flex items-center justify-center gap-[2px] sm:gap-1 md:gap-2 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center justify-center gap-[1px] sm:gap-1 md:gap-2 overflow-x-auto scrollbar-hide">
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -85,7 +85,7 @@ export default function Navbar() {
                 role="menuitem"
                 aria-current={item.path === pathname ? 'page' : undefined}
                 className={`
-                  relative px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 transition-colors rounded-full text-xs sm:text-sm md:text-base whitespace-nowrap
+                  relative px-1.5 py-0.5 sm:px-3 sm:py-1.5 md:px-4 md:py-2 transition-colors rounded-full text-[0.65rem] sm:text-sm md:text-base whitespace-nowrap
                   ${item.path === pathname 
                     ? 'text-text-primary font-semibold bg-ap-red' 
                     : 'text-text-primary hover:text-ap-red hover:bg-dark-lighter font-normal'
@@ -98,10 +98,10 @@ export default function Navbar() {
           </div>
 
           {/* Book Now Button */}
-          <div className="flex-shrink-0 -translate-x-2">
+          <div className="flex-shrink-0 -translate-x-1">
             <Link
               href="/book"
-              className="inline-flex items-center px-2 py-1 sm:px-4 sm:py-1.5 md:px-6 md:py-2 bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary rounded-full font-medium transition-all hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] text-xs sm:text-sm md:text-base whitespace-nowrap"
+              className="inline-flex items-center px-2 py-0.5 sm:px-4 sm:py-1.5 md:px-6 md:py-2 bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary rounded-full font-medium transition-all hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] text-[0.65rem] sm:text-sm md:text-base whitespace-nowrap"
               role="button"
               aria-label="Book a consultation"
             >
