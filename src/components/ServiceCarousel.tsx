@@ -55,18 +55,24 @@ const extendedServices = [...services, ...services, ...services];
 export default function ServiceCarousel() {
   const [currentIndex, setCurrentIndex] = useState(services.length);
   const [isDragging, setIsDragging] = useState(false);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isAnimating, setIsAnimating] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
-  const slideWidth = useRef(0);
   const [isMobile, setIsMobile] = useState(false);
   const dragStartX = useRef(0);
   const resetPositionRef = useRef<NodeJS.Timeout>();
   const autoPlayTimeoutRef = useRef<NodeJS.Timeout>();
 
   // Auto-play duration and timing
-  const autoPlayDuration = 5.0; // Longer duration for smoother movement
-  const slideDelay = 1000; // Pause duration when centered
+  const autoPlayDuration = 5.0;
+  const slideDelay = 1000;
+
+  // Helper function to calculate the centered position for a given index
+  const calculateCenteredOffset = (index: number, containerWidth: number, cardWidth: number) => {
+    const centeringOffset = (containerWidth - cardWidth) / 2;
+    const cardPosition = -index * (cardWidth + 24);
+    return cardPosition + centeringOffset;
+  };
 
   // Check if mobile and update on resize
   useEffect(() => {
@@ -80,108 +86,69 @@ export default function ServiceCarousel() {
     return () => window.removeEventListener('resize', debouncedResize);
   }, []);
 
-  // Helper function to calculate the centered position for a given index
-  const calculateCenteredOffset = (index: number, containerWidth: number, cardWidth: number) => {
-    // The amount we need to offset to center the current card
-    const centeringOffset = (containerWidth - cardWidth) / 2;
-    // The base position of the card (accounting for gaps)
-    const cardPosition = -index * (cardWidth + 24); // Fixed 24px gap
-    // Combined offset to center the card
-    return cardPosition + centeringOffset;
-  };
-
-  // Update slide width with debounced resize handler
+  // Update position on resize
   useEffect(() => {
-    const updateSlideWidth = () => {
-      if (containerRef.current) {
+    const updatePosition = () => {
+      if (containerRef.current && !isDragging && !isAnimating) {
         const container = containerRef.current;
         const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
-        
-        // Update the current card position to maintain centering
         const offset = calculateCenteredOffset(currentIndex, container.offsetWidth, cardWidth);
         controls.set({ x: offset });
       }
     };
 
-    const debouncedUpdate = debounce(updateSlideWidth, 250);
-    updateSlideWidth();
+    const debouncedUpdate = debounce(updatePosition, 250);
+    updatePosition();
     window.addEventListener('resize', debouncedUpdate);
     return () => window.removeEventListener('resize', debouncedUpdate);
-  }, [isMobile, controls, currentIndex]);
+  }, [isMobile, controls, currentIndex, isDragging, isAnimating]);
 
-  // Auto-play effect with smooth slow-down and proper centering
+  // Auto-play effect
   useEffect(() => {
-    if (!isAutoPlaying) return;
-
     const startAutoPlay = async () => {
+      if (isDragging || isAnimating) return;
+      
       const container = containerRef.current;
       if (!container) return;
 
       const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
       const nextIndex = currentIndex + 1;
-      
-      if (nextIndex >= services.length * 2) {
-        // First ensure current card is centered
-        const currentOffset = calculateCenteredOffset(currentIndex, container.offsetWidth, cardWidth);
-        await controls.start({
-          x: currentOffset,
-          transition: { duration: 0.5, ease: "easeOut" }
-        });
 
-        // Pause while centered
-        await new Promise(resolve => setTimeout(resolve, slideDelay));
-        
+      setIsAnimating(true);
+
+      try {
         // Move to next position
         const nextOffset = calculateCenteredOffset(nextIndex, container.offsetWidth, cardWidth);
         await controls.start({
           x: nextOffset,
           transition: { 
-            duration: autoPlayDuration - 1.5,
+            duration: autoPlayDuration,
             ease: [0.4, 0.0, 0.2, 1],
           }
         });
-        
-        // Reset to middle set while maintaining center position
-        setCurrentIndex(services.length);
-        const resetOffset = calculateCenteredOffset(services.length, container.offsetWidth, cardWidth);
-        controls.set({ x: resetOffset });
-        return;
-      }
 
-      // Center current card
-      const currentOffset = calculateCenteredOffset(currentIndex, container.offsetWidth, cardWidth);
-      await controls.start({
-        x: currentOffset,
-        transition: { duration: 0.5, ease: "easeOut" }
-      });
-
-      // Pause while centered
-      await new Promise(resolve => setTimeout(resolve, slideDelay));
-
-      // Move to next card
-      const nextOffset = calculateCenteredOffset(nextIndex, container.offsetWidth, cardWidth);
-      await controls.start({
-        x: nextOffset,
-        transition: { 
-          duration: autoPlayDuration - 1.5,
-          ease: [0.4, 0.0, 0.2, 1],
+        // Update index and handle reset if needed
+        if (nextIndex >= services.length * 2) {
+          setCurrentIndex(services.length);
+          const resetOffset = calculateCenteredOffset(services.length, container.offsetWidth, cardWidth);
+          controls.set({ x: resetOffset });
+        } else {
+          setCurrentIndex(nextIndex);
         }
-      });
-
-      setCurrentIndex(nextIndex);
+      } finally {
+        setIsAnimating(false);
+      }
     };
 
-    autoPlayTimeoutRef.current = setTimeout(startAutoPlay, 500);
+    const timer = setInterval(startAutoPlay, autoPlayDuration * 1000 + slideDelay);
+    return () => clearInterval(timer);
+  }, [controls, currentIndex, isMobile, isDragging, isAnimating]);
 
-    return () => {
-      if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
-    };
-  }, [isAutoPlaying, controls, currentIndex, services.length, isMobile]);
-
-  // Drag handling with precise centering
+  // Drag handlers
   const handleDragStart = (event: MouseEvent | TouchEvent | PointerEvent) => {
+    if (isAnimating) return;
+    
     setIsDragging(true);
-    setIsAutoPlaying(false);
     controls.stop();
     
     const clientX = 'touches' in event 
@@ -192,7 +159,7 @@ export default function ServiceCarousel() {
   };
 
   const handleDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    if (!isDragging || !containerRef.current) return;
+    if (!isDragging || !containerRef.current || isAnimating) return;
     
     const container = containerRef.current;
     const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
@@ -200,50 +167,47 @@ export default function ServiceCarousel() {
     const dragOffset = info.offset.x;
     
     // Apply drag with limits
-    const maxDrag = cardWidth + 24; // One card width + gap
+    const maxDrag = cardWidth + 24;
     const clampedDrag = Math.max(Math.min(dragOffset, maxDrag), -maxDrag);
     controls.set({ x: baseOffset + clampedDrag });
   };
 
   const handleDragEnd = async (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (!containerRef.current || isAnimating) return;
+    
     setIsDragging(false);
+    setIsAnimating(true);
     
-    const container = containerRef.current;
-    if (!container) return;
-    
-    const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
-    const dragDistance = info.offset.x;
-    const velocity = info.velocity.x;
-    
-    // Determine target index based on drag distance and velocity
-    let targetIndex = currentIndex;
-    if (Math.abs(dragDistance) > cardWidth * 0.15 || Math.abs(velocity) > 500) {
-      targetIndex += dragDistance > 0 ? -1 : 1;
-    }
-    
-    // Ensure target index stays within bounds
-    targetIndex = Math.max(0, Math.min(targetIndex, extendedServices.length - 1));
-    
-    // Calculate final centered position
-    const finalOffset = calculateCenteredOffset(targetIndex, container.offsetWidth, cardWidth);
-    
-    // Animate to centered position
-    await controls.start({
-      x: finalOffset,
-      transition: {
-        type: "spring",
-        stiffness: 200,
-        damping: 25,
-        velocity: velocity * 0.1,
-        restDelta: 0.001
-      },
-    });
-    
-    setCurrentIndex(targetIndex);
+    try {
+      const container = containerRef.current;
+      const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
+      const dragDistance = info.offset.x;
+      const velocity = info.velocity.x;
+      
+      // Determine target index
+      let targetIndex = currentIndex;
+      if (Math.abs(dragDistance) > cardWidth * 0.15 || Math.abs(velocity) > 500) {
+        targetIndex += dragDistance > 0 ? -1 : 1;
+      }
+      
+      // Ensure target index stays within bounds
+      targetIndex = Math.max(0, Math.min(targetIndex, extendedServices.length - 1));
+      
+      // Animate to final position
+      const finalOffset = calculateCenteredOffset(targetIndex, container.offsetWidth, cardWidth);
+      await controls.start({
+        x: finalOffset,
+        transition: {
+          type: "spring",
+          stiffness: 200,
+          damping: 25,
+          velocity: velocity * 0.1,
+          restDelta: 0.001
+        },
+      });
 
-    // Handle reset to middle set if needed
-    if (targetIndex <= services.length / 2 || targetIndex >= services.length * 2.5) {
-      resetPositionRef.current = setTimeout(() => {
+      // Handle reset if needed
+      if (targetIndex <= services.length / 2 || targetIndex >= services.length * 2.5) {
         const resetIndex = targetIndex <= services.length / 2 
           ? services.length + (targetIndex % services.length)
           : services.length + (targetIndex % services.length);
@@ -251,16 +215,15 @@ export default function ServiceCarousel() {
         setCurrentIndex(resetIndex);
         const resetOffset = calculateCenteredOffset(resetIndex, container.offsetWidth, cardWidth);
         controls.set({ x: resetOffset });
-      }, 200);
+      } else {
+        setCurrentIndex(targetIndex);
+      }
+    } finally {
+      setIsAnimating(false);
     }
-
-    // Resume auto-play after drag
-    setTimeout(() => {
-      setIsAutoPlaying(true);
-    }, 2500);
   };
 
-  // Cleanup function
+  // Cleanup
   useEffect(() => {
     return () => {
       if (resetPositionRef.current) clearTimeout(resetPositionRef.current);
@@ -268,7 +231,7 @@ export default function ServiceCarousel() {
     };
   }, []);
 
-  // TypeScript-safe debounce utility
+  // Debounce utility
   const debounce = (fn: (...args: any[]) => void, ms: number) => {
     let timer: NodeJS.Timeout;
     return (...args: any[]) => {
@@ -279,7 +242,6 @@ export default function ServiceCarousel() {
 
   return (
     <div className="relative w-full overflow-hidden px-4">
-      {/* Service Cards Container */}
       <div 
         className="relative overflow-hidden touch-pan-y"
         ref={containerRef}

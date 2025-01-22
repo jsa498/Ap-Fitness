@@ -1,6 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import { FaDumbbell, FaUsers, FaHeart, FaAppleAlt, FaLaptop, FaClinicMedical, FaUserMd, FaHandHoldingHeart } from 'react-icons/fa';
 import { GiWeightLiftingUp } from 'react-icons/gi';
 import Image from 'next/image';
@@ -106,10 +107,48 @@ const services = [
 ];
 
 export default function ServicesContent() {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  
+  // Set loaded state after initial render
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: prefersReducedMotion ? 0 : 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: [0.4, 0.0, 0.2, 1]
+      }
+    }
+  };
+
   return (
     <main className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="relative h-[50vh] mt-8 mb-16">
+      <motion.section 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="relative h-[50vh] mt-8 mb-16"
+      >
         <div className="absolute inset-0 mx-4 mt-4">
           <div className="absolute inset-0 rounded-[3rem] overflow-hidden">
             <Image
@@ -118,30 +157,38 @@ export default function ServicesContent() {
               fill
               className="object-cover brightness-50"
               priority
+              onLoad={() => setIsLoaded(true)}
             />
             <div className="absolute inset-0 bg-gradient-to-br from-dark/95 via-dark/90 to-dark/85" />
           </div>
         </div>
-        <div className="relative h-full flex items-center justify-center text-text-primary">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="relative h-full flex items-center justify-center text-text-primary"
+        >
           <div className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-8 md:p-12 mx-4 border border-text-primary/10">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">Our Services</h1>
             <p className="text-lg md:text-xl max-w-2xl mx-auto px-4 drop-shadow-lg">
               Professional fitness services tailored to help you achieve your goals
             </p>
           </div>
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
       {/* Services Grid */}
       <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate={isLoaded ? "visible" : "hidden"}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+        >
           {services.map((service, index) => (
             <motion.div
               key={service.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
+              variants={itemVariants}
               className="relative p-[2px] rounded-[2rem] bg-gradient-to-br from-dark-lighter to-dark group hover:from-ap-red/20 hover:to-dark transition-all duration-500"
             >
               <div className="relative h-full bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-8 border border-text-primary/10 overflow-hidden">
@@ -185,11 +232,17 @@ export default function ServicesContent() {
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-20">
+      <motion.section 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-20%" }}
+        transition={{ duration: 0.5 }}
+        className="relative py-20"
+      >
         <div className="absolute inset-0 overflow-hidden rounded-[3rem] mx-4">
           <Image
             src="/images/DSC09177.jpeg"
@@ -218,7 +271,7 @@ export default function ServicesContent() {
             </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
     </main>
   );
 } 
