@@ -54,19 +54,19 @@ const extendedServices = [...services, ...services, ...services];
 
 export default function ServiceCarousel() {
   const [currentIndex, setCurrentIndex] = useState(services.length);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
-  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
   const slideWidth = useRef(0);
   const [isMobile, setIsMobile] = useState(false);
   const dragStartX = useRef(0);
-  const autoPlayTimeoutRef = useRef<NodeJS.Timeout>();
   const resetPositionRef = useRef<NodeJS.Timeout>();
+  const autoPlayTimeoutRef = useRef<NodeJS.Timeout>();
 
-  // Faster auto-play speed
-  const autoPlayDuration = isMobile ? 20 : 30; // seconds
+  // Auto-play duration and timing
+  const autoPlayDuration = 5.0; // Longer duration for smoother movement
+  const slideDelay = 1000; // Pause duration when centered
 
   // Check if mobile and update on resize
   useEffect(() => {
@@ -80,14 +80,26 @@ export default function ServiceCarousel() {
     return () => window.removeEventListener('resize', debouncedResize);
   }, []);
 
+  // Helper function to calculate the centered position for a given index
+  const calculateCenteredOffset = (index: number, containerWidth: number, cardWidth: number) => {
+    // The amount we need to offset to center the current card
+    const centeringOffset = (containerWidth - cardWidth) / 2;
+    // The base position of the card (accounting for gaps)
+    const cardPosition = -index * (cardWidth + 24); // Fixed 24px gap
+    // Combined offset to center the card
+    return cardPosition + centeringOffset;
+  };
+
   // Update slide width with debounced resize handler
   useEffect(() => {
     const updateSlideWidth = () => {
       if (containerRef.current) {
         const container = containerRef.current;
         const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
-        slideWidth.current = cardWidth;
-        controls.set({ x: -currentIndex * cardWidth });
+        
+        // Update the current card position to maintain centering
+        const offset = calculateCenteredOffset(currentIndex, container.offsetWidth, cardWidth);
+        controls.set({ x: offset });
       }
     };
 
@@ -97,46 +109,79 @@ export default function ServiceCarousel() {
     return () => window.removeEventListener('resize', debouncedUpdate);
   }, [isMobile, controls, currentIndex]);
 
-  // Auto-play effect
+  // Auto-play effect with smooth slow-down and proper centering
   useEffect(() => {
     if (!isAutoPlaying) return;
 
     const startAutoPlay = async () => {
+      const container = containerRef.current;
+      if (!container) return;
+
+      const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
       const nextIndex = currentIndex + 1;
       
       if (nextIndex >= services.length * 2) {
+        // First ensure current card is centered
+        const currentOffset = calculateCenteredOffset(currentIndex, container.offsetWidth, cardWidth);
         await controls.start({
-          x: -nextIndex * slideWidth.current,
-          transition: { duration: 0.5, ease: "easeInOut" }
+          x: currentOffset,
+          transition: { duration: 0.5, ease: "easeOut" }
+        });
+
+        // Pause while centered
+        await new Promise(resolve => setTimeout(resolve, slideDelay));
+        
+        // Move to next position
+        const nextOffset = calculateCenteredOffset(nextIndex, container.offsetWidth, cardWidth);
+        await controls.start({
+          x: nextOffset,
+          transition: { 
+            duration: autoPlayDuration - 1.5,
+            ease: [0.4, 0.0, 0.2, 1],
+          }
         });
         
+        // Reset to middle set while maintaining center position
         setCurrentIndex(services.length);
-        controls.set({ x: -services.length * slideWidth.current });
+        const resetOffset = calculateCenteredOffset(services.length, container.offsetWidth, cardWidth);
+        controls.set({ x: resetOffset });
         return;
       }
 
+      // Center current card
+      const currentOffset = calculateCenteredOffset(currentIndex, container.offsetWidth, cardWidth);
       await controls.start({
-        x: -nextIndex * slideWidth.current,
-        transition: {
-          duration: hasUserInteracted ? autoPlayDuration / 2 : autoPlayDuration,
-          ease: "linear",
-        },
+        x: currentOffset,
+        transition: { duration: 0.5, ease: "easeOut" }
+      });
+
+      // Pause while centered
+      await new Promise(resolve => setTimeout(resolve, slideDelay));
+
+      // Move to next card
+      const nextOffset = calculateCenteredOffset(nextIndex, container.offsetWidth, cardWidth);
+      await controls.start({
+        x: nextOffset,
+        transition: { 
+          duration: autoPlayDuration - 1.5,
+          ease: [0.4, 0.0, 0.2, 1],
+        }
       });
 
       setCurrentIndex(nextIndex);
     };
 
-    autoPlayTimeoutRef.current = setTimeout(startAutoPlay, 100);
+    autoPlayTimeoutRef.current = setTimeout(startAutoPlay, 500);
+
     return () => {
       if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
-      controls.stop();
     };
-  }, [isAutoPlaying, controls, currentIndex, autoPlayDuration, hasUserInteracted]);
+  }, [isAutoPlaying, controls, currentIndex, services.length, isMobile]);
 
-  // Improved drag handling with reduced sensitivity
+  // Drag handling with precise centering
   const handleDragStart = (event: MouseEvent | TouchEvent | PointerEvent) => {
     setIsDragging(true);
-    setHasUserInteracted(true);
+    setIsAutoPlaying(false);
     controls.stop();
     
     const clientX = 'touches' in event 
@@ -146,66 +191,80 @@ export default function ServiceCarousel() {
     dragStartX.current = clientX;
   };
 
+  const handleDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (!isDragging || !containerRef.current) return;
+    
+    const container = containerRef.current;
+    const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
+    const baseOffset = calculateCenteredOffset(currentIndex, container.offsetWidth, cardWidth);
+    const dragOffset = info.offset.x;
+    
+    // Apply drag with limits
+    const maxDrag = cardWidth + 24; // One card width + gap
+    const clampedDrag = Math.max(Math.min(dragOffset, maxDrag), -maxDrag);
+    controls.set({ x: baseOffset + clampedDrag });
+  };
+
   const handleDragEnd = async (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     setIsDragging(false);
     
-    const clientX = 'changedTouches' in event 
-      ? event.changedTouches[0].clientX 
-      : (event as MouseEvent).clientX;
+    const container = containerRef.current;
+    if (!container) return;
     
-    const dragDistance = clientX - dragStartX.current;
-    const direction = dragDistance > 0 ? -1 : 1;
+    const cardWidth = container.offsetWidth * (isMobile ? 0.85 : 0.333);
+    const dragDistance = info.offset.x;
+    const velocity = info.velocity.x;
     
-    // Less sensitive drag threshold
-    if (Math.abs(dragDistance) > slideWidth.current * 0.3 || Math.abs(info.velocity.x) > 800) {
-      const targetIndex = currentIndex + direction;
-      
-      await controls.start({
-        x: -targetIndex * slideWidth.current,
-        transition: {
-          type: "spring",
-          stiffness: 200,
-          damping: 25,
-          velocity: info.velocity.x * 0.2 // Reduced velocity influence
-        },
-      });
-      
-      setCurrentIndex(targetIndex);
+    // Determine target index based on drag distance and velocity
+    let targetIndex = currentIndex;
+    if (Math.abs(dragDistance) > cardWidth * 0.15 || Math.abs(velocity) > 500) {
+      targetIndex += dragDistance > 0 ? -1 : 1;
+    }
+    
+    // Ensure target index stays within bounds
+    targetIndex = Math.max(0, Math.min(targetIndex, extendedServices.length - 1));
+    
+    // Calculate final centered position
+    const finalOffset = calculateCenteredOffset(targetIndex, container.offsetWidth, cardWidth);
+    
+    // Animate to centered position
+    await controls.start({
+      x: finalOffset,
+      transition: {
+        type: "spring",
+        stiffness: 200,
+        damping: 25,
+        velocity: velocity * 0.1,
+        restDelta: 0.001
+      },
+    });
+    
+    setCurrentIndex(targetIndex);
 
-      // Reset position if needed
-      if (targetIndex <= services.length / 2 || targetIndex >= services.length * 2.5) {
-        resetPositionRef.current = setTimeout(() => {
-          const resetIndex = targetIndex <= services.length / 2 
-            ? services.length + (targetIndex % services.length)
-            : services.length + (targetIndex % services.length);
-          
-          setCurrentIndex(resetIndex);
-          controls.set({ x: -resetIndex * slideWidth.current });
-        }, 100);
-      }
-    } else {
-      // Snap back to current position
-      await controls.start({
-        x: -currentIndex * slideWidth.current,
-        transition: {
-          type: "spring",
-          stiffness: 300,
-          damping: 30,
-        },
-      });
+    // Handle reset to middle set if needed
+    if (targetIndex <= services.length / 2 || targetIndex >= services.length * 2.5) {
+      resetPositionRef.current = setTimeout(() => {
+        const resetIndex = targetIndex <= services.length / 2 
+          ? services.length + (targetIndex % services.length)
+          : services.length + (targetIndex % services.length);
+        
+        setCurrentIndex(resetIndex);
+        const resetOffset = calculateCenteredOffset(resetIndex, container.offsetWidth, cardWidth);
+        controls.set({ x: resetOffset });
+      }, 200);
     }
 
-    // Resume auto-play after interaction
+    // Resume auto-play after drag
     setTimeout(() => {
       setIsAutoPlaying(true);
-    }, 1000);
+    }, 2500);
   };
 
   // Cleanup function
   useEffect(() => {
     return () => {
-      if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
       if (resetPositionRef.current) clearTimeout(resetPositionRef.current);
+      if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
     };
   }, []);
 
@@ -220,28 +279,6 @@ export default function ServiceCarousel() {
 
   return (
     <div className="relative w-full overflow-hidden px-4">
-      {/* Auto-play Progress Indicator */}
-      {isAutoPlaying && !isDragging && (
-        <motion.div 
-          className="absolute top-0 left-4 right-4 h-0.5 bg-ap-red/20 rounded-full overflow-hidden"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <motion.div
-            className="h-full w-full bg-ap-red origin-left"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{
-              duration: hasUserInteracted ? autoPlayDuration / 2 : autoPlayDuration,
-              ease: "linear",
-              repeat: Infinity
-            }}
-          />
-        </motion.div>
-      )}
-
       {/* Service Cards Container */}
       <div 
         className="relative overflow-hidden touch-pan-y"
@@ -249,23 +286,20 @@ export default function ServiceCarousel() {
       >
         <motion.div 
           className="flex gap-6 py-4"
-          animate={controls}
           drag="x"
           dragConstraints={containerRef}
-          dragElastic={0.2}
-          dragTransition={{ 
-            bounceStiffness: 150, 
-            bounceDamping: 20 
-          }}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
+          dragElastic={0.1}
           dragMomentum={true}
+          onDragStart={handleDragStart}
+          onDrag={handleDrag}
+          onDragEnd={handleDragEnd}
+          animate={controls}
         >
           {extendedServices.map((service, index) => (
             <motion.div
               key={`${index}-${service.title}`}
               className={`
-                flex-shrink-0 w-[85%] md:w-[calc(33.333%-1rem)]
+                flex-shrink-0 w-[85%] md:w-[33.333%]
                 relative p-[2px] rounded-[2rem] overflow-hidden
                 bg-gradient-to-br from-dark-lighter to-dark
                 group hover:from-ap-red/20 hover:to-dark
@@ -321,54 +355,6 @@ export default function ServiceCarousel() {
           ))}
         </motion.div>
       </div>
-
-      {/* Navigation Arrows - Only on Desktop */}
-      <AnimatePresence>
-        {!isMobile && (
-          <>
-            <motion.button
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              onClick={() => {
-                setHasUserInteracted(true);
-                setIsAutoPlaying(false);
-                const prevIndex = currentIndex - 1;
-                controls.start({
-                  x: -prevIndex * slideWidth.current,
-                  transition: { type: "spring", stiffness: 300, damping: 30 },
-                });
-                setCurrentIndex(prevIndex);
-              }}
-              className="absolute left-8 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-dark-lighter/50 backdrop-blur-sm hover:bg-ap-red/20 border border-text-primary/10 hover:border-ap-red/50 transition-all duration-300"
-            >
-              <svg className="w-6 h-6 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </motion.button>
-            <motion.button
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              onClick={() => {
-                setHasUserInteracted(true);
-                setIsAutoPlaying(false);
-                const nextIndex = currentIndex + 1;
-                controls.start({
-                  x: -nextIndex * slideWidth.current,
-                  transition: { type: "spring", stiffness: 300, damping: 30 },
-                });
-                setCurrentIndex(nextIndex);
-              }}
-              className="absolute right-8 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-dark-lighter/50 backdrop-blur-sm hover:bg-ap-red/20 border border-text-primary/10 hover:border-ap-red/50 transition-all duration-300"
-            >
-              <svg className="w-6 h-6 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </motion.button>
-          </>
-        )}
-      </AnimatePresence>
     </div>
   );
 } 
