@@ -7,16 +7,18 @@ import Link from 'next/link';
 
 const trainers = [
   {
-    name: 'Prabhjot Singh',
-    role: 'Co-Founder & Head Trainer',
+    name: 'Prabhjot Mand',
+    role: 'KINESIOLOGIST / PERSONAL TRAINER',
     image: '/images/DSC05701.jpeg',
-    specialties: ['Personal Training', 'Strength & Conditioning', 'Boxing'],
+    quote: 'Dedicated to helping clients achieve their fitness goals through evidence-based training and personalized attention.',
+    specialties: ['Personal Training', 'Strength & Conditioning', 'Active Rehabilitation', 'Injury Prevention'],
   },
   {
-    name: 'Amrit Singh',
-    role: 'Co-Founder & Wellness Director',
+    name: 'Amrit Jagdeo',
+    role: 'KINESIOLOGIST / PERSONAL TRAINER',
     image: '/images/DSC09205.jpeg',
-    specialties: ['Nutrition Coaching', 'Pre/Postnatal Fitness', 'Group Training'],
+    quote: 'Passionate about empowering clients to reach their full potential through holistic wellness and sustainable fitness practices.',
+    specialties: ['Personal Training', 'Nutritional Coaching', 'Pre/Postnatal Fitness', 'Group Training'],
   },
 ];
 
@@ -32,34 +34,69 @@ export default function TrainersPreview() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.2 }}
-              className="flex flex-col"
+              className="flex flex-col group"
             >
-              <div className="relative h-[400px] lg:h-[500px] rounded-lg overflow-hidden mb-6">
+              <div className="relative h-[400px] lg:h-[500px] rounded-[2rem] overflow-hidden mb-6">
                 <Image
                   src={trainer.image}
                   alt={trainer.name}
                   fill
-                  className="object-cover"
+                  className={`object-cover brightness-90 transition-transform duration-300 group-hover:scale-105 ${
+                    trainer.name === 'Prabhjot Mand' ? 'object-[center_60%]' : 'object-center'
+                  }`}
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-dark/80 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-2xl font-bold text-text-primary mb-2">{trainer.name}</h3>
-                  <p className="text-ap-red font-medium">{trainer.role}</p>
+                {/* Subtle gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/30 to-transparent" />
+                
+                {/* Content Container - Centered and lowered */}
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[90%]">
+                  {/* Glass card for text - Made more compact */}
+                  <div className="bg-dark/60 backdrop-blur-md rounded-2xl p-4 border border-white/10 shadow-lg">
+                    {/* Name with red accent line */}
+                    <div className="flex items-center gap-3 mb-1">
+                      <div className="w-1 h-6 bg-ap-red rounded-full"></div>
+                      <h3 className="text-xl font-bold text-white">
+                        {trainer.name}
+                      </h3>
+                    </div>
+                    
+                    {/* Role badge - Made more compact */}
+                    <div className="bg-ap-red/90 backdrop-blur-sm px-3 py-0.5 rounded-lg inline-block mb-2">
+                      <p className="text-white font-bold tracking-wider text-xs">
+                        {trainer.role}
+                      </p>
+                    </div>
+                    
+                    {/* Quote with subtle styling - Made more compact */}
+                    <div className="relative pl-3">
+                      <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-ap-red/30 rounded-full"></div>
+                      <p className="text-white/90 text-xs italic leading-relaxed">
+                        {trainer.quote}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <h4 className="text-xl font-semibold mb-4 text-text-primary">Specialties</h4>
-                <div className="flex flex-wrap gap-3 mb-6">
+              {/* Redesigned Specialties Section - More elegant and minimal */}
+              <div className="mt-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-0.5 h-4 bg-ap-red rounded-full"></div>
+                  <h4 className="text-base font-bold text-white/90">Specialties</h4>
+                </div>
+                
+                <div className="flex flex-wrap gap-2">
                   {trainer.specialties.map((specialty) => (
-                    <span
+                    <div
                       key={specialty}
-                      className="bg-dark-lighter px-4 py-2 rounded-full text-text-secondary border border-dark-border"
+                      className="group relative inline-flex"
                     >
-                      {specialty}
-                    </span>
+                      <span className="relative px-3 py-1 rounded-full text-sm text-white/80 font-medium border border-white/10 hover:border-ap-red/30 hover:text-white transition-all duration-300">
+                        {specialty}
+                      </span>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -67,10 +104,14 @@ export default function TrainersPreview() {
           ))}
         </div>
 
-        <div className="text-center mt-8">
+        <motion.div 
+          className="text-center mt-12"
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+        >
           <Link
             href="/about"
-            className="inline-flex items-center text-ap-red hover:text-ap-red-dark font-semibold transition-colors group"
+            className="inline-flex items-center bg-gradient-to-r from-dark-lighter to-dark hover:from-ap-red hover:to-ap-red-dark px-8 py-3 rounded-full text-text-primary font-semibold transition-all duration-300 group"
           >
             Meet Our Team
             <svg
@@ -87,7 +128,7 @@ export default function TrainersPreview() {
               />
             </svg>
           </Link>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

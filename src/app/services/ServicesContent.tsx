@@ -1,82 +1,106 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { FaDumbbell, FaUsers, FaHeart, FaAppleAlt, FaLaptop } from 'react-icons/fa';
-import { GiBoxingGlove } from 'react-icons/gi';
+import { FaDumbbell, FaUsers, FaHeart, FaAppleAlt, FaLaptop, FaClinicMedical, FaUserMd, FaHandHoldingHeart } from 'react-icons/fa';
+import { GiWeightLiftingUp } from 'react-icons/gi';
 import Image from 'next/image';
 import Link from 'next/link';
 
 const services = [
   {
     title: 'Personal Training',
-    description: 'One-on-one personalized training sessions tailored to your specific goals and fitness level. Our certified kinesiologists will create a custom program just for you.',
+    description: 'One-on-one personalized training sessions with certified kinesiologists. Our expert trainers create custom programs tailored to your specific goals and fitness level.',
     Icon: FaDumbbell,
     features: [
       'Initial fitness assessment',
       'Customized workout plans',
-      'Nutrition guidance',
       'Progress tracking',
+      'Expert guidance',
       'Flexible scheduling'
     ]
   },
   {
-    title: 'Group Fitness',
-    description: 'Join our energetic group classes designed for all fitness levels. Experience the motivation and fun of working out with others.',
-    Icon: FaUsers,
+    title: 'ICBC Active Rehab',
+    description: 'Specialized rehabilitation programs for ICBC clients. Our kinesiologists work with you to recover from injuries and regain your strength and mobility.',
+    Icon: FaClinicMedical,
     features: [
-      'Various class types',
-      'Expert instruction',
-      'Supportive environment',
-      'Flexible schedule',
-      'Community events'
+      'Injury assessment',
+      'Customized rehab plans',
+      'Progress documentation',
+      'ICBC approved programs',
+      'Expert rehabilitation guidance'
     ]
   },
   {
-    title: 'Boxing & Kickboxing',
-    description: 'Learn proper technique while getting an incredible full-body workout. Perfect for stress relief and building confidence.',
-    Icon: GiBoxingGlove,
+    title: 'Gym Membership',
+    description: 'Access to our state-of-the-art facility equipped with modern fitness equipment. Train in a welcoming environment with professional support when needed.',
+    Icon: GiWeightLiftingUp,
     features: [
-      'Technical instruction',
-      'Cardio conditioning',
-      'Strength training',
-      'Sparring sessions',
-      'All skill levels'
-    ]
-  },
-  {
-    title: 'Pre & Postnatal',
-    description: 'Safe and effective workouts designed specifically for expecting and new mothers. Stay fit throughout your pregnancy and recovery.',
-    Icon: FaHeart,
-    features: [
-      'Certified prenatal trainers',
-      'Safe exercise modifications',
-      'Pregnancy-specific nutrition',
-      'Recovery guidance',
-      'Community support'
-    ]
-  },
-  {
-    title: 'Nutritional Coaching',
-    description: 'Comprehensive nutrition plans that complement your fitness routine. Learn how to fuel your body for optimal performance.',
-    Icon: FaAppleAlt,
-    features: [
-      'Personalized meal plans',
-      'Dietary analysis',
-      'Shopping guides',
-      'Recipe suggestions',
-      'Regular check-ins'
+      'Modern equipment',
+      'Flexible hours',
+      'Professional environment',
+      'Community atmosphere',
+      'Expert staff available'
     ]
   },
   {
     title: 'Online Coaching',
-    description: 'Get expert guidance from anywhere. Perfect for busy professionals or those who prefer working out from home.',
+    description: 'Remote training programs designed for those who prefer working out from home or have busy schedules. Get expert guidance wherever you are.',
     Icon: FaLaptop,
     features: [
-      'Video consultations',
+      'Virtual consultations',
       'Custom workout plans',
       'Remote progress tracking',
-      'Nutrition guidance',
-      '24/7 support'
+      'Flexible scheduling',
+      'Ongoing support'
+    ]
+  },
+  {
+    title: 'Group Classes',
+    description: 'Energetic group sessions led by experienced trainers. Experience the motivation and fun of working out with others while reaching your fitness goals.',
+    Icon: FaUsers,
+    features: [
+      'Various class types',
+      'Expert instruction',
+      'Motivating environment',
+      'Community support',
+      'All fitness levels'
+    ]
+  },
+  {
+    title: 'Nutritional Coaching',
+    description: 'Comprehensive nutrition guidance to complement your fitness journey. Learn how to fuel your body effectively for optimal performance and results.',
+    Icon: FaAppleAlt,
+    features: [
+      'Personalized meal plans',
+      'Dietary analysis',
+      'Nutrition education',
+      'Progress monitoring',
+      'Ongoing support'
+    ]
+  },
+  {
+    title: 'Physiotherapy',
+    description: 'Professional physiotherapy services to help you recover from injuries, manage pain, and improve mobility. Our experts work with you to achieve optimal physical function.',
+    Icon: FaUserMd,
+    features: [
+      'Expert assessment',
+      'Treatment plans',
+      'Manual therapy',
+      'Exercise prescription',
+      'Recovery guidance'
+    ]
+  },
+  {
+    title: 'Massage Therapy',
+    description: 'Professional massage therapy services to help reduce muscle tension, improve circulation, and promote overall wellness. Our experienced therapists provide customized treatments.',
+    Icon: FaHandHoldingHeart,
+    features: [
+      'Customized treatments',
+      'Pain management',
+      'Stress reduction',
+      'Injury recovery',
+      'Deep tissue massage'
     ]
   }
 ];
@@ -121,30 +145,38 @@ export default function ServicesContent() {
               className="relative p-[2px] rounded-[2rem] bg-gradient-to-br from-dark-lighter to-dark group hover:from-ap-red/20 hover:to-dark transition-all duration-500"
             >
               <div className="relative h-full bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-8 border border-text-primary/10 overflow-hidden">
-                {/* Background Glow Effect */}
+                {/* Enhanced Background Glow Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-dark/95 via-dark/90 to-dark/95 rounded-[2rem]" />
                 
                 {/* Content */}
                 <div className="relative z-10">
-                  <div className="flex items-center mb-6">
-                    <div className="w-14 h-14 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
-                      <service.Icon className="w-7 h-7 text-text-primary" />
+                  <div className="flex items-center gap-6 mb-8">
+                    <div className="w-16 h-16 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-all duration-500">
+                      <service.Icon className="w-8 h-8 text-text-primary" />
                     </div>
-                    <h2 className="text-2xl font-bold ml-4 text-text-primary group-hover:text-ap-red transition-colors">{service.title}</h2>
+                    <h2 className="text-2xl md:text-3xl font-bold text-text-primary group-hover:text-ap-red transition-colors">
+                      {service.title}
+                    </h2>
                   </div>
-                  <p className="text-text-secondary mb-6 leading-relaxed">{service.description}</p>
                   
-                  {/* Features */}
+                  <p className="text-text-secondary mb-8 leading-relaxed">
+                    {service.description}
+                  </p>
+                  
+                  {/* Features with enhanced styling */}
                   <div className="space-y-3">
-                    <h3 className="font-semibold text-text-primary mb-4">Features:</h3>
+                    <h3 className="font-semibold text-text-primary mb-4 flex items-center gap-2">
+                      <div className="w-1 h-5 bg-ap-red rounded-full"></div>
+                      Features
+                    </h3>
                     <div className="grid grid-cols-1 gap-3">
                       {service.features.map((feature, i) => (
                         <div 
                           key={i} 
-                          className="flex items-center text-text-secondary bg-dark/40 rounded-xl p-3 border border-text-primary/5 group-hover:border-ap-red/20 transition-all duration-300"
+                          className="flex items-center text-text-secondary bg-dark/40 rounded-xl p-3 border border-text-primary/5 group-hover:border-ap-red/20 transition-all duration-300 hover:bg-dark/60"
                         >
-                          <span className="w-2 h-2 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full mr-3"></span>
-                          {feature}
+                          <div className="flex-shrink-0 w-2 h-2 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full mr-3"></div>
+                          <span className="text-sm md:text-base">{feature}</span>
                         </div>
                       ))}
                     </div>

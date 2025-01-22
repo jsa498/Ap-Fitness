@@ -1,273 +1,270 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FaDumbbell, FaUsers, FaHeart, FaAppleAlt, FaLaptop } from 'react-icons/fa';
-import { GiBoxingGlove } from 'react-icons/gi';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useAnimation, PanInfo } from 'framer-motion';
+import { FaDumbbell, FaUsers, FaClinicMedical, FaUserMd, FaAppleAlt, FaLaptop, FaHandHoldingHeart } from 'react-icons/fa';
+import { GiWeightLiftingUp } from 'react-icons/gi';
 import Link from 'next/link';
 
 const services = [
   {
     title: 'Personal Training',
-    description: 'Customized one-on-one sessions to achieve your specific fitness goals.',
+    description: 'One-on-one personalized training sessions with certified kinesiologists.',
     Icon: FaDumbbell,
   },
   {
-    title: 'Group Fitness',
-    description: 'Fun and supportive classes for all fitness levels.',
-    Icon: FaUsers,
+    title: 'ICBC Active Rehab',
+    description: 'Specialized rehabilitation programs for ICBC clients.',
+    Icon: FaClinicMedical,
   },
   {
-    title: 'Boxing & Kickboxing',
-    description: 'High-energy sessions focusing on technique, strength, and endurance.',
-    Icon: GiBoxingGlove,
-  },
-  {
-    title: 'Pre & Postnatal',
-    description: 'Specialized programs to support mothers before and after childbirth.',
-    Icon: FaHeart,
-  },
-  {
-    title: 'Nutritional Coaching',
-    description: 'Personalized plans to enhance fitness and overall wellness.',
-    Icon: FaAppleAlt,
+    title: 'Gym Membership',
+    description: 'Access to our state-of-the-art facility with modern equipment.',
+    Icon: GiWeightLiftingUp,
   },
   {
     title: 'Online Coaching',
-    description: 'Flexible training accessible from anywhere.',
+    description: 'Remote training programs designed for your schedule.',
     Icon: FaLaptop,
   },
+  {
+    title: 'Group Classes',
+    description: 'Energetic group sessions led by experienced trainers.',
+    Icon: FaUsers,
+  },
+  {
+    title: 'Nutritional Coaching',
+    description: 'Comprehensive nutrition guidance for optimal results.',
+    Icon: FaAppleAlt,
+  },
+  {
+    title: 'Physiotherapy',
+    description: 'Professional services for injury recovery and pain management.',
+    Icon: FaUserMd,
+  },
+  {
+    title: 'Massage Therapy',
+    description: 'Professional massage therapy for muscle tension and overall wellness.',
+    Icon: FaHandHoldingHeart,
+  }
 ];
 
+// Duplicate services for infinite scroll effect
+const extendedServices = [...services, ...services, ...services];
+
 export default function ServiceCarousel() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(services.length);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const autoScrollRef = useRef<NodeJS.Timeout>();
+  const controls = useAnimation();
+  const slideWidth = useRef(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const mobileTransitionDuration = 30; // seconds for mobile
+  const desktopTransitionDuration = 45; // seconds for desktop
 
-  // Function to get the next index with wrapping
-  const getNextIndex = (current: number) => (current + 1) % services.length;
-
-  // Auto scroll functionality
+  // Check if mobile on mount and window resize
   useEffect(() => {
-    if (isAutoScrolling) {
-      autoScrollRef.current = setInterval(() => {
-        setActiveIndex(prev => getNextIndex(prev));
-      }, 3000); // Change slide every 3 seconds
-    }
-
-    return () => {
-      if (autoScrollRef.current) {
-        clearInterval(autoScrollRef.current);
-      }
-    };
-  }, [isAutoScrolling]);
-
-  // Handle manual scroll interaction
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    let isDown = false;
-    let startX: number;
-    let scrollLeft: number;
-    let startTime: number;
-
-    const handleMouseDown = (e: MouseEvent) => {
-      isDown = true;
-      setIsAutoScrolling(false);
-      container.classList.add('cursor-grabbing');
-      startX = e.pageX - container.offsetLeft;
-      scrollLeft = container.scrollLeft;
-      startTime = Date.now();
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint in Tailwind
     };
 
-    const handleMouseLeave = () => {
-      isDown = false;
-      container.classList.remove('cursor-grabbing');
-      setIsAutoScrolling(true);
-    };
-
-    const handleMouseUp = (e: MouseEvent) => {
-      isDown = false;
-      container.classList.remove('cursor-grabbing');
-      
-      // Calculate velocity for momentum scrolling
-      const endTime = Date.now();
-      const timeElapsed = endTime - startTime;
-      const endX = e.pageX - container.offsetLeft;
-      const distance = endX - startX;
-      const velocity = Math.abs(distance / timeElapsed);
-
-      // Determine direction and snap to next/previous card
-      if (velocity > 0.5) { // Threshold for swipe
-        if (distance < 0) {
-          setActiveIndex(prev => getNextIndex(prev));
-        } else {
-          setActiveIndex(prev => (prev - 1 + services.length) % services.length);
-        }
-      }
-
-      setIsAutoScrolling(true);
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - container.offsetLeft;
-      const walk = (x - startX) * 2;
-      container.scrollLeft = scrollLeft - walk;
-    };
-
-    // Touch events for mobile
-    const handleTouchStart = (e: TouchEvent) => {
-      isDown = true;
-      setIsAutoScrolling(false);
-      startX = e.touches[0].pageX - container.offsetLeft;
-      scrollLeft = container.scrollLeft;
-      startTime = Date.now();
-    };
-
-    const handleTouchEnd = (e: TouchEvent) => {
-      isDown = false;
-      setIsAutoScrolling(true);
-      
-      const endTime = Date.now();
-      const timeElapsed = endTime - startTime;
-      const endX = e.changedTouches[0].pageX - container.offsetLeft;
-      const distance = endX - startX;
-      const velocity = Math.abs(distance / timeElapsed);
-
-      if (velocity > 0.5) {
-        if (distance < 0) {
-          setActiveIndex(prev => getNextIndex(prev));
-        } else {
-          setActiveIndex(prev => (prev - 1 + services.length) % services.length);
-        }
-      }
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!isDown) return;
-      const x = e.touches[0].pageX - container.offsetLeft;
-      const walk = (x - startX) * 2;
-      container.scrollLeft = scrollLeft - walk;
-    };
-
-    // Add event listeners
-    container.addEventListener('mousedown', handleMouseDown);
-    container.addEventListener('mouseleave', handleMouseLeave);
-    container.addEventListener('mouseup', handleMouseUp);
-    container.addEventListener('mousemove', handleMouseMove);
-    container.addEventListener('touchstart', handleTouchStart);
-    container.addEventListener('touchend', handleTouchEnd);
-    container.addEventListener('touchmove', handleTouchMove);
-
-    return () => {
-      // Remove event listeners
-      container.removeEventListener('mousedown', handleMouseDown);
-      container.removeEventListener('mouseleave', handleMouseLeave);
-      container.removeEventListener('mouseup', handleMouseUp);
-      container.removeEventListener('mousemove', handleMouseMove);
-      container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchend', handleTouchEnd);
-      container.removeEventListener('touchmove', handleTouchMove);
-    };
+    checkIfMobile();
+    window.addEventListener('resize', checkIfMobile);
+    return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
-  // Get visible services with one extra on each side for infinite scroll effect
-  const getVisibleServices = () => {
-    const prevIndex = (activeIndex - 1 + services.length) % services.length;
-    const nextIndex = getNextIndex(activeIndex);
-    return [
-      services[prevIndex],
-      services[activeIndex],
-      services[nextIndex],
-    ];
+  useEffect(() => {
+    if (containerRef.current) {
+      const container = containerRef.current;
+      const cardWidth = container.offsetWidth * (isMobile ? 0.7 : 0.333); // 70% on mobile, 33.333% on desktop
+      slideWidth.current = cardWidth;
+    }
+  }, [isMobile]);
+
+  // Auto-play animation
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const startAutoPlay = async () => {
+      await controls.start({
+        x: -slideWidth.current * services.length,
+        transition: {
+          duration: isMobile ? mobileTransitionDuration : desktopTransitionDuration,
+          ease: "linear",
+          repeat: Infinity,
+        },
+      });
+    };
+
+    startAutoPlay();
+
+    return () => {
+      controls.stop();
+    };
+  }, [isAutoPlaying, controls, isMobile]);
+
+  const handleDragStart = () => {
+    setIsAutoPlaying(false);
+    setIsDragging(true);
+    controls.stop();
+  };
+
+  const handleDragEnd = async (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    setIsDragging(false);
+    const threshold = slideWidth.current * 0.2;
+    const velocity = 0.5;
+
+    if (Math.abs(info.velocity.x) > velocity || Math.abs(info.offset.x) > threshold) {
+      const direction = info.offset.x > 0 ? -1 : 1;
+      const targetIndex = currentIndex + direction;
+      
+      await controls.start({
+        x: -targetIndex * slideWidth.current,
+        transition: {
+          type: "spring",
+          stiffness: 300,
+          damping: 30,
+        },
+      });
+
+      setCurrentIndex(targetIndex);
+    } else {
+      // Snap back to current position
+      controls.start({
+        x: -currentIndex * slideWidth.current,
+        transition: {
+          type: "spring",
+          stiffness: 300,
+          damping: 30,
+        },
+      });
+    }
+
+    // Resume auto-play after a short delay
+    setTimeout(() => {
+      setIsAutoPlaying(true);
+    }, 1000);
   };
 
   return (
-    <div className="relative w-full overflow-hidden">
-      {/* Gradient Overlays */}
-      <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-dark to-transparent z-10 pointer-events-none md:hidden" />
-      <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-dark to-transparent z-10 pointer-events-none md:hidden" />
-
-      {/* Services Grid/Scroll Container */}
-      <div
-        ref={containerRef}
-        className="
-          flex md:grid md:grid-cols-3 gap-6 px-4 pb-4 md:pb-0
-          overflow-x-auto scrollbar-hide cursor-grab md:cursor-default
-          snap-x snap-mandatory md:snap-none
-          relative
-        "
-      >
-        <AnimatePresence mode="wait">
-          {getVisibleServices().map((service, index) => (
-            <motion.div
-              key={`${service.title}-${index}`}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ 
-                opacity: index === 1 ? 1 : 0.6, 
-                scale: index === 1 ? 1 : 0.9,
-                x: 0 
-              }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.3 }}
-              className="
-                min-w-[300px] md:min-w-0 snap-center
-                bg-dark-lighter rounded-lg p-6 shadow-dark-lg 
-                border border-dark-border hover:border-ap-red/50 
-                transition-all duration-300 group
-              "
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                <service.Icon className="w-6 h-6 text-text-primary" />
-              </div>
-              <h3 className="text-xl font-bold mb-2 text-text-primary group-hover:text-ap-red transition-colors duration-300">
-                {service.title}
-              </h3>
-              <p className="text-text-secondary mb-4">{service.description}</p>
-              <Link
-                href="/services"
-                className="inline-flex items-center text-ap-red hover:text-ap-red-dark font-semibold transition-colors group-hover:translate-x-2 duration-300"
-              >
-                Learn More
-                <svg
-                  className="w-5 h-5 ml-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </Link>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+    <div className="relative w-full overflow-hidden px-4">
+      {/* Navigation Buttons */}
+      <div className="absolute left-8 top-1/2 -translate-y-1/2 z-20 hidden md:block">
+        <button
+          onClick={async () => {
+            setIsAutoPlaying(false);
+            await controls.start({
+              x: -(currentIndex - 1) * slideWidth.current,
+              transition: {
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+              },
+            });
+            setCurrentIndex(prev => prev - 1);
+            setTimeout(() => setIsAutoPlaying(true), 1000);
+          }}
+          className="p-3 rounded-full bg-dark-lighter/50 backdrop-blur-sm hover:bg-ap-red/20 border border-text-primary/10 hover:border-ap-red/50 transition-all duration-300"
+        >
+          <svg className="w-6 h-6 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+      </div>
+      <div className="absolute right-8 top-1/2 -translate-y-1/2 z-20 hidden md:block">
+        <button
+          onClick={async () => {
+            setIsAutoPlaying(false);
+            await controls.start({
+              x: -(currentIndex + 1) * slideWidth.current,
+              transition: {
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+              },
+            });
+            setCurrentIndex(prev => prev + 1);
+            setTimeout(() => setIsAutoPlaying(true), 1000);
+          }}
+          className="p-3 rounded-full bg-dark-lighter/50 backdrop-blur-sm hover:bg-ap-red/20 border border-text-primary/10 hover:border-ap-red/50 transition-all duration-300"
+        >
+          <svg className="w-6 h-6 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
 
-      {/* Navigation Dots */}
-      <div className="flex justify-center mt-6 space-x-2 md:hidden">
-        {services.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => {
-              setActiveIndex(index);
-              setIsAutoScrolling(false);
-              setTimeout(() => setIsAutoScrolling(true), 5000);
-            }}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              index === activeIndex ? 'bg-ap-red w-4' : 'bg-dark-border'
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
+      {/* Service Cards Container */}
+      <div className="relative overflow-hidden" ref={containerRef}>
+        <motion.div 
+          className="flex gap-6 py-4"
+          animate={controls}
+          drag="x"
+          dragConstraints={containerRef}
+          dragElastic={0.1}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          dragMomentum={false}
+        >
+          {extendedServices.map((service, index) => (
+            <motion.div
+              key={`${index}-${service.title}`}
+              className={`
+                flex-shrink-0 w-[70%] md:w-[calc(33.333%-1rem)]
+                relative p-[2px] rounded-[2rem] overflow-hidden
+                bg-gradient-to-br from-dark-lighter to-dark
+                group hover:from-ap-red/20 hover:to-dark
+                transition-all duration-500
+                ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}
+                touch-pan-y
+              `}
+              style={{
+                scrollSnapAlign: 'center',
+              }}
+            >
+              <div className="relative h-full bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-8 border border-text-primary/10">
+                {/* Background Glow Effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-dark/95 via-dark/90 to-dark/95 rounded-[2rem]" />
+                
+                {/* Content */}
+                <div className="relative z-10">
+                  <div className="w-14 h-14 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <service.Icon className="w-7 h-7 text-text-primary" />
+                  </div>
+                  
+                  <h3 className="text-2xl font-bold mb-3 text-text-primary group-hover:text-ap-red transition-colors duration-300">
+                    {service.title}
+                  </h3>
+                  
+                  <p className="text-text-secondary mb-6 line-clamp-2">
+                    {service.description}
+                  </p>
+                  
+                  <Link
+                    href="/services"
+                    className="inline-flex items-center text-ap-red hover:text-ap-red-dark font-semibold transition-all duration-300 group-hover:translate-x-2"
+                  >
+                    Learn More
+                    <svg
+                      className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </div>
   );

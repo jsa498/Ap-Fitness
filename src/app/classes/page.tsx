@@ -14,7 +14,7 @@ const classes = [
     duration: '45 min',
     intensity: 'High',
     icon: FaDumbbell,
-    image: '/images/DSC05169-min.jpeg'
+    image: '/images/DSC05206-min.jpeg'
   },
   {
     name: 'Boxing Fundamentals',
@@ -22,7 +22,7 @@ const classes = [
     duration: '60 min',
     intensity: 'Medium-High',
     icon: GiBoxingGlove,
-    image: '/images/DSC05170-min.jpeg'
+    image: '/images/DSC05169-min.jpeg'
   },
   {
     name: 'Group Fitness',

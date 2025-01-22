@@ -5,42 +5,51 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import ServiceCarousel from '@/components/ServiceCarousel'
 import TrainersPreview from '@/components/TrainersPreview'
-import { FaDumbbell, FaUsers, FaHeart } from 'react-icons/fa'
-import { GiBoxingGlove } from 'react-icons/gi'
-import { FaAppleAlt, FaLaptop } from 'react-icons/fa'
+import { FaDumbbell, FaUsers, FaClinicMedical, FaUserMd, FaAppleAlt, FaLaptop, FaHandHoldingHeart } from 'react-icons/fa'
+import { GiWeightLiftingUp } from 'react-icons/gi'
 
 export default function Home() {
   const services = [
     {
       title: 'Personal Training',
-      description: 'Customized one-on-one sessions to achieve your specific fitness goals.',
+      description: 'One-on-one personalized training sessions with certified kinesiologists.',
       Icon: FaDumbbell,
     },
     {
-      title: 'Group Fitness',
-      description: 'Fun and supportive classes for all fitness levels.',
-      Icon: FaUsers,
+      title: 'ICBC Active Rehab',
+      description: 'Specialized rehabilitation programs for ICBC clients.',
+      Icon: FaClinicMedical,
     },
     {
-      title: 'Boxing & Kickboxing',
-      description: 'High-energy sessions focusing on technique, strength, and endurance.',
-      Icon: GiBoxingGlove,
-    },
-    {
-      title: 'Pre & Postnatal',
-      description: 'Specialized programs to support mothers before and after childbirth.',
-      Icon: FaHeart,
-    },
-    {
-      title: 'Nutritional Coaching',
-      description: 'Personalized plans to enhance fitness and overall wellness.',
-      Icon: FaAppleAlt,
+      title: 'Gym Membership',
+      description: 'Access to our state-of-the-art facility with modern equipment.',
+      Icon: GiWeightLiftingUp,
     },
     {
       title: 'Online Coaching',
-      description: 'Flexible training accessible from anywhere.',
+      description: 'Remote training programs designed for your schedule.',
       Icon: FaLaptop,
     },
+    {
+      title: 'Group Classes',
+      description: 'Energetic group sessions led by experienced trainers.',
+      Icon: FaUsers,
+    },
+    {
+      title: 'Nutritional Coaching',
+      description: 'Comprehensive nutrition guidance for optimal results.',
+      Icon: FaAppleAlt,
+    },
+    {
+      title: 'Physiotherapy',
+      description: 'Professional services for injury recovery and pain management.',
+      Icon: FaUserMd,
+    },
+    {
+      title: 'Massage Therapy',
+      description: 'Professional massage therapy for muscle tension and overall wellness.',
+      Icon: FaHandHoldingHeart,
+    }
   ]
 
   return (
@@ -61,17 +70,40 @@ export default function Home() {
         </div>
         
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-text-primary px-4">
+          {/* AP Logo and Text */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-12 border border-text-primary/10"
+            className="mb-6 md:mb-12 text-center"
+          >
+            <div className="inline-flex flex-col items-center">
+              <div className="relative w-[250px] md:w-[320px] h-[150px] md:h-[192px]">
+                <Image
+                  src="/images/AP-Logo_processed.jpeg"
+                  alt="AP Fitness"
+                  fill
+                  className="object-contain invert"
+                  priority
+                />
+              </div>
+              <p className="text-2xl md:text-3xl font-semibold tracking-[0.2em] text-white uppercase bg-gradient-to-r from-white to-white/80 bg-clip-text -mt-8 md:-mt-10">
+                FITNESS & REHAB
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-6 md:p-10 border border-text-primary/10 max-w-[90%] md:max-w-2xl mx-auto"
           >
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="text-5xl md:text-6xl font-bold text-center mb-4 drop-shadow-lg"
+              className="text-3xl md:text-5xl lg:text-6xl font-bold text-center mb-3 md:mb-4 drop-shadow-lg"
             >
               Transform Your Life
             </motion.h1>
@@ -79,7 +111,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-xl md:text-2xl text-center mb-8 max-w-2xl drop-shadow-lg"
+              className="text-lg md:text-xl lg:text-2xl text-center mb-6 md:mb-8 max-w-2xl drop-shadow-lg"
             >
               Professional personal training and wellness services by certified kinesiologists
             </motion.p>
@@ -87,34 +119,17 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              whileHover={{ scale: 1.05 }}
               className="transition-all duration-300"
             >
               <Link
                 href="/book"
-                className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-10 py-4 rounded-full text-lg font-bold transition-all duration-300 hover:shadow-[0_0_30px_rgba(220,38,38,0.3)] inline-block"
+                className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-6 md:px-10 py-3 md:py-4 rounded-full text-base md:text-lg font-bold transition-all duration-300 hover:shadow-[0_0_30px_rgba(220,38,38,0.3)] inline-block"
               >
                 Book a Consultation
               </Link>
             </motion.div>
           </motion.div>
         </div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 1 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-6 h-10 rounded-full border-2 border-text-primary p-1"
-          >
-            <motion.div className="w-1.5 h-1.5 bg-text-primary rounded-full mx-auto" />
-          </motion.div>
-        </motion.div>
       </section>
 
       {/* Services Preview */}

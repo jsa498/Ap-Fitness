@@ -7,20 +7,22 @@ import Link from 'next/link';
 
 const trainers = [
   {
-    name: 'Prabhjot Singh',
-    role: 'Co-Founder & Head Trainer',
-    image: '/images/DSC05701.jpeg',
-    specialties: ['Personal Training', 'Strength & Conditioning', 'Boxing'],
-    certifications: ['B.Sc. Kinesiology', 'CSEP-CPT', 'Boxing Coach Level 2'],
-    bio: 'With over 8 years of experience in fitness and athletics, Prabhjot brings expertise in strength training and boxing to help clients achieve their goals.'
+    name: 'Prabhjot Mand',
+    role: 'KINESIOLOGIST / PERSONAL TRAINER',
+    image: '/images/DSC05663.jpeg',
+    quote: '"I hated every minute of training, but I said, Don\'t quit. Suffer now and live the rest of your life as a champion." - Muhammad Ali',
+    bio: 'Growing up Prabhjot\'s passion had always revolved around sports. He has played soccer for the most part of his life gaining experience playing both at provincial and university levels. Over the years that passion had evolved into health and fitness. He has been consistent with his training for the last 7 years. Having done everything from bodybuilding, powerlifting, Olympic weightlifting, to sports specific training, he has put himself through it all. His passion now as a personal trainer is to help people achieve their full potential. Everyone is unique, with their own set of strengths and weaknesses. He wants to help people achieve their goals while working around their limitations.',
+    certifications: ['Certified Kinesiologist', 'Personal Training Specialist', 'First Aid & CPR'],
+    specialties: ['Strength Training', 'Sports Performance', 'Injury Prevention', 'Weight Management']
   },
   {
-    name: 'Amrit Singh',
-    role: 'Co-Founder & Wellness Director',
-    image: '/images/DSC09205.jpeg',
-    specialties: ['Nutrition Coaching', 'Pre/Postnatal Fitness', 'Group Training'],
-    certifications: ['B.Sc. Kinesiology', 'Precision Nutrition Level 2', 'Pre/Postnatal Specialist'],
-    bio: 'Amrit specializes in holistic wellness, combining nutrition coaching with personalized training to create sustainable lifestyle changes.'
+    name: 'Amrit Jagdeo',
+    role: 'KINESIOLOGIST / PERSONAL TRAINER',
+    image: '/images/DSC09135.jpeg',
+    quote: '"Success isn\'t about perfection, it\'s about consistency. Your health is an investment, not an expense."',
+    bio: 'Amritpal completed his Bachelor of Kinesiology from the University of British Columbia in 2019 and is currently a registered Kinesiologist with the British Columbia Association of Kinesiologists. Amritpal is an avid athlete having experience playing soccer at the provincial and national levels, as well as coaching youth soccer players. He also has experience as a team medical trainer for the Vancouver North East Chiefs Major Bantam hockey team. Amritpal\'s athletic background and dealing with injuries himself has allowed him to gain extensive knowledge in injury rehabilitation. During his free time, you can find him playing soccer, working out, or spending time with his family.',
+    certifications: ['Certified Kinesiologist', 'Personal Training Specialist', 'First Aid & CPR'],
+    specialties: ['Strength Training', 'Sports Performance', 'Injury Prevention', 'Weight Management']
   }
 ];
 
@@ -122,32 +124,95 @@ export default function AboutContent() {
                 className="group bg-gradient-to-br from-dark-lighter to-dark rounded-[2rem] p-[2px] shadow-dark-lg"
               >
                 <div className="bg-dark rounded-[1.9rem] overflow-hidden">
-                  <div className="relative h-[400px]">
+                  <div className="relative h-[500px] lg:h-[600px] rounded-[2rem] overflow-hidden mb-8">
                     <Image
                       src={trainer.image}
                       alt={trainer.name}
                       fill
-                      className={`object-cover transition-transform duration-300 group-hover:scale-105 ${
-                        trainer.name === 'Prabhjot Singh' ? 'object-[center_60%]' : 'object-center'
-                      }`}
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      priority={index === 0}
+                      className="object-cover brightness-90"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/30 to-transparent opacity-90" />
+                    
+                    {/* Name, Title, and Quote Section */}
+                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-[90%]">
+                      <div className="bg-dark/60 backdrop-blur-md rounded-2xl p-4 border border-white/10 shadow-lg">
+                        {/* Name with red accent */}
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-1 h-6 bg-ap-red rounded-full"></div>
+                          <h2 className="text-3xl font-bold text-white">
+                            {trainer.name}
+                          </h2>
+                        </div>
+                        
+                        {/* Role badge */}
+                        <div className="bg-ap-red/90 backdrop-blur-sm px-3 py-1 rounded-lg inline-block mb-3">
+                          <p className="text-white font-bold tracking-wider text-sm">
+                            {trainer.role}
+                          </p>
+                        </div>
+
+                        {/* Quote */}
+                        {trainer.quote && (
+                          <p className="text-white/90 text-lg italic leading-relaxed pl-3 border-l-2 border-ap-red/30">
+                            {trainer.quote}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-8 bg-gradient-to-br from-dark to-dark-lighter">
-                    <h3 className="text-2xl font-bold mb-2 text-text-primary">{trainer.name}</h3>
-                    <p className="text-ap-red font-medium mb-4">{trainer.role}</p>
-                    <p className="text-text-secondary mb-6">{trainer.bio}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {trainer.certifications.map((cert, i) => (
-                        <span
-                          key={i}
-                          className="bg-dark-lighter/30 backdrop-blur-sm px-4 py-2 rounded-full text-sm text-text-primary border border-text-primary/10 hover:border-ap-red/50 transition-colors duration-300"
-                        >
-                          {cert}
-                        </span>
-                      ))}
+
+                  {/* Bio Text Section */}
+                  <div className="bg-dark-lighter/20 backdrop-blur-sm rounded-2xl p-6 border border-text-primary/10 mb-4">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-1 h-5 bg-ap-red rounded-full"></div>
+                      <h3 className="text-xl font-semibold text-text-primary">Biography</h3>
+                    </div>
+                    <p className="text-text-secondary leading-relaxed">
+                      {trainer.bio}
+                    </p>
+                  </div>
+
+                  {/* Certifications and Specialties Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-6 pb-6">
+                    {/* Certifications Section */}
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-0.5 h-4 bg-ap-red rounded-full"></div>
+                        <h4 className="text-base font-semibold text-text-primary">Certifications</h4>
+                      </div>
+                      <div className="space-y-2">
+                        {trainer.certifications.map((cert, i) => (
+                          <div
+                            key={i}
+                            className="flex items-center text-text-secondary rounded-lg py-1.5 px-2 hover:text-white transition-all duration-300"
+                          >
+                            <div className="flex-shrink-0 w-1.5 h-1.5 bg-ap-red rounded-full mr-2"></div>
+                            <span className="text-sm">{cert}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Specialties Section */}
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-0.5 h-4 bg-ap-red rounded-full"></div>
+                        <h4 className="text-base font-semibold text-text-primary">Specialties</h4>
+                      </div>
+                      <div className="space-y-2">
+                        {trainer.specialties.map((specialty, i) => (
+                          <div
+                            key={i}
+                            className="flex items-center text-text-secondary rounded-lg py-1.5 px-2 hover:text-white transition-all duration-300"
+                          >
+                            <div className="flex-shrink-0 w-1.5 h-1.5 bg-ap-red rounded-full mr-2"></div>
+                            <span className="text-sm">{specialty}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
