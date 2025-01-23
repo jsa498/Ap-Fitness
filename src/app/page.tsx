@@ -76,10 +76,10 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="mb-4 md:mb-8 text-center"
+            className="mb-12 md:mb-16 text-center"
           >
-            <div className="inline-flex flex-col items-center">
-              <div className="relative w-[200px] md:w-[280px] h-[120px] md:h-[168px]">
+            <div className="relative flex flex-col items-center">
+              <div className="relative w-[340px] md:w-[400px] h-[220px] md:h-[260px]">
                 <Image
                   src="/images/AP-Logo_processed.jpeg"
                   alt="AP Fitness"
@@ -88,9 +88,11 @@ export default function Home() {
                   priority
                 />
               </div>
-              <p className="text-xl md:text-2xl font-semibold tracking-[0.2em] text-white uppercase bg-gradient-to-r from-white to-white/80 bg-clip-text -mt-6 md:-mt-8">
-                FITNESS & REHAB
-              </p>
+              <div className="absolute top-[160px] md:top-[190px] left-1/2 -translate-x-1/2 w-full">
+                <p className="text-xl md:text-3xl font-semibold tracking-[0.2em] text-white uppercase bg-gradient-to-r from-white to-white/80 bg-clip-text text-center">
+                  FITNESS & REHAB
+                </p>
+              </div>
             </div>
           </motion.div>
 
@@ -98,7 +100,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-5 md:p-8 border border-text-primary/10 max-w-[90%] md:max-w-lg mx-auto"
+            className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-4 md:p-8 border border-text-primary/10 max-w-[90%] md:max-w-lg mx-auto -mt-4 md:-mt-16"
           >
             <motion.h1
               initial={{ opacity: 0, y: 20 }}

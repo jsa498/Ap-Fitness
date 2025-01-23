@@ -18,14 +18,14 @@ const services = [
     Icon: FaClinicMedical,
   },
   {
+    title: 'Physiotherapy',
+    description: 'Professional services for injury recovery and pain management.',
+    Icon: FaUserMd,
+  },
+  {
     title: 'Gym Membership',
     description: 'Access to our state-of-the-art facility with modern equipment.',
     Icon: GiWeightLiftingUp,
-  },
-  {
-    title: 'Online Coaching',
-    description: 'Remote training programs designed for your schedule.',
-    Icon: FaLaptop,
   },
   {
     title: 'Group Classes',
@@ -33,19 +33,14 @@ const services = [
     Icon: FaUsers,
   },
   {
+    title: 'Online Training',
+    description: 'Remote training programs designed for your schedule.',
+    Icon: FaLaptop,
+  },
+  {
     title: 'Nutritional Coaching',
     description: 'Comprehensive nutrition guidance for optimal results.',
     Icon: FaAppleAlt,
-  },
-  {
-    title: 'Physiotherapy',
-    description: 'Professional services for injury recovery and pain management.',
-    Icon: FaUserMd,
-  },
-  {
-    title: 'Massage Therapy',
-    description: 'Professional massage therapy for muscle tension and overall wellness.',
-    Icon: FaHandHoldingHeart,
   }
 ];
 

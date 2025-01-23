@@ -51,9 +51,9 @@ export default function ContactForm() {
   };
 
   return (
-    <main className="min-h-screen pt-20">
+    <main className="min-h-screen pt-16 md:pt-20">
       {/* Hero Section */}
-      <section className="relative h-[40vh] mt-28">
+      <section className="relative h-[40vh] mt-16 md:mt-28">
         <div className="absolute inset-0 mx-4 overflow-hidden">
           <div className="absolute inset-0 rounded-[3rem] overflow-hidden">
             <Image
@@ -71,13 +71,13 @@ export default function ContactForm() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-12 border border-text-primary/10 mx-4"
+            className="text-center bg-dark-lighter/20 backdrop-blur-sm rounded-[2rem] p-6 md:p-12 border border-text-primary/10 mx-4"
           >
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-5xl md:text-6xl font-bold mb-4 drop-shadow-lg"
+              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg"
             >
               Contact Us
             </motion.h1>
@@ -85,7 +85,7 @@ export default function ContactForm() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-xl md:text-2xl max-w-2xl mx-auto drop-shadow-lg"
+              className="text-lg md:text-xl lg:text-2xl max-w-2xl mx-auto drop-shadow-lg"
             >
               Get in touch with us for any inquiries or to start your fitness journey
             </motion.p>
@@ -94,7 +94,7 @@ export default function ContactForm() {
       </section>
 
       {/* Contact Section */}
-      <section className="max-w-7xl mx-auto px-4 mb-16 mt-32">
+      <section className="max-w-7xl mx-auto px-4 mb-16 mt-16 md:mt-32">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Get In Touch */}
           <motion.div

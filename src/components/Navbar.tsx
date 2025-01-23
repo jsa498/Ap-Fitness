@@ -35,10 +35,9 @@ export default function Navbar() {
   // Navigation Items
   const navItems = [
     { path: '/', name: 'Home' },
-    { path: '/services', name: 'Services' },
-    { path: '/packages', name: 'Packages' },
-    { path: '/about', name: 'About' },
-    { path: '/classes', name: 'Classes' },
+    { path: '/about', name: 'About Us' },
+    { path: '/training', name: 'Training' },
+    { path: '/therapy', name: 'Therapy' },
     { path: '/contact', name: 'Contact' }
   ];
 

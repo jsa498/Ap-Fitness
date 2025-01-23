@@ -33,6 +33,18 @@ const services = [
     ]
   },
   {
+    title: 'Physiotherapy',
+    description: 'Professional physiotherapy services to help you recover from injuries, manage pain, and improve mobility. Our experts work with you to achieve optimal physical function.',
+    Icon: FaUserMd,
+    features: [
+      'Expert assessment',
+      'Treatment plans',
+      'Manual therapy',
+      'Exercise prescription',
+      'Recovery guidance'
+    ]
+  },
+  {
     title: 'Gym Membership',
     description: 'Access to our state-of-the-art facility equipped with modern fitness equipment. Train in a welcoming environment with professional support when needed.',
     Icon: GiWeightLiftingUp,
@@ -42,18 +54,6 @@ const services = [
       'Professional environment',
       'Community atmosphere',
       'Expert staff available'
-    ]
-  },
-  {
-    title: 'Online Coaching',
-    description: 'Remote training programs designed for those who prefer working out from home or have busy schedules. Get expert guidance wherever you are.',
-    Icon: FaLaptop,
-    features: [
-      'Virtual consultations',
-      'Custom workout plans',
-      'Remote progress tracking',
-      'Flexible scheduling',
-      'Ongoing support'
     ]
   },
   {
@@ -69,6 +69,18 @@ const services = [
     ]
   },
   {
+    title: 'Online Training',
+    description: 'Remote training programs designed for those who prefer working out from home or have busy schedules. Get expert guidance wherever you are.',
+    Icon: FaLaptop,
+    features: [
+      'Virtual consultations',
+      'Custom workout plans',
+      'Remote progress tracking',
+      'Flexible scheduling',
+      'Ongoing support'
+    ]
+  },
+  {
     title: 'Nutritional Coaching',
     description: 'Comprehensive nutrition guidance to complement your fitness journey. Learn how to fuel your body effectively for optimal performance and results.',
     Icon: FaAppleAlt,
@@ -78,30 +90,6 @@ const services = [
       'Nutrition education',
       'Progress monitoring',
       'Ongoing support'
-    ]
-  },
-  {
-    title: 'Physiotherapy',
-    description: 'Professional physiotherapy services to help you recover from injuries, manage pain, and improve mobility. Our experts work with you to achieve optimal physical function.',
-    Icon: FaUserMd,
-    features: [
-      'Expert assessment',
-      'Treatment plans',
-      'Manual therapy',
-      'Exercise prescription',
-      'Recovery guidance'
-    ]
-  },
-  {
-    title: 'Massage Therapy',
-    description: 'Professional massage therapy services to help reduce muscle tension, improve circulation, and promote overall wellness. Our experienced therapists provide customized treatments.',
-    Icon: FaHandHoldingHeart,
-    features: [
-      'Customized treatments',
-      'Pain management',
-      'Stress reduction',
-      'Injury recovery',
-      'Deep tissue massage'
     ]
   }
 ];
