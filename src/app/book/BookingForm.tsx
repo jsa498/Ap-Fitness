@@ -6,16 +6,36 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { sendConsultationEmail } from '@/lib/emailService';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { FaUser, FaEnvelope, FaPhone, FaBirthdayCake, FaBullseye, FaDumbbell, FaClock, FaUserFriends, FaInfoCircle, FaPaperPlane, FaRunning, FaChevronRight, FaBox, FaTimes, FaCheck, FaUsers, FaFistRaised, FaChild, FaGlobe } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaPhone, FaBirthdayCake, FaBullseye, FaDumbbell, FaClock, FaUserFriends, FaInfoCircle, FaPaperPlane, FaRunning, FaChevronRight, FaBox, FaTimes, FaCheck, FaUsers, FaFistRaised, FaChild, FaGlobe, FaClinicMedical, FaUserMd } from 'react-icons/fa';
 import { GiWeightScale } from 'react-icons/gi';
 
 const experienceLevels = ['Beginner', 'Intermediate', 'Advanced'];
 const trainingTypes = [
-  'One to One Personal Training',
-  'Group Training',
-  'Boxing & Kickboxing',
-  'Pre & Postnatal',
-  'Online Coaching'
+  {
+    type: 'Personal Training',
+    description: 'One-on-one personalized training with certified kinesiologists',
+    icon: FaUserFriends
+  },
+  {
+    type: 'Group Training',
+    description: 'High-energy group workouts for all fitness levels',
+    icon: FaUsers
+  },
+  {
+    type: 'ICBC Active Rehab',
+    description: 'Specialized rehabilitation programs for ICBC clients',
+    icon: FaClinicMedical
+  },
+  {
+    type: 'Physiotherapy',
+    description: 'Professional services for injury recovery and pain management',
+    icon: FaUserMd
+  },
+  {
+    type: 'Online Training',
+    description: 'Expert guidance and support from anywhere',
+    icon: FaGlobe
+  }
 ];
 const timeSlots = [
   'Early Morning (6AM-9AM)',
@@ -90,6 +110,23 @@ interface ValidationError {
   selected_package?: string;
 }
 
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  weight: string;
+  gender: string;
+  age: string;
+  fitness_goal: string;
+  experience_level: string;
+  training_type: string;
+  preferred_time: string;
+  additional_info: string;
+  selected_package: string;
+  preferred_trainer: string;
+  [key: string]: string; // Add index signature
+}
+
 const trainingTypeDetails = [
   {
     type: 'One to One Personal Training',
@@ -120,7 +157,7 @@ const trainingTypeDetails = [
 
 export default function BookingForm() {
   const searchParams = useSearchParams();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     phone: '',
@@ -195,7 +232,6 @@ export default function BookingForm() {
     if (section === 'training') {
       if (!formData.training_type) newErrors.training_type = 'Training type is required';
       if (!formData.preferred_time) newErrors.preferred_time = 'Preferred time is required';
-      if (!formData.selected_package) newErrors.selected_package = 'Package selection is required';
     }
 
     setErrors(newErrors);
@@ -229,15 +265,87 @@ export default function BookingForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+    
+    console.log('Form submission started');
     setErrors({});
     
-    if (!validateForm(currentSection)) return;
+    if (currentSection !== 'training') {
+      console.log('Not on final section, preventing submission');
+      return;
+    }
+    
+    const sections: FormSection[] = ['personal', 'physical', 'fitness', 'training'];
+    let isValid = true;
+    let firstInvalidSection: FormSection | null = null;
+    
+    for (const section of sections) {
+      if (!validateForm(section)) {
+        isValid = false;
+        if (!firstInvalidSection) firstInvalidSection = section;
+      }
+    }
+    
+    if (!isValid && firstInvalidSection) {
+      console.log('Form validation failed:', errors);
+      setCurrentSection(firstInvalidSection);
+      setErrorMessage('Please fill in all required fields correctly.');
+      return;
+    }
 
+    const requiredFields: Record<keyof FormData, string> = {
+      name: 'Name',
+      email: 'Email',
+      phone: 'Phone',
+      weight: 'Weight',
+      age: 'Age',
+      gender: 'Gender',
+      fitness_goal: 'Fitness Goal',
+      experience_level: 'Experience Level',
+      training_type: 'Training Type',
+      preferred_time: 'Preferred Time',
+      preferred_trainer: 'Trainer Preference',
+      additional_info: 'Additional Information',
+      selected_package: ''
+    };
+
+    const missingFields = Object.entries(requiredFields)
+      .filter(([key, label]) => label && !formData[key as keyof FormData])
+      .map(([_, label]) => label);
+
+    if (missingFields.length > 0) {
+      console.log('Missing required fields:', missingFields);
+      setErrorMessage(`Please fill in the following fields: ${missingFields.join(', ')}`);
+      return;
+    }
+
+    console.log('Form validation passed, proceeding with submission');
     setStatus('loading');
     setErrorMessage('');
 
     try {
-      const result = await sendConsultationEmail(formData);
+      const formattedPhone = formData.phone.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+      
+      const submissionData = {
+        ...formData,
+        phone: formattedPhone,
+        gender: formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1),
+        experience_level: formData.experience_level.charAt(0).toUpperCase() + formData.experience_level.slice(1),
+        preferred_trainer: formData.preferred_trainer ? 
+          `${formData.preferred_trainer.charAt(0).toUpperCase() + formData.preferred_trainer.slice(1)} Trainer` : 
+          'No Preference',
+        subject: `New Consultation Request - ${formData.name}`,
+        weight: `${formData.weight} lbs`,
+        age: `${formData.age} years`,
+        fitness_goal: formData.fitness_goal || 'Not specified',
+        additional_info: formData.additional_info || 'No additional information provided',
+        selected_package: formData.selected_package || 'No package selected'
+      };
+
+      console.log('Sending consultation email with data:', submissionData);
+      
+      const result = await sendConsultationEmail(submissionData);
+      console.log('Email service response:', result);
       
       if (result.success) {
         setStatus('success');
@@ -259,11 +367,16 @@ export default function BookingForm() {
         setCurrentSection('personal');
         setErrors({});
       } else {
-        throw new Error('Failed to send consultation request');
+        throw new Error(result.error || 'Failed to send consultation request');
       }
     } catch (error) {
+      console.error('Consultation booking error:', error);
       setStatus('error');
-      setErrorMessage('Failed to send consultation request. Please try again or contact us directly.');
+      setErrorMessage(
+        error instanceof Error 
+          ? error.message 
+          : 'Failed to send consultation request. Please try again or contact us directly.'
+      );
     }
   };
 
@@ -829,77 +942,75 @@ export default function BookingForm() {
     );
   };
 
-  const TrainingTypeSelectorModal = () => {
-    if (!showTrainingTypeSelector) return null;
-
-    return (
-      <AnimatePresence>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-dark/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+  const TrainingTypeModal = () => (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      onClick={() => setShowTrainingTypeSelector(false)}
+    >
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.95, opacity: 0 }}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-dark rounded-[2rem] p-6 w-full max-w-lg relative"
+      >
+        <button
+          onClick={() => setShowTrainingTypeSelector(false)}
+          className="absolute right-6 top-6 text-text-secondary hover:text-text-primary"
         >
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            transition={{ type: "spring", duration: 0.5 }}
-            className="bg-dark-lighter w-full max-w-md rounded-[2rem] p-6 max-h-[85vh] overflow-y-auto relative mx-4"
-          >
-            <button
-              onClick={() => setShowTrainingTypeSelector(false)}
-              className="absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors"
-            >
-              <FaTimes className="w-5 h-5" />
-            </button>
+          <FaTimes className="text-xl" />
+        </button>
 
-            <div className="text-center mb-6">
-              <h3 className="text-2xl font-bold text-text-primary mb-1">Select Training Type</h3>
-              <p className="text-sm text-text-secondary">Choose your preferred training method</p>
-            </div>
+        <h3 className="text-2xl font-bold mb-2">Select Training Type</h3>
+        <p className="text-text-secondary mb-6">Choose your preferred training method</p>
 
-            <div className="space-y-3">
-              {trainingTypeDetails.map((type) => {
-                const Icon = type.icon;
-                return (
-                  <motion.button
-                    key={type.type}
-                    onClick={() => {
-                      setFormData(prev => ({ ...prev, training_type: type.type }));
-                      setShowTrainingTypeSelector(false);
-                      if (type.type === 'One to One Personal Training' || type.type === 'Online Coaching') {
-                        setShowPackageSelector(true);
-                      }
-                    }}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-colors ${
-                      formData.training_type === type.type
-                        ? 'border-ap-red bg-ap-red/5'
-                        : 'border-dark-border hover:border-ap-red/50'
-                    }`}
-                  >
-                    <div className={`p-3 rounded-xl ${
-                      formData.training_type === type.type
-                        ? 'bg-ap-red text-text-primary'
-                        : 'bg-dark text-text-secondary'
-                    }`}>
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <div className="text-left flex-1">
-                      <h4 className="text-base font-semibold text-text-primary">{type.type}</h4>
-                      <p className="text-xs text-text-secondary line-clamp-2">{type.description}</p>
-                    </div>
-                  </motion.button>
-                );
-              })}
-            </div>
-          </motion.div>
-        </motion.div>
-      </AnimatePresence>
-    );
-  };
+        <div className="space-y-3">
+          {trainingTypes.map((type) => {
+            const Icon = type.icon;
+            return (
+              <div
+                key={type.type}
+                onClick={() => {
+                  setFormData((prev) => ({ ...prev, training_type: type.type }));
+                  setShowTrainingTypeSelector(false);
+                }}
+                className={`flex items-center gap-4 p-4 rounded-xl cursor-pointer transition-all duration-300 ${
+                  formData.training_type === type.type
+                    ? 'bg-gradient-to-r from-ap-red to-ap-red-dark text-white'
+                    : 'bg-dark-lighter hover:bg-dark-lighter/80'
+                }`}
+              >
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                  formData.training_type === type.type
+                    ? 'bg-white/10'
+                    : 'bg-gradient-to-br from-ap-red to-ap-red-dark'
+                }`}>
+                  <Icon className={`text-2xl ${
+                    formData.training_type === type.type
+                      ? 'text-white'
+                      : 'text-text-primary'
+                  }`} />
+                </div>
+                <div>
+                  <h4 className="font-medium">{type.type}</h4>
+                  <p className={`text-sm ${
+                    formData.training_type === type.type
+                      ? 'text-white/80'
+                      : 'text-text-secondary'
+                  }`}>
+                    {type.description}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
 
   const GenderSelectorModal = () => {
     if (!showGenderSelector) return null;
@@ -1113,22 +1224,40 @@ export default function BookingForm() {
       }
     ];
 
+    const handleTrainerSelect = (option: { gender: string, name: string }) => {
+      // Prevent event propagation
+      event?.preventDefault();
+      event?.stopPropagation();
+      
+      setFormData(prev => ({ ...prev, preferred_trainer: option.gender }));
+      setShowTrainerSelector(false);
+    };
+
     return (
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="fixed inset-0 bg-dark/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setShowTrainerSelector(false);
+        }}
       >
         <motion.div
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           className="bg-dark-lighter w-full max-w-md rounded-[2rem] p-6 relative mx-4"
+          onClick={(e) => e.stopPropagation()}
         >
           <button
             type="button"
-            onClick={() => setShowTrainerSelector(false)}
+            onClick={(e) => {
+              e.preventDefault();
+              setShowTrainerSelector(false);
+            }}
             className="absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors"
           >
             <FaTimes className="w-5 h-5" />
@@ -1144,9 +1273,9 @@ export default function BookingForm() {
               <motion.button
                 key={option.gender}
                 type="button"
-                onClick={() => {
-                  setFormData(prev => ({ ...prev, preferred_trainer: option.gender }));
-                  setShowTrainerSelector(false);
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleTrainerSelect(option);
                 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -1176,135 +1305,170 @@ export default function BookingForm() {
   };
 
   return (
-    <main className="min-h-screen pt-20">
-      {/* Form Navigation */}
-      <div className="flex justify-center mb-8 px-4">
-        <div className="inline-flex gap-2">
-          {(['personal', 'physical', 'fitness', 'training'] as FormSection[]).map((section) => (
-            <motion.button
-              key={section}
-              onClick={() => setCurrentSection(section)}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                currentSection === section
-                  ? 'bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary'
-                  : 'bg-dark-lighter text-text-secondary hover:bg-dark'
-              }`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {section.charAt(0).toUpperCase() + section.slice(1)}
-            </motion.button>
-          ))}
-        </div>
-      </div>
-
-      <section className="max-w-4xl mx-auto px-4 pb-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-dark-lighter to-dark p-[2px] rounded-[2rem] shadow-dark-lg"
-        >
-          <div className="bg-dark rounded-[1.9rem] p-8 h-full">
-            <h1 className="text-4xl font-bold text-center mb-8 text-text-primary">Schedule Your Free Consultation</h1>
-
-            {status === 'success' ? (
-              <motion.div 
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="text-center py-8"
+    <main className="flex-1 pt-28">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="flex justify-center mb-8">
+          <nav className="bg-dark-lighter rounded-full p-1 inline-flex">
+            {['Personal', 'Physical', 'Fitness', 'Training'].map((section) => (
+              <button
+                key={section}
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  currentSection.toLowerCase() === section.toLowerCase()
+                    ? 'bg-ap-red text-white'
+                    : 'text-text-secondary hover:text-white'
+                }`}
+                onClick={() => setCurrentSection(section.toLowerCase() as FormSection)}
               >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                  className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg"
+                {section}
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4">Schedule Your Free Consultation</h1>
+          <p className="text-text-secondary">
+            Take the first step towards achieving your fitness goals
+          </p>
+        </div>
+
+        <section className="max-w-4xl mx-auto px-4 pb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-br from-dark-lighter to-dark p-[2px] rounded-[2rem] shadow-dark-lg"
+          >
+            <div className="bg-dark rounded-[1.9rem] p-8 h-full">
+              <h1 className="text-4xl font-bold text-center mb-8 text-text-primary">Schedule Your Free Consultation</h1>
+
+              {status === 'success' ? (
+                <motion.div 
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="text-center py-12"
                 >
-                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </motion.div>
-                <h3 className="text-2xl font-bold text-text-primary mb-2">Consultation Request Sent!</h3>
-                <p className="text-text-secondary mb-6">We'll get back to you shortly to confirm your consultation.</p>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setStatus('idle')}
-                  className="text-ap-red hover:text-ap-red-dark transition-colors"
-                >
-                  Book another consultation
-                </motion.button>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {renderFormSection()}
-
-                <div className="flex justify-between mt-8">
-                  {currentSection !== 'personal' && (
-                    <motion.button
-                      type="button"
-                      onClick={handlePrevSection}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-dark-lighter text-text-primary px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 hover:bg-dark flex items-center space-x-2"
-                    >
-                      <FaChevronRight className="rotate-180" />
-                      <span>Previous</span>
-                    </motion.button>
-                  )}
-
-                  {currentSection !== 'training' ? (
-                    <motion.button
-                      type="button"
-                      onClick={handleNextSection}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 shadow-lg hover:shadow-ap-red/20 ml-auto flex items-center space-x-2"
-                    >
-                      <span>Next</span>
-                      <FaChevronRight />
-                    </motion.button>
-                  ) : (
-                    <motion.button
-                      type="submit"
-                      disabled={status === 'loading'}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-ap-red/20 disabled:opacity-50 flex items-center space-x-2 ml-auto"
-                    >
-                      {status === 'loading' ? (
-                        <>
-                          <LoadingSpinner size="sm" />
-                          <span>Sending...</span>
-                        </>
-                      ) : (
-                        <>
-                          <FaPaperPlane className="mr-2" />
-                          <span>Book Consultation</span>
-                        </>
-                      )}
-                    </motion.button>
-                  )}
-                </div>
-
-                {status === 'error' && (
-                  <div className="text-red-500 text-sm text-center">
-                    {errorMessage}
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                    className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full mx-auto mb-8 flex items-center justify-center shadow-lg"
+                  >
+                    <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </motion.div>
+                  
+                  <h3 className="text-3xl font-bold text-text-primary mb-4">Consultation Request Sent!</h3>
+                  
+                  <div className="max-w-md mx-auto space-y-4 text-text-secondary">
+                    <p className="text-lg">Thank you for choosing AP Fitness! Here's what happens next:</p>
+                    
+                    <div className="bg-dark-lighter rounded-xl p-6 space-y-4">
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-green-500 text-sm">1</span>
+                        </div>
+                        <p className="text-sm">Our team will review your request within 24 hours</p>
+                      </div>
+                      
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-green-500 text-sm">2</span>
+                        </div>
+                        <p className="text-sm">We'll contact you via email or phone to confirm your consultation time</p>
+                      </div>
+                      
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-green-500 text-sm">3</span>
+                        </div>
+                        <p className="text-sm">Prepare any questions you have for your consultation session</p>
+                      </div>
+                    </div>
                   </div>
-                )}
-              </form>
-            )}
-          </div>
-        </motion.div>
-      </section>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setStatus('idle')}
+                    className="mt-8 text-ap-red hover:text-ap-red-dark transition-colors inline-flex items-center gap-2"
+                  >
+                    <span>Book another consultation</span>
+                    <FaChevronRight className="w-4 h-4" />
+                  </motion.button>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {renderFormSection()}
 
-      <AnimatePresence>
-        {showPackageSelector && <PackageSelectorModal />}
-        {showTrainingTypeSelector && <TrainingTypeSelectorModal />}
-        {showGenderSelector && <GenderSelectorModal />}
-        {showExperienceSelector && <ExperienceSelectorModal />}
-        {showTimeSelector && <TimeSelectorModal />}
-        {showTrainerSelector && <TrainerPreferenceModal />}
-      </AnimatePresence>
+                  <div className="flex justify-between mt-8">
+                    {currentSection !== 'personal' && (
+                      <motion.button
+                        type="button"
+                        onClick={handlePrevSection}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="bg-dark-lighter text-text-primary px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 hover:bg-dark flex items-center space-x-2"
+                      >
+                        <FaChevronRight className="rotate-180" />
+                        <span>Previous</span>
+                      </motion.button>
+                    )}
+
+                    {currentSection !== 'training' ? (
+                      <motion.button
+                        type="button"
+                        onClick={handleNextSection}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 shadow-lg hover:shadow-ap-red/20 ml-auto flex items-center space-x-2"
+                      >
+                        <span>Next</span>
+                        <FaChevronRight />
+                      </motion.button>
+                    ) : (
+                      <motion.button
+                        type="submit"
+                        disabled={status === 'loading'}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-ap-red/20 disabled:opacity-50 flex items-center space-x-2 ml-auto"
+                      >
+                        {status === 'loading' ? (
+                          <>
+                            <LoadingSpinner size="sm" />
+                            <span>Sending...</span>
+                          </>
+                        ) : (
+                          <>
+                            <FaPaperPlane className="mr-2" />
+                            <span>Book Consultation</span>
+                          </>
+                        )}
+                      </motion.button>
+                    )}
+                  </div>
+
+                  {status === 'error' && (
+                    <div className="text-red-500 text-sm text-center">
+                      {errorMessage}
+                    </div>
+                  )}
+                </form>
+              )}
+            </div>
+          </motion.div>
+        </section>
+
+        <AnimatePresence>
+          {showPackageSelector && <PackageSelectorModal />}
+          {showTrainingTypeSelector && <TrainingTypeModal />}
+          {showGenderSelector && <GenderSelectorModal />}
+          {showExperienceSelector && <ExperienceSelectorModal />}
+          {showTimeSelector && <TimeSelectorModal />}
+          {showTrainerSelector && <TrainerPreferenceModal />}
+        </AnimatePresence>
+      </div>
     </main>
   );
 } 
