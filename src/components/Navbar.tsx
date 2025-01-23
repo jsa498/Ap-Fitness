@@ -171,7 +171,7 @@ export default function Navbar() {
           </div>
 
           {/* Navigation Items */}
-          <div className="flex items-center justify-center gap-[2px] xs:gap-[4px] sm:gap-2 md:gap-3 overflow-x-visible flex-1 px-1 xs:px-2">
+          <div className="flex items-center justify-center gap-[1px] xs:gap-[4px] sm:gap-2 md:gap-3 overflow-x-visible flex-1 px-0.5 xs:px-2">
             {Object.entries(navigationStructure).map(([path, item]) => (
               <div key={path} className="relative nav-item">
                 <button
@@ -183,20 +183,20 @@ export default function Navbar() {
                     }
                   }}
                   className={`
-                    relative px-2 xs:px-2.5 sm:px-3 sm:py-1.5 md:px-4 md:py-2 transition-colors rounded-full text-[0.7rem] xs:text-[0.8rem] sm:text-sm md:text-base whitespace-nowrap
+                    relative px-1.5 xs:px-2.5 sm:px-3 sm:py-1.5 md:px-4 md:py-2 transition-colors rounded-full text-[0.65rem] xs:text-[0.8rem] sm:text-sm md:text-base whitespace-nowrap
                     ${path === pathname 
                       ? 'text-text-primary font-semibold bg-ap-red' 
                       : 'text-text-primary hover:text-ap-red hover:bg-dark-lighter font-normal'
                     }
-                    ${item.dropdownItems.length > 0 ? 'pr-6' : ''}
+                    ${item.dropdownItems.length > 0 ? 'pr-4 xs:pr-6' : ''}
                   `}
                 >
                   {item.name}
                   {item.dropdownItems.length > 0 && (
                     <FaChevronDown 
                       className={`
-                        absolute right-1 xs:right-2 top-1/2 -translate-y-1/2 
-                        w-2.5 h-2.5 xs:w-3 xs:h-3 
+                        absolute right-0.5 xs:right-2 top-1/2 -translate-y-1/2 
+                        w-2 h-2 xs:w-3 xs:h-3 
                         transition-transform duration-300
                         ${activeDropdown === path ? 'rotate-180' : ''}
                       `} 
@@ -208,7 +208,7 @@ export default function Navbar() {
                 {item.dropdownItems.length > 0 && activeDropdown === path && (
                   <div 
                     className="
-                      absolute top-full left-0 mt-2 w-48 
+                      absolute top-full left-0 mt-2 w-40 xs:w-48 
                       rounded-xl bg-dark-lighter border border-dark-border/30 
                       shadow-lg overflow-hidden backdrop-blur-xl
                       animate-fadeIn
@@ -220,7 +220,7 @@ export default function Navbar() {
                           key={dropdownItem.href}
                           onClick={() => handleNavigation(dropdownItem.href)}
                           className={`
-                            block w-full text-left px-4 py-2 text-sm text-text-primary 
+                            block w-full text-left px-3 xs:px-4 py-2 text-[0.7rem] xs:text-sm text-text-primary 
                             hover:bg-ap-red transition-colors
                             ${dropdownItem.isViewAll ? 'border-b border-dark-border/30 mb-1' : ''}
                           `}
@@ -236,10 +236,10 @@ export default function Navbar() {
           </div>
 
           {/* Book Now Button */}
-          <div className="flex-shrink-0 pr-1 xs:pr-1.5 sm:pr-2">
+          <div className="flex-shrink-0 pr-0.5 xs:pr-1.5 sm:pr-2">
             <Link
               href="/book"
-              className="inline-flex items-center px-3 py-1.5 xs:px-4 xs:py-1.5 sm:px-4 sm:py-1.5 md:px-6 md:py-2 bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary rounded-full font-medium transition-all hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] text-[0.7rem] sm:text-sm md:text-base whitespace-nowrap"
+              className="inline-flex items-center px-2 py-1 xs:px-4 xs:py-1.5 sm:px-4 sm:py-1.5 md:px-6 md:py-2 bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary rounded-full font-medium transition-all hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] text-[0.65rem] xs:text-[0.8rem] sm:text-sm md:text-base whitespace-nowrap"
               role="button"
               aria-label="Book a consultation"
             >
