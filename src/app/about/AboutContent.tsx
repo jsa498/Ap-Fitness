@@ -97,7 +97,7 @@ export default function AboutContent() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16" ref={statsRef}>
+      <section className="py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="bg-dark-lighter/20 backdrop-blur-sm rounded-[3rem] p-8 md:p-12 border border-text-primary/10">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
@@ -105,7 +105,8 @@ export default function AboutContent() {
                 <motion.div
                   key={stat.label}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={isStatsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
                   transition={{ 
                     delay: index * 0.1,
                     duration: 0.5,
@@ -114,7 +115,7 @@ export default function AboutContent() {
                   className="text-center p-6 rounded-2xl bg-dark/40 backdrop-blur-sm border border-text-primary/5 hover:border-ap-red/30 transition-all duration-300"
                 >
                   <stat.icon className="w-10 h-10 text-ap-red mx-auto mb-4" />
-                  <div className="text-4xl font-bold mb-2 text-text-primary bg-gradient-to-r from-text-primary to-ap-red bg-clip-text text-transparent">{stat.value}</div>
+                  <div className="text-4xl font-bold mb-2 text-transparent bg-gradient-to-r from-text-primary to-ap-red bg-clip-text">{stat.value}</div>
                   <div className="text-text-secondary font-medium">{stat.label}</div>
                 </motion.div>
               ))}
@@ -124,13 +125,14 @@ export default function AboutContent() {
       </section>
 
       {/* Trainers Section */}
-      <section className="py-16 relative" ref={trainersRef}>
+      <section className="py-16 relative">
         {/* Scroll Target for Trainers */}
         <div id="trainers" className="absolute top-96" aria-hidden="true" />
         <div className="max-w-7xl mx-auto px-4">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
-            animate={isTrainersInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="text-4xl font-bold text-center mb-12 text-text-primary drop-shadow-lg"
           >
@@ -141,7 +143,8 @@ export default function AboutContent() {
               <motion.div
                 key={trainer.name}
                 initial={{ opacity: 0, y: 20 }}
-                animate={isTrainersInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
                 transition={{ 
                   delay: index * 0.2,
                   duration: 0.5,

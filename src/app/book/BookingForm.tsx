@@ -166,7 +166,7 @@ export default function BookingForm() {
     age: '',
     fitness_goal: '',
     experience_level: '',
-    training_type: 'One to One Personal Training',
+    training_type: '',
     preferred_time: '',
     additional_info: '',
     selected_package: '',
@@ -177,9 +177,6 @@ export default function BookingForm() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<ValidationError>({});
   const [errorMessage, setErrorMessage] = useState('');
-  const [showPackageSelector, setShowPackageSelector] = useState(false);
-  const [selectedDuration, setSelectedDuration] = useState('');
-  const [selectedSessions, setSelectedSessions] = useState('');
   const [showTrainingTypeSelector, setShowTrainingTypeSelector] = useState(false);
   const [showGenderSelector, setShowGenderSelector] = useState(false);
   const [showExperienceSelector, setShowExperienceSelector] = useState(false);
@@ -380,42 +377,12 @@ export default function BookingForm() {
     }
   };
 
-  const requiresPackageSelection = (trainingType: string) => {
-    return trainingType === 'One to One Personal Training' || trainingType === 'Online Coaching';
-  };
-
   const handleTrainingTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newType = e.target.value;
     setFormData(prev => ({
       ...prev,
-      training_type: newType,
-      selected_package: ''
+      training_type: newType
     }));
-
-    if (newType === 'One to One Personal Training') {
-      setSelectedDuration('');
-      setSelectedSessions('');
-      setShowPackageSelector(true);
-    }
-  };
-
-  const handlePersonalPackageSelect = () => {
-    if (selectedDuration && selectedSessions) {
-      const packageName = `${selectedDuration} sessions - ${selectedSessions} sessions`;
-      setFormData(prev => ({
-        ...prev,
-        selected_package: packageName
-      }));
-      setShowPackageSelector(false);
-    }
-  };
-
-  const handleOnlinePackageSelect = (packageTitle: string) => {
-    setFormData(prev => ({
-      ...prev,
-      selected_package: packageTitle
-    }));
-    setShowPackageSelector(false);
   };
 
   const renderFormSection = () => {
@@ -642,22 +609,22 @@ export default function BookingForm() {
   };
 
   const renderTrainingSection = () => (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-6"
-          >
-            <h2 className="text-2xl font-bold text-text-primary mb-6">Training Preferences</h2>
-            
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      className="space-y-6"
+    >
+      <h2 className="text-2xl font-bold text-text-primary mb-6">Training Preferences</h2>
+      
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
             <FaUserFriends className="text-ap-red" />
             <label className="text-text-primary font-medium">
-                    Training Type *
-                  </label>
-                </div>
+              Training Type *
+            </label>
+          </div>
           <button
             type="button"
             onClick={() => setShowTrainingTypeSelector(true)}
@@ -673,274 +640,78 @@ export default function BookingForm() {
               <FaChevronRight className="w-3 h-3" />
             </div>
           </button>
-                {errors.training_type && <p className="text-red-500 text-sm mt-1">{errors.training_type}</p>}
+          {errors.training_type && <p className="text-red-500 text-sm mt-1">{errors.training_type}</p>}
         </div>
 
-        {requiresPackageSelection(formData.training_type) && (
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <FaBox className="text-ap-red" />
-              <label className="text-text-primary font-medium">
-                Selected Package *
-              </label>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowPackageSelector(true)}
-              className="w-full px-4 py-3 bg-dark border border-dark-border rounded-full text-left transition-all hover:border-ap-red/50 focus:ring-2 focus:ring-ap-red focus:border-transparent flex items-center justify-between"
-            >
-              <span className={formData.selected_package ? 'text-text-primary' : 'text-text-secondary'}>
-                {formData.selected_package || 'Select a package'}
-              </span>
-              <div className="flex items-center gap-2 text-text-secondary">
-                <span className="text-xs">Click to change</span>
-                <FaChevronRight className="w-3 h-3" />
-              </div>
-            </button>
-            {errors.selected_package && <p className="text-red-500 text-sm mt-1">{errors.selected_package}</p>}
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <FaClock className="text-ap-red" />
+            <label className="text-text-primary font-medium">
+              Preferred Time *
+            </label>
           </div>
-        )}
+          <button
+            type="button"
+            onClick={() => setShowTimeSelector(true)}
+            className={`w-full px-4 py-3 bg-dark border ${
+              errors.preferred_time ? 'border-red-500' : 'border-dark-border'
+            } rounded-full text-left transition-all hover:border-ap-red/50 focus:ring-2 focus:ring-ap-red focus:border-transparent flex items-center justify-between`}
+          >
+            <span className={formData.preferred_time ? 'text-text-primary' : 'text-text-secondary'}>
+              {formData.preferred_time || 'Select preferred time'}
+            </span>
+            <div className="flex items-center gap-2 text-text-secondary">
+              <span className="text-xs">Click to change</span>
+              <FaChevronRight className="w-3 h-3" />
+            </div>
+          </button>
+          {errors.preferred_time && <p className="text-red-500 text-sm mt-1">{errors.preferred_time}</p>}
+        </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <FaClock className="text-ap-red" />
-                  <label className="text-text-primary font-medium">
-                    Preferred Time *
-                  </label>
-                </div>
-                <button
-                  onClick={() => setShowTimeSelector(true)}
-                  className={`w-full px-4 py-3 bg-dark border ${
-                    errors.preferred_time ? 'border-red-500' : 'border-dark-border'
-                  } rounded-full text-left transition-all hover:border-ap-red/50 focus:ring-2 focus:ring-ap-red focus:border-transparent flex items-center justify-between`}
-                >
-                  <span className={formData.preferred_time ? 'text-text-primary' : 'text-text-secondary'}>
-                    {formData.preferred_time || 'Select preferred time'}
-                  </span>
-                  <div className="flex items-center gap-2 text-text-secondary">
-                    <span className="text-xs">Click to change</span>
-                    <FaChevronRight className="w-3 h-3" />
-                  </div>
-                </button>
-                {errors.preferred_time && <p className="text-red-500 text-sm mt-1">{errors.preferred_time}</p>}
-              </div>
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <FaUserFriends className="text-ap-red" />
+            <label className="text-text-primary font-medium">
+              Preferred Trainer *
+            </label>
+          </div>
+          <button
+            onClick={() => setShowTrainerSelector(true)}
+            className="w-full px-4 py-3 bg-dark border border-dark-border rounded-full text-left transition-all hover:border-ap-red/50 focus:ring-2 focus:ring-ap-red focus:border-transparent flex items-center justify-between"
+          >
+            <span className={formData.preferred_trainer ? 'text-text-primary' : 'text-text-secondary'}>
+              {formData.preferred_trainer ? 
+                `${formData.preferred_trainer.charAt(0).toUpperCase() + formData.preferred_trainer.slice(1)} Trainer` : 
+                'Select trainer preference'}
+            </span>
+            <div className="flex items-center gap-2 text-text-secondary">
+              <span className="text-xs">Click to change</span>
+              <FaChevronRight className="w-3 h-3" />
+            </div>
+          </button>
+        </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <FaUserFriends className="text-ap-red" />
-                  <label className="text-text-primary font-medium">
-                    Preferred Trainer *
-                  </label>
-                </div>
-                <button
-                  onClick={() => setShowTrainerSelector(true)}
-                  className="w-full px-4 py-3 bg-dark border border-dark-border rounded-full text-left transition-all hover:border-ap-red/50 focus:ring-2 focus:ring-ap-red focus:border-transparent flex items-center justify-between"
-                >
-                  <span className={formData.preferred_trainer ? 'text-text-primary' : 'text-text-secondary'}>
-                    {formData.preferred_trainer ? 
-                      `${formData.preferred_trainer.charAt(0).toUpperCase() + formData.preferred_trainer.slice(1)} Trainer` : 
-                      'Select trainer preference'}
-                  </span>
-                  <div className="flex items-center gap-2 text-text-secondary">
-                    <span className="text-xs">Click to change</span>
-                    <FaChevronRight className="w-3 h-3" />
-                  </div>
-                </button>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <FaInfoCircle className="text-ap-red" />
-                  <label htmlFor="additional_info" className="text-text-primary font-medium">
-                    Additional Information
-                  </label>
-                </div>
-                <textarea
-                  id="additional_info"
-                  name="additional_info"
-                  value={formData.additional_info}
-                  onChange={handleChange}
-                  disabled={status === 'loading'}
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <FaInfoCircle className="text-ap-red" />
+            <label htmlFor="additional_info" className="text-text-primary font-medium">
+              Additional Information
+            </label>
+          </div>
+          <textarea
+            id="additional_info"
+            name="additional_info"
+            value={formData.additional_info}
+            onChange={handleChange}
+            disabled={status === 'loading'}
             rows={4}
             className="w-full px-4 py-3 bg-dark border border-dark-border rounded-3xl focus:ring-2 focus:ring-ap-red focus:border-transparent disabled:opacity-50 transition-all duration-300 hover:border-ap-red/50"
             placeholder="Any additional information you'd like to share..."
-                />
-              </div>
-            </div>
-          </motion.div>
-        );
-
-  const PackageSelectorModal = () => {
-    const [expandedPackage, setExpandedPackage] = useState<string | null>(null);
-
-    if (!showPackageSelector) return null;
-
-    return (
-      <div className="fixed inset-0 bg-dark/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-dark-lighter w-full max-w-md rounded-[2rem] p-6 max-h-[85vh] overflow-y-auto relative mx-4">
-          <button
-            onClick={() => setShowPackageSelector(false)}
-            className="absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors"
-          >
-            <FaTimes className="w-5 h-5" />
-          </button>
-
-          {formData.training_type === 'One to One Personal Training' ? (
-            <div className="space-y-6">
-              <div className="text-center">
-                <h3 className="text-2xl font-bold text-text-primary mb-1">Select Your Package</h3>
-                <p className="text-sm text-text-secondary">Choose your preferred session duration and package size</p>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="text-text-primary font-medium mb-2 block">Session Duration</label>
-                  <div className="grid grid-cols-3 gap-3">
-                    {personalTrainingDurations.map((duration) => (
-                      <motion.button
-                        key={duration}
-                        onClick={() => setSelectedDuration(duration)}
-                        initial={false}
-                        animate={{
-                          scale: selectedDuration === duration ? 1 : 1,
-                          backgroundColor: selectedDuration === duration ? 'rgba(220, 38, 38, 0.1)' : 'transparent'
-                        }}
-                        className={`p-3 rounded-xl border transition-colors ${
-                          selectedDuration === duration
-                            ? 'border-ap-red text-text-primary'
-                            : 'border-dark-border text-text-secondary hover:border-ap-red/50'
-                        }`}
-                      >
-                        {duration}
-                      </motion.button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-text-primary font-medium mb-2 block">Number of Sessions</label>
-                  <div className="grid grid-cols-4 gap-3">
-                    {personalTrainingSessions.map((sessions) => (
-                      <motion.button
-                        key={sessions}
-                        onClick={() => setSelectedSessions(sessions)}
-                        initial={false}
-                        animate={{
-                          scale: selectedSessions === sessions ? 1 : 1,
-                          backgroundColor: selectedSessions === sessions ? 'rgba(220, 38, 38, 0.1)' : 'transparent'
-                        }}
-                        className={`p-3 rounded-xl border transition-colors ${
-                          selectedSessions === sessions
-                            ? 'border-ap-red text-text-primary'
-                            : 'border-dark-border text-text-secondary hover:border-ap-red/50'
-                        }`}
-                      >
-                        {sessions}
-                      </motion.button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handlePersonalPackageSelect}
-                disabled={!selectedDuration || !selectedSessions}
-                className="w-full bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary py-3 rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-              >
-                Confirm Selection
-              </motion.button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="text-center">
-                <h3 className="text-2xl font-bold text-text-primary mb-1">Select Your Package</h3>
-                <p className="text-sm text-text-secondary">Choose your preferred online coaching program</p>
-              </div>
-
-              <div className="space-y-3">
-                {onlineCoachingPackages.map((package_) => (
-                  <motion.div
-                    key={package_.title}
-                    layout
-                    transition={{ type: "spring", duration: 0.5 }}
-                    className={`relative rounded-xl border ${
-                      package_.popular
-                        ? 'border-ap-red bg-ap-red/5'
-                        : 'border-dark-border hover:border-ap-red/30'
-                    }`}
-                  >
-                    <motion.div 
-                      layout="position"
-                      className={`p-4 ${package_.popular ? 'mt-4' : ''}`}
-                    >
-                      {package_.popular && (
-                        <div className="absolute top-0 left-0 w-full flex justify-center z-20 -translate-y-1/2">
-                          <span className="bg-ap-red text-text-primary px-3 py-0.5 rounded-full text-xs font-medium">
-                            Popular
-                          </span>
-                        </div>
-                      )}
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <h4 className="text-lg font-bold text-text-primary">{package_.title}</h4>
-                          <p className="text-sm text-text-secondary">{package_.duration} program</p>
-                        </div>
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => handleOnlinePackageSelect(package_.title)}
-                          className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-6 py-2 rounded-full text-sm font-medium"
-                        >
-                          Select
-                        </motion.button>
-                      </div>
-
-                      <motion.div
-                        initial={false}
-                        animate={{ height: expandedPackage === package_.title ? 'auto' : '0' }}
-                        className="overflow-hidden"
-                      >
-                        <div className="pt-4">
-                          <div className="grid grid-cols-2 gap-2">
-                            {package_.features.map((feature, i) => (
-                              <div 
-                                key={i} 
-                                className="flex items-center text-text-secondary"
-                              >
-                                <FaCheck className="w-3 h-3 text-ap-red mr-2 flex-shrink-0" />
-                                <span className="text-sm">{feature}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-
-                      <button
-                        onClick={() => setExpandedPackage(
-                          expandedPackage === package_.title ? null : package_.title
-                        )}
-                        className="mt-2 text-sm text-text-secondary hover:text-text-primary transition-colors flex items-center gap-1"
-                      >
-                        {expandedPackage === package_.title ? 'Show less' : 'Show features'}
-                        <motion.div
-                          animate={{ rotate: expandedPackage === package_.title ? 180 : 0 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <FaChevronRight className="w-3 h-3" />
-                        </motion.div>
-                      </button>
-                    </motion.div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          )}
+          />
         </div>
       </div>
-    );
-  };
+    </motion.div>
+  );
 
   const TrainingTypeModal = () => (
     <motion.div
@@ -1401,17 +1172,17 @@ export default function BookingForm() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {renderFormSection()}
 
-                  <div className="flex justify-between mt-8">
+                  <div className="flex justify-between items-center mt-8 gap-4">
                     {currentSection !== 'personal' && (
                       <motion.button
                         type="button"
                         onClick={handlePrevSection}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="bg-dark-lighter text-text-primary px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 hover:bg-dark flex items-center space-x-2"
+                        className="bg-dark-lighter text-text-primary px-5 py-2.5 rounded-full font-medium transition-all duration-300 hover:bg-dark flex items-center gap-2 group"
                       >
-                        <FaChevronRight className="rotate-180" />
-                        <span>Previous</span>
+                        <FaChevronRight className="rotate-180 w-5 h-5 text-ap-red group-hover:text-text-primary transition-colors" />
+                        <span className="mr-1">Previous</span>
                       </motion.button>
                     )}
 
@@ -1421,10 +1192,10 @@ export default function BookingForm() {
                         onClick={handleNextSection}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 shadow-lg hover:shadow-ap-red/20 ml-auto flex items-center space-x-2"
+                        className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-5 py-2.5 rounded-full font-medium transition-all duration-300 shadow-lg hover:shadow-ap-red/20 ml-auto flex items-center gap-2"
                       >
-                        <span>Next</span>
-                        <FaChevronRight />
+                        <span className="ml-1">Next</span>
+                        <FaChevronRight className="w-4 h-4" />
                       </motion.button>
                     ) : (
                       <motion.button
@@ -1432,7 +1203,7 @@ export default function BookingForm() {
                         disabled={status === 'loading'}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-8 py-3 rounded-full text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-ap-red/20 disabled:opacity-50 flex items-center space-x-2 ml-auto"
+                        className="bg-gradient-to-r from-ap-red to-ap-red-dark text-text-primary px-6 py-2.5 rounded-full font-medium transition-all duration-300 shadow-lg hover:shadow-ap-red/20 disabled:opacity-50 flex items-center gap-2 ml-auto justify-center"
                       >
                         {status === 'loading' ? (
                           <>
@@ -1441,7 +1212,7 @@ export default function BookingForm() {
                           </>
                         ) : (
                           <>
-                            <FaPaperPlane className="mr-2" />
+                            <FaPaperPlane className="w-4 h-4" />
                             <span>Book Consultation</span>
                           </>
                         )}
@@ -1450,7 +1221,7 @@ export default function BookingForm() {
                   </div>
 
                   {status === 'error' && (
-                    <div className="text-red-500 text-sm text-center">
+                    <div className="text-red-500 text-sm text-center mt-4">
                       {errorMessage}
                     </div>
                   )}
@@ -1461,7 +1232,6 @@ export default function BookingForm() {
         </section>
 
         <AnimatePresence>
-          {showPackageSelector && <PackageSelectorModal />}
           {showTrainingTypeSelector && <TrainingTypeModal />}
           {showGenderSelector && <GenderSelectorModal />}
           {showExperienceSelector && <ExperienceSelectorModal />}
