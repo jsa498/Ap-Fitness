@@ -182,6 +182,8 @@ export default function BookingForm() {
   const [showExperienceSelector, setShowExperienceSelector] = useState(false);
   const [showTimeSelector, setShowTimeSelector] = useState(false);
   const [showTrainerSelector, setShowTrainerSelector] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [skipValidation, setSkipValidation] = useState(false);
 
   useEffect(() => {
     const packageParam = searchParams.get('package');
@@ -197,7 +199,15 @@ export default function BookingForm() {
     }
   }, [searchParams]);
 
-  const validateForm = (section: FormSection): boolean => {
+  useEffect(() => {
+    setIsModalOpen(showTrainingTypeSelector || showGenderSelector || showExperienceSelector || showTimeSelector || showTrainerSelector);
+  }, [showTrainingTypeSelector, showGenderSelector, showExperienceSelector, showTimeSelector, showTrainerSelector]);
+
+  const validateForm = (section: FormSection, shouldSetErrors: boolean = true): boolean => {
+    if (skipValidation || showTrainerSelector || showGenderSelector || showExperienceSelector || showTimeSelector || showTrainingTypeSelector) {
+      return true;
+    }
+
     const newErrors: ValidationError = {};
 
     if (section === 'personal') {
@@ -231,7 +241,9 @@ export default function BookingForm() {
       if (!formData.preferred_time) newErrors.preferred_time = 'Preferred time is required';
     }
 
-    setErrors(newErrors);
+    if (shouldSetErrors) {
+      setErrors(newErrors);
+    }
     return Object.keys(newErrors).length === 0;
   };
 
@@ -241,8 +253,6 @@ export default function BookingForm() {
   };
 
   const handleNextSection = () => {
-    setErrors({});
-    
     if (validateForm(currentSection)) {
       const sections: FormSection[] = ['personal', 'physical', 'fitness', 'training'];
       const currentIndex = sections.indexOf(currentSection);
@@ -250,6 +260,12 @@ export default function BookingForm() {
         setCurrentSection(sections[currentIndex + 1]);
       }
     }
+  };
+
+  const handleSectionChange = (section: FormSection) => {
+    setSkipValidation(true);
+    setCurrentSection(section);
+    setTimeout(() => setSkipValidation(false), 0);
   };
 
   const handlePrevSection = () => {
@@ -264,28 +280,26 @@ export default function BookingForm() {
     e.preventDefault();
     e.stopPropagation();
     
-    console.log('Form submission started');
-    setErrors({});
-    
-    if (currentSection !== 'training') {
-      console.log('Not on final section, preventing submission');
+    if (currentSection !== 'training' || status === 'loading') {
       return;
     }
+    
+    setErrors({});
     
     const sections: FormSection[] = ['personal', 'physical', 'fitness', 'training'];
     let isValid = true;
     let firstInvalidSection: FormSection | null = null;
     
     for (const section of sections) {
-      if (!validateForm(section)) {
+      if (!validateForm(section, false)) {
         isValid = false;
         if (!firstInvalidSection) firstInvalidSection = section;
       }
     }
     
     if (!isValid && firstInvalidSection) {
-      console.log('Form validation failed:', errors);
       setCurrentSection(firstInvalidSection);
+      validateForm(firstInvalidSection, true);
       setErrorMessage('Please fill in all required fields correctly.');
       return;
     }
@@ -996,12 +1010,10 @@ export default function BookingForm() {
     ];
 
     const handleTrainerSelect = (option: { gender: string, name: string }) => {
-      // Prevent event propagation
-      event?.preventDefault();
-      event?.stopPropagation();
-      
+      const currentSectionBackup = currentSection;
       setFormData(prev => ({ ...prev, preferred_trainer: option.gender }));
       setShowTrainerSelector(false);
+      setCurrentSection(currentSectionBackup);
     };
 
     return (
@@ -1027,6 +1039,7 @@ export default function BookingForm() {
             type="button"
             onClick={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               setShowTrainerSelector(false);
             }}
             className="absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors"
@@ -1044,10 +1057,7 @@ export default function BookingForm() {
               <motion.button
                 key={option.gender}
                 type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleTrainerSelect(option);
-                }}
+                onClick={() => handleTrainerSelect(option)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-colors ${
@@ -1088,7 +1098,7 @@ export default function BookingForm() {
                     ? 'bg-ap-red text-white'
                     : 'text-text-secondary hover:text-white'
                 }`}
-                onClick={() => setCurrentSection(section.toLowerCase() as FormSection)}
+                onClick={() => handleSectionChange(section.toLowerCase() as FormSection)}
               >
                 {section}
               </button>
@@ -1103,13 +1113,13 @@ export default function BookingForm() {
           </p>
         </div>
 
-        <section className="max-w-4xl mx-auto px-4 pb-16">
+        <section className="max-w-4xl mx-auto px-2 sm:px-4 pb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="bg-gradient-to-br from-dark-lighter to-dark p-[2px] rounded-[2rem] shadow-dark-lg"
           >
-            <div className="bg-dark rounded-[1.9rem] p-8 h-full">
+            <div className="bg-dark rounded-[1.9rem] p-6 sm:p-8 h-full">
               <h1 className="text-4xl font-bold text-center mb-8 text-text-primary">Schedule Your Free Consultation</h1>
 
               {status === 'success' ? (
