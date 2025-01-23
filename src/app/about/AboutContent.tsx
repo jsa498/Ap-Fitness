@@ -11,7 +11,7 @@ const trainers = [
     name: 'Prabhjot Mand',
     role: 'KINESIOLOGIST / PERSONAL TRAINER',
     image: '/images/DSC05663.jpeg',
-    quote: 'Dedicated to helping clients achieve their fitness goals through evidence-based training and personalized attention.',
+    quote: '"I hated every minute of training, but I said, Don\'t quit. Suffer now and live the rest of your life as a champion." - Muhammad Ali',
     bio: 'Prabhjot is a certified kinesiologist and personal trainer with a passion for helping clients achieve their fitness goals. With his evidence-based approach and personalized attention, he creates effective training programs that deliver results.',
     certifications: [
       'Bachelor of Kinesiology',
@@ -24,7 +24,7 @@ const trainers = [
     name: 'Amrit Jagdeo',
     role: 'KINESIOLOGIST / PERSONAL TRAINER',
     image: '/images/DSC09205.jpeg',
-    quote: 'Passionate about empowering clients to reach their full potential through holistic wellness and sustainable fitness practices.',
+    quote: '"Success isn\'t about perfection, it\'s about consistency. Your health is an investment, not an expense."',
     bio: 'Amrit is a dedicated kinesiologist and personal trainer who believes in a holistic approach to fitness. He focuses on creating sustainable, long-term solutions that help clients transform their lives through proper training and education.',
     certifications: [
       'Bachelor of Kinesiology',
@@ -99,28 +99,27 @@ export default function AboutContent() {
       {/* Stats Section */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="bg-dark-lighter/20 backdrop-blur-sm rounded-[3rem] p-8 md:p-12 border border-text-primary/10">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-              {stats.map((stat, index) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ 
-                    delay: index * 0.1,
-                    duration: 0.5,
-                    ease: "easeOut"
-                  }}
-                  className="text-center p-6 rounded-2xl bg-dark/40 backdrop-blur-sm border border-text-primary/5 hover:border-ap-red/30 transition-all duration-300"
-                >
-                  <stat.icon className="w-10 h-10 text-ap-red mx-auto mb-4" />
-                  <div className="text-4xl font-bold mb-2 text-transparent bg-gradient-to-r from-text-primary to-ap-red bg-clip-text">{stat.value}</div>
-                  <div className="text-text-secondary font-medium">{stat.label}</div>
-                </motion.div>
-              ))}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            <div className="bg-dark-lighter/20 backdrop-blur-sm rounded-[3rem] p-8 md:p-12 border border-text-primary/10">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+                {stats.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="text-center p-6 rounded-2xl bg-dark/40 backdrop-blur-sm border border-text-primary/5 hover:border-ap-red/30 transition-all duration-300"
+                  >
+                    <stat.icon className="w-10 h-10 text-ap-red mx-auto mb-4" />
+                    <div className="text-4xl font-bold mb-2 text-transparent bg-gradient-to-r from-text-primary to-ap-red bg-clip-text">{stat.value}</div>
+                    <div className="text-text-secondary font-medium">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
