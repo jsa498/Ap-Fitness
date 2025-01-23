@@ -9,7 +9,7 @@ const trainers = [
   {
     name: 'Prabhjot Mand',
     role: 'KINESIOLOGIST / PERSONAL TRAINER',
-    image: '/images/DSC05701.jpeg',
+    image: '/images/DSC05663.jpeg',
     quote: 'Dedicated to helping clients achieve their fitness goals through evidence-based training and personalized attention.',
     bio: 'Prabhjot is a certified kinesiologist and personal trainer with a passion for helping clients achieve their fitness goals. With his evidence-based approach and personalized attention, he creates effective training programs that deliver results.',
     certifications: [
