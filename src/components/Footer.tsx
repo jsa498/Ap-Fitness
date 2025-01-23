@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FaInstagram, FaFacebook, FaTwitter } from 'react-icons/fa';
+import { FaInstagram, FaFacebook, FaGoogle } from 'react-icons/fa';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -68,7 +68,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4 text-text-primary">Follow Us</h3>
             <div className="flex space-x-4">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/apfitnessrehab?igsh=MW1rbjltbDMyOWY3eA%3D%3D"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-text-secondary hover:text-ap-red transition-colors"
@@ -84,12 +84,12 @@ const Footer = () => {
                 <FaFacebook className="w-6 h-6" />
               </a>
               <a
-                href="https://twitter.com"
+                href="https://www.google.com/search?q=ap+fitness&oq=&gs_lcrp=EgZjaHJvbWUqCQgCECMYJxjqAjIPCAAQLhgnGMcBGOoCGNEDMgkIARAjGCcY6gIyCQgCECMYJxjqAjIJCAMQIxgnGOoCMgkIBBAjGCcY6gIyCQgFECMYJxjqAjIJCAYQIxgnGOoCMhIIBxAuGCcYrwEYxwEY6gIYjgXSAQkxNTY3ajBqMTWoAgiwAgE&sourceid=chrome&ie=UTF-8"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-text-secondary hover:text-ap-red transition-colors"
               >
-                <FaTwitter className="w-6 h-6" />
+                <FaGoogle className="w-6 h-6" />
               </a>
             </div>
           </div>
