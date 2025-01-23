@@ -1,9 +1,10 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { FaGraduationCap, FaMedal, FaUsers, FaHeart } from 'react-icons/fa';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRef } from 'react';
 
 const trainers = [
   {
@@ -42,6 +43,16 @@ const stats = [
 ];
 
 export default function AboutContent() {
+  const statsRef = useRef(null);
+  const missionRef = useRef(null);
+  const trainersRef = useRef(null);
+  const facilityRef = useRef(null);
+  
+  const isStatsInView = useInView(statsRef, { once: true, amount: 0.3 });
+  const isMissionInView = useInView(missionRef, { once: true, amount: 0.3 });
+  const isTrainersInView = useInView(trainersRef, { once: true, amount: 0.3 });
+  const isFacilityInView = useInView(facilityRef, { once: true, amount: 0.3 });
+
   return (
     <main className="min-h-screen pt-20">
       {/* Hero Section */}
@@ -69,11 +80,11 @@ export default function AboutContent() {
       </section>
 
       {/* Mission Statement */}
-      <section id="mission" className="max-w-4xl mx-auto px-4 py-16 text-center scroll-mt-32">
+      <section id="mission" className="max-w-4xl mx-auto px-4 py-16 text-center scroll-mt-32" ref={missionRef}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={isMissionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
         >
           <h2 className="text-3xl font-bold mb-6 text-text-primary">Our Mission</h2>
           <p className="text-text-secondary text-lg leading-relaxed">
@@ -86,7 +97,7 @@ export default function AboutContent() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16">
+      <section className="py-16" ref={statsRef}>
         <div className="max-w-7xl mx-auto px-4">
           <div className="bg-dark-lighter/20 backdrop-blur-sm rounded-[3rem] p-8 md:p-12 border border-text-primary/10">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
@@ -94,9 +105,12 @@ export default function AboutContent() {
                 <motion.div
                   key={stat.label}
                   initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
+                  animate={isStatsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ 
+                    delay: index * 0.1,
+                    duration: 0.5,
+                    ease: "easeOut"
+                  }}
                   className="text-center p-6 rounded-2xl bg-dark/40 backdrop-blur-sm border border-text-primary/5 hover:border-ap-red/30 transition-all duration-300"
                 >
                   <stat.icon className="w-10 h-10 text-ap-red mx-auto mb-4" />
@@ -110,14 +124,14 @@ export default function AboutContent() {
       </section>
 
       {/* Trainers Section */}
-      <section className="py-16 relative">
+      <section className="py-16 relative" ref={trainersRef}>
         {/* Scroll Target for Trainers */}
         <div id="trainers" className="absolute top-96" aria-hidden="true" />
         <div className="max-w-7xl mx-auto px-4">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={isTrainersInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="text-4xl font-bold text-center mb-12 text-text-primary drop-shadow-lg"
           >
             Meet Our Trainers
@@ -127,9 +141,12 @@ export default function AboutContent() {
               <motion.div
                 key={trainer.name}
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.2 }}
+                animate={isTrainersInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ 
+                  delay: index * 0.2,
+                  duration: 0.5,
+                  ease: "easeOut"
+                }}
                 whileHover={{ y: -5 }}
                 className="group bg-gradient-to-br from-dark-lighter to-dark rounded-[2rem] p-[2px] shadow-dark-lg"
               >
@@ -233,14 +250,14 @@ export default function AboutContent() {
       </section>
 
       {/* Facility Section */}
-      <section className="py-16 relative">
+      <section className="py-16 relative" ref={facilityRef}>
         {/* Scroll Target for Facility */}
         <div id="facility" className="absolute top-96" aria-hidden="true" />
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={isFacilityInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="text-center mb-12"
           >
             <h2 className="text-4xl font-bold mb-4 text-text-primary drop-shadow-lg">Our Facility</h2>
@@ -259,9 +276,12 @@ export default function AboutContent() {
               <motion.div
                 key={image.alt}
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.2 }}
+                animate={isFacilityInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ 
+                  delay: index * 0.2,
+                  duration: 0.5,
+                  ease: "easeOut"
+                }}
                 whileHover={{ y: -5 }}
                 className="relative h-64 rounded-[2rem] overflow-hidden group bg-gradient-to-br from-dark-lighter to-dark p-[2px]"
               >
