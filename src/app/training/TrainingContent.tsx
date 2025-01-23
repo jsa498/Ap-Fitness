@@ -138,75 +138,20 @@ export default function TrainingContent() {
       {/* Main Services Grid */}
       <section className="px-4 py-16">
         <div className="max-w-7xl mx-auto">
-          {/* First Responder Special Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-16"
-          >
-            <div className="bg-gradient-to-br from-ap-red/10 to-dark p-[2px] rounded-[2rem] shadow-lg hover:shadow-ap-red/20 transition-all duration-300">
-              <div className="bg-dark-lighter rounded-[1.9rem] p-8 md:p-12">
-                <div className="flex flex-col md:flex-row items-center gap-8">
-                  <div className="flex-shrink-0 w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-ap-red to-ap-red-dark rounded-2xl flex items-center justify-center shadow-lg">
-                    <FaUserNurse className="w-8 h-8 md:w-12 md:h-12 text-text-primary" />
-                  </div>
-                  <div className="flex-grow text-center md:text-left">
-                    <h3 className="text-2xl md:text-3xl font-bold mb-4 text-text-primary">First Responder & Healthcare Worker Program</h3>
-                    <p className="text-lg text-text-secondary mb-6">
-                      We proudly support our local heroes with exclusive membership discounts and specialized training programs tailored to your demanding schedule.
-                    </p>
-                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                      <li className="flex items-center text-text-secondary">
-                        <span className="w-1.5 h-1.5 bg-ap-red rounded-full mr-2" />
-                        Exclusive membership rates
-                      </li>
-                      <li className="flex items-center text-text-secondary">
-                        <span className="w-1.5 h-1.5 bg-ap-red rounded-full mr-2" />
-                        Flexible scheduling options
-                      </li>
-                      <li className="flex items-center text-text-secondary">
-                        <span className="w-1.5 h-1.5 bg-ap-red rounded-full mr-2" />
-                        Personalized training programs
-                      </li>
-                      <li className="flex items-center text-text-secondary">
-                        <span className="w-1.5 h-1.5 bg-ap-red rounded-full mr-2" />
-                        Group training opportunities
-                      </li>
-                    </ul>
-                    <Link
-                      href="/contact"
-                      className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-ap-red to-ap-red-dark text-white rounded-full font-medium transition-all hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] text-base"
-                    >
-                      Learn More
-                      <svg
-                        className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {trainingServices.filter(service => service.title !== 'First Responder & Healthcare Worker Program').map((service, index) => (
+            {trainingServices.map((service, index) => (
               <motion.div
                 key={service.title}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 * index }}
-                className="bg-dark-lighter rounded-[2rem] p-8 hover:bg-dark-lighter/80 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg group"
+                id={service.title.toLowerCase().replace(/\s+/g, '-')}
+                className="
+                  bg-dark-lighter rounded-[2rem] p-8 
+                  hover:bg-dark-lighter/80 transition-all duration-300 
+                  transform hover:scale-[1.02] hover:shadow-lg group
+                  scroll-mt-32 target:ring-2 target:ring-ap-red/50
+                "
               >
                 <service.Icon className="text-4xl text-ap-red mb-6 group-hover:scale-110 transition-transform duration-300" />
                 <h3 className="text-xl font-semibold mb-4">{service.title}</h3>

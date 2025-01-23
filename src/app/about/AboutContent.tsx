@@ -61,7 +61,7 @@ export default function AboutContent() {
       </section>
 
       {/* Mission Statement */}
-      <section className="max-w-4xl mx-auto px-4 py-16 text-center">
+      <section id="mission" className="max-w-4xl mx-auto px-4 py-16 text-center scroll-mt-32">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -102,7 +102,9 @@ export default function AboutContent() {
       </section>
 
       {/* Trainers Section */}
-      <section className="py-16">
+      <section className="py-16 relative">
+        {/* Scroll Target for Trainers */}
+        <div id="trainers" className="absolute top-96" aria-hidden="true" />
         <div className="max-w-7xl mx-auto px-4">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -223,7 +225,9 @@ export default function AboutContent() {
       </section>
 
       {/* Facility Section */}
-      <section className="py-16">
+      <section className="py-16 relative">
+        {/* Scroll Target for Facility */}
+        <div id="facility" className="absolute top-96" aria-hidden="true" />
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

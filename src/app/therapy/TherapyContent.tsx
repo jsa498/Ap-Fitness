@@ -14,7 +14,7 @@ const therapyServices = [
       'Personalized recovery plans',
       'Progress documentation',
       'Regular assessments',
-      'Insurance coordination'
+      'Direct billing available'
     ]
   },
   {
@@ -91,7 +91,8 @@ export default function TherapyContent() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 * index }}
-                className="bg-dark-lighter rounded-[2rem] p-8 hover:bg-dark-lighter/80 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg group"
+                id={service.title.toLowerCase().replace(/\s+/g, '-')}
+                className="bg-dark-lighter rounded-[2rem] p-8 hover:bg-dark-lighter/80 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg group scroll-mt-32"
               >
                 <service.Icon className="text-4xl text-ap-red mb-6 group-hover:scale-110 transition-transform duration-300" />
                 <h3 className="text-xl font-semibold mb-4">{service.title}</h3>
