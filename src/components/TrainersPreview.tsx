@@ -11,14 +11,14 @@ const trainers = [
     role: 'KINESIOLOGIST / PERSONAL TRAINER',
     image: '/images/DSC05701.jpeg',
     quote: 'Dedicated to helping clients achieve their fitness goals through evidence-based training and personalized attention.',
-    specialties: ['Personal Training', 'Strength & Conditioning', 'Active Rehabilitation', 'Injury Prevention'],
+    specialties: ['Strength Training', 'Sports Performance', 'Injury Prevention', 'Weight Management'],
   },
   {
     name: 'Amrit Jagdeo',
     role: 'KINESIOLOGIST / PERSONAL TRAINER',
     image: '/images/DSC09205.jpeg',
     quote: 'Passionate about empowering clients to reach their full potential through holistic wellness and sustainable fitness practices.',
-    specialties: ['Personal Training', 'Nutritional Coaching', 'Pre/Postnatal Fitness', 'Group Training'],
+    specialties: ['Strength Training', 'Sports Performance', 'Injury Prevention', 'Weight Management'],
   },
 ];
 

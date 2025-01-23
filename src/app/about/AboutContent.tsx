@@ -9,19 +9,27 @@ const trainers = [
   {
     name: 'Prabhjot Mand',
     role: 'KINESIOLOGIST / PERSONAL TRAINER',
-    image: '/images/DSC05663.jpeg',
-    quote: '"I hated every minute of training, but I said, Don\'t quit. Suffer now and live the rest of your life as a champion." - Muhammad Ali',
-    bio: 'Growing up Prabhjot\'s passion had always revolved around sports. He has played soccer for the most part of his life gaining experience playing both at provincial and university levels. Over the years that passion had evolved into health and fitness. He has been consistent with his training for the last 7 years. Having done everything from bodybuilding, powerlifting, Olympic weightlifting, to sports specific training, he has put himself through it all. His passion now as a personal trainer is to help people achieve their full potential. Everyone is unique, with their own set of strengths and weaknesses. He wants to help people achieve their goals while working around their limitations.',
-    certifications: ['Certified Kinesiologist', 'Personal Training Specialist', 'First Aid & CPR'],
+    image: '/images/DSC05701.jpeg',
+    quote: 'Dedicated to helping clients achieve their fitness goals through evidence-based training and personalized attention.',
+    bio: 'Prabhjot is a certified kinesiologist and personal trainer with a passion for helping clients achieve their fitness goals. With his evidence-based approach and personalized attention, he creates effective training programs that deliver results.',
+    certifications: [
+      'Bachelor of Kinesiology',
+      'BCRPA Certified Personal Trainer',
+      'First Aid & CPR Certified'
+    ],
     specialties: ['Strength Training', 'Sports Performance', 'Injury Prevention', 'Weight Management']
   },
   {
     name: 'Amrit Jagdeo',
     role: 'KINESIOLOGIST / PERSONAL TRAINER',
-    image: '/images/DSC09135.jpeg',
-    quote: '"Success isn\'t about perfection, it\'s about consistency. Your health is an investment, not an expense."',
-    bio: 'Amritpal completed his Bachelor of Kinesiology from the University of British Columbia in 2019 and is currently a registered Kinesiologist with the British Columbia Association of Kinesiologists. Amritpal is an avid athlete having experience playing soccer at the provincial and national levels, as well as coaching youth soccer players. He also has experience as a team medical trainer for the Vancouver North East Chiefs Major Bantam hockey team. Amritpal\'s athletic background and dealing with injuries himself has allowed him to gain extensive knowledge in injury rehabilitation. During his free time, you can find him playing soccer, working out, or spending time with his family.',
-    certifications: ['Certified Kinesiologist', 'Personal Training Specialist', 'First Aid & CPR'],
+    image: '/images/DSC09205.jpeg',
+    quote: 'Passionate about empowering clients to reach their full potential through holistic wellness and sustainable fitness practices.',
+    bio: 'Amrit is a dedicated kinesiologist and personal trainer who believes in a holistic approach to fitness. He focuses on creating sustainable, long-term solutions that help clients transform their lives through proper training and education.',
+    certifications: [
+      'Bachelor of Kinesiology',
+      'BCRPA Certified Personal Trainer',
+      'First Aid & CPR Certified'
+    ],
     specialties: ['Strength Training', 'Sports Performance', 'Injury Prevention', 'Weight Management']
   }
 ];
