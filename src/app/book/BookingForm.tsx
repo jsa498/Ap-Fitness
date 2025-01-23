@@ -1077,13 +1077,13 @@ export default function BookingForm() {
 
   return (
     <main className="flex-1 pt-28">
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-4xl mx-auto px-2 sm:px-4">
         <div className="flex justify-center mb-8">
           <nav className="bg-dark-lighter rounded-full p-1 inline-flex">
             {['Personal', 'Physical', 'Fitness', 'Training'].map((section) => (
               <button
                 key={section}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                className={`px-4 sm:px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   currentSection.toLowerCase() === section.toLowerCase()
                     ? 'bg-ap-red text-white'
                     : 'text-text-secondary hover:text-white'
