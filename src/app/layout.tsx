@@ -4,7 +4,6 @@ import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
-import PaymentOverlay from '@/components/PaymentOverlay'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -169,7 +168,6 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ErrorBoundary>
-          <PaymentOverlay />
           <Navbar />
           {children}
           <Footer />
