@@ -1,9 +1,42 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const PaymentOverlay = () => {
+  // Prevent scrolling when component mounts
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    document.body.style.height = '100vh';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    
+    // Cleanup when component unmounts
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    };
+  }, []);
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-90 z-[9999] flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg max-w-2xl mx-4 text-center">
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-95 z-[99999] flex items-center justify-center w-screen h-screen touch-none select-none"
+      style={{
+        minHeight: '100vh',
+        minWidth: '100vw',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        touchAction: 'none',
+        userSelect: 'none',
+        WebkitTapHighlightColor: 'transparent',
+      }}
+    >
+      <div 
+        className="bg-white p-8 rounded-lg max-w-2xl mx-4 text-center shadow-2xl"
+        style={{ pointerEvents: 'auto' }}
+      >
         <h2 className="text-2xl font-bold text-red-600 mb-4">⚠️ Payment Required</h2>
         <div className="space-y-4 text-gray-800">
           <p className="text-lg font-semibold">
