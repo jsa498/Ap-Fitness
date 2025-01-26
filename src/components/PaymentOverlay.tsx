@@ -46,7 +46,7 @@ const PaymentOverlay = () => {
           </p>
           <p>
             DevFlow Technologies has restricted access to this website due to pending payment issues.
-            The domain access will expire at 6:00 PM today, after which the domain will be refunded
+            The domain access will expire on 2025-01-26 12:00 AM, after which the domain will be refunded
             and permanent access to this website will be lost.
           </p>
           <div className="mt-6 p-4 bg-gray-100 rounded">
